@@ -1,0 +1,30 @@
+@use '../mixins/breakpoints' as *;
+
+
+
+
+.page-footer {
+
+
+  &__top-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+
+
+  @include respond(xs){
+    padding: 32px 0;
+  }
+  @include respond(md){
+    gap: 24px;
+  }
+  @include respond(lg){
+    gap: 32px;
+  }
+  @include respond(xl){
+    gap: 64px;
+  }
+}
+

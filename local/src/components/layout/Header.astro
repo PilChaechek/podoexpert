@@ -1,0 +1,98 @@
+---
+import LogoCompany from './LogoCompany.astro';
+import SocialLinks from './SocialLinks.astro';
+
+const topNavItems = [
+    { href: '#', text: 'О компании' },
+    { href: '#', text: 'Акции' },
+    { href: '#', text: 'Мастерам' },
+    { href: '#', text: 'Доставка и оплата' },
+    { href: '#', text: 'Статьи' },
+    { href: 'contacts', text: 'Контакты' },
+];
+
+const mainNavItems = [
+    { href: '#', text: 'Каталог' },
+    { href: '#', text: 'Профессиональная косметика' },
+    { href: '#', text: 'Домашний уход и профилактика' },
+    { href: '#', text: 'Косметика SUDA' },
+    { href: '#', text: 'Инструменты' },
+    { href: '#', text: 'Эксклюзивные' },
+];
+---
+<header class="page-header">
+    <div class="page-header__top bg-gray-800 text-gray-200 text-md">
+        <div class="container">
+            <div class="page-header__top-inner">
+                <div class="page-header__top-text">Официальный магазин профессиональной косметики AArkada</div>
+                <nav class="page-header__nav top-nav">
+                    <ul class="top-nav__list flex gap-1 list">
+                        {topNavItems.map(item => (
+                            <li class="top-nav__item">
+                                <a href={item.href} class="top-nav__link link">{item.text}</a>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="page-header__main">
+        <div class="container">
+            <div class="page-header__main-inner">
+                <button class="page-header__mobile-menu btn-reset js-btn-menu">
+                    Меню
+                </button>
+
+                <LogoCompany class="page-header__logo" />
+
+                <div class="page-header__search">
+                    <form class="form">
+                        <input class="input">
+                        <button class="page-header__btn-search btn-reset" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="m21 21l-4.343-4.343m0 0A8 8 0 1 0 5.343 5.343a8 8 0 0 0 11.314 11.314" stroke-width="1"/></svg>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="page-header__contacts">
+                    <div class="page-header__social">
+                        <SocialLinks />
+                    </div>
+                    <div class="page-header__phone">
+                        <a class="link" href="tel:79932066368">+7 (993) 206-63-68</a>
+                    </div>
+                </div>
+
+
+                <div class="page-header__actions">
+
+                    <div class="page-header__cart minicart">
+                        <a href="/cart" class="minicart__link link">
+                                <span class="minicart__icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"/><path fill="currentColor" fill-rule="evenodd" d="M12 2.75A2.25 2.25 0 0 0 9.75 5v.26c.557-.01 1.168-.01 1.84-.01h.821c.67 0 1.282 0 1.84.01V5A2.25 2.25 0 0 0 12 2.75m3.75 2.578V5a3.75 3.75 0 1 0-7.5 0v.328q-.214.018-.414.043c-1.01.125-1.842.387-2.55.974S4.168 7.702 3.86 8.672c-.3.94-.526 2.147-.81 3.666l-.021.11c-.402 2.143-.718 3.832-.777 5.163c-.06 1.365.144 2.495.914 3.422c.77.928 1.843 1.336 3.195 1.529c1.32.188 3.037.188 5.218.188h.845c2.18 0 3.898 0 5.217-.188c1.352-.193 2.426-.601 3.196-1.529s.972-2.057.913-3.422c-.058-1.331-.375-3.02-.777-5.163l-.02-.11c-.285-1.519-.512-2.727-.81-3.666c-.31-.97-.72-1.74-1.428-2.327c-.707-.587-1.54-.85-2.55-.974a11 11 0 0 0-.414-.043M8.02 6.86c-.855.105-1.372.304-1.776.64c-.403.334-.694.805-.956 1.627c-.267.84-.478 1.958-.774 3.537c-.416 2.217-.711 3.8-.764 5.013c-.052 1.19.14 1.88.569 2.399c.43.517 1.073.832 2.253 1c1.2.172 2.812.174 5.068.174h.72c2.257 0 3.867-.002 5.068-.173c1.18-.169 1.823-.484 2.253-1.001c.43-.518.621-1.208.57-2.4c-.054-1.211-.349-2.795-.765-5.012c-.296-1.58-.506-2.696-.774-3.537c-.262-.822-.552-1.293-.956-1.628s-.92-.534-1.776-.64c-.876-.108-2.013-.109-3.62-.109h-.72c-1.607 0-2.744.001-3.62.11" clip-rule="evenodd"/></svg>
+                                    <span class="minicart__total">
+                                        <span class="minicart__badge">1</span>
+                                    </span>
+                                </span>
+                            </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-header__bottom">
+        <div class="container">
+            <nav class="page-header__nav main-nav">
+                <ul class="main-nav__items list">
+                    {mainNavItems.map((item, index) => (
+                        <li class={`main-nav__item ${index === 0 ? 'main-nav__item--active' : ''}`}>
+                            <a href={item.href} class="main-nav__link link">{item.text}</a>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+</header>

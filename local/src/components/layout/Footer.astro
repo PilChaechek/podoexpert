@@ -1,0 +1,109 @@
+---
+import LogoCompany from './LogoCompany.astro';
+import SocialLinks from './SocialLinks.astro';
+import { contacts as footerContacts } from '../../config/index.js';
+
+const footerNavColumn1 = [
+    { href: '#', text: 'О компании' },
+    { href: '#', text: 'Мастерам' },
+    { href: '#', text: 'Контакты' }
+];
+
+const footerNavColumn2 = [
+    { href: '#', text: 'Каталог' },
+    { href: '#', text: 'Акции' },
+    { href: '#', text: 'Доставка и оплата' },
+    { href: '#', text: 'Возврат и обмен' },
+    { href: '#', text: 'Контакты' },
+];
+
+---
+
+
+<footer class="page-footer bg-gray-700 text-gray-300 py-14 md:py-16">
+    <div class="container">
+        <div class="page-footer__inner">
+            <div class="page-footer__top">
+                <div class="page-footer__top-inner">
+                    <LogoCompany class="page-footer__logo" />
+
+
+
+                    <nav class="footer-nav">
+                        <ul class="footer-nav__list list">
+                            {footerNavColumn1.map(item => (
+                                    <li class="footer-nav__item">
+                                        <a href={item.href} class="footer-nav__link link">{item.text}</a>
+                                    </li>
+                            ))}
+                        </ul>
+                    </nav>
+
+                    <SocialLinks class="page-footer__social" />
+                </div>
+
+
+
+            </div>
+            <div class="page-footer__bottom">
+
+            </div>
+
+
+
+            <div class="page-footer__agreement">
+                <a href="#" class="page-footer__agreement-link link link--hover">Политика обработки ПДн</a>
+                <a href="#" class="page-footer__agreement-link link link--hover">Использования Cookie-файлов</a>
+                <a href="#" class="page-footer__agreement-link link link--hover">Согласие на обработку ПДн</a>
+            </div>
+
+            <p class="page-footer__copyright">© 2017-2026 ИП Кручко Э.Ю. Все права защищены</p>
+
+        </div>
+    </div>
+</footer>
+
+<footer class="page-footer" style="display: none;">
+    <div class="page-footer__main">
+        <div class="container">
+            <div class="page-footer__main-inner">
+                <div class="page-footer__nav-columns">
+
+                </div>
+                <div class="page-footer__nav-columns">
+                    <nav class="footer-nav">
+                        <ul class="footer-nav__list list">
+                            {footerNavColumn2.map(item => (
+                                <li class="footer-nav__item">
+                                    <a href={item.href} class="footer-nav__link link">{item.text}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </div>
+                <div class="page-footer__contacts">
+                    <a href={`tel:${footerContacts.phone1.replace(/\s/g, '').replace(/<[^>]*>?/gm, '')}`} class="link page-footer__contact-phone-1" set:html={footerContacts.phone1}></a>
+                    <a href={`tel:${footerContacts.phone2.replace(/\s/g, '')}`} class="link page-footer__contact-phone-2" set:html={footerContacts.phone2}></a>
+                    <a href={`mailto:${footerContacts.email}`} class="link page-footer__contact-email">{footerContacts.email}</a>
+                    <div class="page-footer__contact-address">
+                        <div class="page-footer__contact-address-title">Адрес демонстрационного зала:</div>
+                        <p class="page-footer__contact-address-text m-0">{footerContacts.address}</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-footer__bottom">
+        <div class="container">
+            <div class="page-footer__bottom-inner">
+                <div class="page-footer__bottom-left">
+                    <LogoCompany class="page-footer__logo" />
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</footer>
