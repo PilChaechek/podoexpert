@@ -11,8 +11,21 @@ const topNavItems = [
     { href: 'contacts', text: 'Контакты' },
 ];
 
+const catalogMenuItems = [
+    { href: '/katalog', text: 'Все' },
+    { href: '/professionalnaya-kosmetika-arkada', text: 'Косметика Arkada' },
+    { href: '/instrumenty-arkada', text: 'Инструменты Arkada' },
+    { href: '/lechebnaya-kosmetika', text: 'Косметика SUDA' },
+    { href: '/domashnij-ukhod', text: 'Домашний уход и профилактика' },
+    { href: '/instrumenty', text: 'Инструменты' },
+    { href: '/fiksiruyushchie-materialy', text: 'Фиксирующие материалы' },
+    { href: '/brace', text: "Arkada's Brace-M" },
+    { href: '/arkadascube', text: "Arkada's Cube" },
+    { href: '/nail-insert-system', text: 'Nail Insert System' },
+    { href: '/prof-oborudovanie', text: 'Профессиональное оборудование' },
+];
+
 const mainNavItems = [
-    { href: '#', text: 'Каталог' },
     { href: '#', text: 'Профессиональная косметика' },
     { href: '#', text: 'Домашний уход и профилактика' },
     { href: '#', text: 'Косметика SUDA' },
@@ -85,8 +98,30 @@ const mainNavItems = [
         <div class="container">
             <nav class="page-header__nav main-nav">
                 <ul class="main-nav__items list">
-                    {mainNavItems.map((item, index) => (
-                        <li class={`main-nav__item ${index === 0 ? 'main-nav__item--active' : ''}`}>
+                    <li class="main-nav__item main-nav__item--catalog">
+                        <a href="/katalog" class="main-nav__catalog-trigger main-nav__link link" aria-label="Каталог">
+                            Каталог
+                            <svg class="icon-chevron-down" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 7.5 5 5 5-5"></path></svg>
+                        </a>
+                        <div class="main-nav__catalog-dropdown">
+                            <ul class="main-nav__catalog-list list" role="menu" aria-label="Каталог">
+                                {catalogMenuItems.map((item) => (
+                                    <li class="main-nav__catalog-list-item" role="none">
+                                        <a
+                                            href={item.href}
+                                            class="main-nav__catalog-link link"
+                                            role="menuitem"
+                                        >
+                                            {item.text}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </li>
+
+                    {mainNavItems.map((item) => (
+                        <li class="main-nav__item">
                             <a href={item.href} class="main-nav__link link">{item.text}</a>
                         </li>
                     ))}

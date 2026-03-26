@@ -38,7 +38,11 @@
   }
   &__phone {
     font-size: 1.2rem;
-    font-weight: 700;
+    font-weight: 600;
+  }
+  &__bottom {
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
   }
 }
 
@@ -61,13 +65,87 @@
 .main-nav {
   &__items {
     display: flex;
-    gap: 12px;
+    justify-content: space-between;
   }
+
   &__item {
     display: flex;
     text-align: center;
-    padding: 1rem;
-    background-color: #f5f5f5;
+  }
+
+  &__link {
+    padding: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    &:before {
+      background-color: #004f7d;
+      bottom: 0;
+      content: "";
+      height: 2px;
+      left: 0;
+      position: absolute;
+      right: 0;
+      transform: scaleX(0);
+      transition: transform .3s ease;
+    }
+    &:hover {
+      transform: scaleX(1);
+      &:before {
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  &__item--catalog {
+    position: relative;
+  }
+
+  &__catalog-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  &__catalog-dropdown {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    min-width: 320px;
+    padding: 14px 16px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease, visibility .15s ease;
+  }
+
+  &__catalog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+  }
+
+  &__catalog-link {
+    display: block;
+    padding: 8px 10px;
+    text-align: left;
+    &:hover {
+      color: var(--color-main);
+    }
+  }
+
+  &__item--catalog:hover &__catalog-dropdown,
+  &__item--catalog:focus-within &__catalog-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 }
 
@@ -75,8 +153,8 @@
   position: relative;
   width: 48px;
   height: 48px;
-  background-color: var(--color-main);
-  color: #fff;
+  background-color: #f5f5f5;
+  //color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
