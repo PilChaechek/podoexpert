@@ -1,0 +1,89 @@
+---
+import slide1 from "../../assets/images/hero/slide1.webp";
+import slide2 from "../../assets/images/hero/slide2.webp";
+const slides = [
+  {
+    title: 'Профессиональный уход для стоп и ногтей у вас дома',
+    text: '<p>Средства, которые используют ведущие подологи Европы и мы в своей клинике. Подолог из нашей клиники поможет подобрать уход именно для вас. Просто опишите проблему или отправьте фото.</p>',
+    link: {
+      href: '#services',
+      label: 'Подобрать средство',
+    },
+    image: slide1.src,
+  },
+  {
+    title: 'Здоровье и комфорт каждый день',
+    text: '<p>Консультации, профилактика и эффективные решения для здоровья ваших стоп.</p>',
+    link: {
+      href: '#contact',
+      label: 'Записаться на консультацию',
+    },
+    image: slide2.src,
+  },
+];
+---
+<section class="hero-slider" aria-label="Главный слайдер">
+  <div class="swiper hero-slider__swiper js-hero-swiper">
+    <div class="swiper-wrapper hero-slider__wrapper">
+    {
+      slides.map((slide) => (
+        <article class="swiper-slide hero-slider__slide">
+          <img
+            class="hero-slider__image"
+            src={slide.image}
+            alt={slide.title}
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="hero-slider__content-wrap">
+            <div class="container">
+              <div class="hero-slider__content">
+                <h2 class="hero-slider__title h2 font-bold">{slide.title}</h2>
+                <div class="hero-slider__text text-lg" set:html={slide.text} />
+                <a class="hero-slider__link btn" href={slide.link.href}>
+                  {slide.link.label}
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+      ))
+    }
+    </div>
+    <div class="swiper-pagination hero-slider__pagination"></div>
+  </div>
+</section>
+
+<script>
+  const initHeroSlider = () => {
+    const heroSlider = document.querySelector('.js-hero-swiper');
+    if (!heroSlider || heroSlider.dataset.initialized === 'true' || typeof Swiper === 'undefined') {
+      return;
+    }
+
+    const swiper = new Swiper(heroSlider, {
+      direction: 'horizontal',
+      loop: true,
+      effect: "fade",
+      speed: 700,
+      pagination: {
+        el: '.hero-slider .swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.hero-slider .swiper-button-next',
+        prevEl: '.hero-slider .swiper-button-prev',
+      },
+    });
+
+    if (swiper) {
+      heroSlider.dataset.initialized = 'true';
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroSlider, { once: true });
+  } else {
+    initHeroSlider();
+  }
+</script>

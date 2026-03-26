@@ -11,14 +11,14 @@
 //@use "components/navs/mobile-nav";
 
 // Components
-//@use 'components/buttons';
+@use 'common/buttons';
 @use 'common/forms';
 
 //Plugins
 //@use "plugins/micromodal";
 
 // Sections
-
+@use "sections/hero/hero";
 
 // Pages
 @use 'pages/home';

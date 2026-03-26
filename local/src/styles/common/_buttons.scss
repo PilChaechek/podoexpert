@@ -1,0 +1,20 @@
+@use '../mixins/breakpoints' as *;
+
+.btn {
+  align-items: center;
+  background-color: var(--color-gray-800);;
+  border: 1px solid #1f2937;
+  border-radius: 9999px;
+  color: #f9fafb;
+  display: inline-flex;
+  gap: 8px;
+  justify-content: center;
+  line-height: 1.5em;
+  font: normal 600 16px / 1.6em Montserrat, Helvetica, Arial, sans-serif;
+  min-width: 160px;
+  opacity: 1;
+  padding: 10px 24px;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  transition: opacity .2s ease;
+}
