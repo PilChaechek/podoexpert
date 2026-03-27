@@ -115,7 +115,7 @@ h2 {
 .section {
   padding: 24px 0;
   @include respond(lg)  {
-    padding: 48px 0;
+    padding: 64px 0;
   }
   &__title {
     font-size: 1.4rem;
@@ -174,6 +174,10 @@ h2 {
   @include respond(lg)  { max-width: 992px;  }
   @include respond(xl)  { max-width: 1200px; }
   @include respond(xxl) { max-width: 1360px; } // 1360 + 16*2
+}
+
+.container--xl {
+  @include respond(xl)  { max-width: 1660px; }
 }
 
 .container--fullwidth {

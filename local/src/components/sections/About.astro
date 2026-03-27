@@ -1,0 +1,40 @@
+---
+import img1 from "../../assets/images/about/director.webp";
+import svg from "../../assets/images/about/bg.svg";
+---
+<section class="section about" aria-label="О нас">
+  <div class="container container--xl">
+
+    <div class="section-header text-center mb-16">
+      <h2 class="section-header__title font-bold">О бренде AArkada</h2>
+    </div>
+
+    <div class="about__grid">
+      <div class="about__media" role="img" aria-label="Изображение владельца бренда">
+        <img class="about__img img" src={img1.src} alt="">
+      </div>
+
+      <div class="about__content content-editor">
+        <h2 class="about__title font-bold">
+          Опыт и авторские методики <br> - это бренд Arkada
+        </h2>
+        <p>
+          Миссия компании - создавать <b>продукты высокого качества</b> на основе
+          <b>натуральных ингредиентов и лучших материалов</b>, а также развивать
+          подологию и обучение специалистов.
+        </p>
+        <p>
+          Мы разрабатываем <b>инновационные методы</b> коррекции вросших ногтей
+          и создаем собственные продукты, отвечающие потребностям самых требовательных
+          терапий.
+        </p>
+        <p>
+          На первом месте для нас всегда стоит <b>благополучие пациента</b>
+          и развитие польской и мировой подологии.
+        </p>
+        <p><b>Владелец компании</b><br>Бурова Юлия Владимировна</p>
+      </div>
+    </div>
+  </div>
+  <img class="about__pattern bottom-0 right-0 h-[200%] md:block md:[clip-path:polygon(100%_7%,38%_100%,100%_100%)]          2xl:[clip-path:polygon(81%_0%,100%_0%,100%_100%,0%_100%)]" width="477" height="789" src={svg.src} alt="" loading="lazy">
+</section>
