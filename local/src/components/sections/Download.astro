@@ -1,0 +1,29 @@
+---
+import productArrowSvg from "../../assets/icons/product-arrow.svg?raw";
+import image from '../../assets/images/download/catalog.webp';
+---
+
+<section class="section download-catalog" aria-label="Скачивание">
+  <div class="container">
+    <div class="download-catalog__inner">
+      <div class="download-catalog__left">
+        <h2 class="font-bold">Скачать каталог продукции AArkada</h2>
+        <p class="font-primary text-gray-700 leading-relaxed text-xl pt-3 max-w-[79%]                    md:max-w-full">Все ваши любимые товары всегда под рукой!</p>
+        <a href="#" class="btn">Скачать каталог <Fragment set:html={productArrowSvg} /></a>
+      </div>
+      <div class="download-catalog__right">
+        <img src={image.src} class="img download-catalog__image" alt="Каталог продукции AArkada" loading="lazy" />
+      </div>
+    </div>
+    <img
+      class="download-catalog__pattern absolute right-0 bottom-0 h-full"
+      src="https://aarkada.com/wp-content/themes/aarkada-theme/public/svg/AAA-pattern-white.16add3.svg"
+      width="510"
+      height="386"
+      alt=""
+      loading="lazy"
+      aria-hidden="true"
+    />
+  </div>
+</section>
+
