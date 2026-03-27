@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets';
+import news1 from '../../assets/images/news/1.webp';
+import news2 from '../../assets/images/news/2.webp';
+import news3 from '../../assets/images/news/3.jpg';
+
+const newsItems = [
+  {
+    title: 'Как ухаживать за стопами в межсезонье',
+    excerpt: 'Подборка простых рекомендаций от подолога для ежедневного ухода.',
+    href: '#',
+    date: '27 марта 2026',
+    image: news1,
+  },
+  {
+    title: 'Разбор частых ошибок при домашнем уходе',
+    excerpt: 'Рассказываем, какие привычки могут ухудшать состояние ногтей и кожи.',
+    href: '#',
+    date: '20 марта 2026',
+    image: news2,
+  },
+  {
+    title: 'Новые профессиональные средства Arkada',
+    excerpt: 'Краткий обзор новинок и для каких задач они подходят лучше всего.',
+    href: '#',
+    date: '12 марта 2026',
+    image: news3,
+  },
+];
+---
+
+<section class="section news" aria-label="Новости">
+  <div class="container">
+    <div class="section-header text-center mb-8">
+      <h2 class="section-header__title text-4xl md:text-5xl font-bold">Новости</h2>
+      <p class="section-header__text text-base md:text-lg">
+        Актуальные материалы, советы специалистов и обновления бренда.
+      </p>
+    </div>
+
+    <div class="news__grid">
+      {
+        newsItems.map((item) => (
+          <article class="news-card">
+            <a class="news-card__image-link" href={item.href} aria-label={item.title}>
+              <Image
+                class="news-card__image"
+                src={item.image}
+                alt={item.title}
+                width={500}
+                height={500}
+                fit="cover"
+                loading="lazy"
+              />
+            </a>
+            <p class="news-card__date text-sm">{item.date}</p>
+            <h3 class="news-card__title text-2xl font-bold"><a class="link" href={item.href}>{item.title}</a></h3>
+            <p class="news-card__excerpt text-base">{item.excerpt}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
