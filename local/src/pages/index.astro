@@ -1,19 +1,171 @@
 ---
 import Hero from '../components/sections/Hero.astro';
 import Products from '../components/sections/Products.astro';
+import type { ProductItem } from '../components/sections/Products.astro';
 import About from '../components/sections/About.astro';
 import News from '../components/sections/News.astro';
 import Download from '../components/sections/Download.astro';
 import AarkadaExpertise from '../components/sections/AarkadaExpertise.astro';
 import Layout from '../layouts/Layout.astro';
 
+import img1 from '../assets/images/products/1.webp';
+import img2 from '../assets/images/products/2.webp';
+import img3 from '../assets/images/products/3.webp';
+import img4 from '../assets/images/products/4.webp';
+
+const productsHits: ProductItem[] = [
+  {
+    title: "Коллагеновая сыворотка для ногтей Arkada's Serum TC16, 11мл.",
+    currentPrice: '2 300руб',
+    oldPrice: '3 400руб',
+    badge: '',
+    image: img1,
+  },
+  {
+    title: "Набор коллагеновых сывороток для ногтей Arkada's Serum TC16",
+    currentPrice: '9 540руб',
+    oldPrice: '20 400руб',
+    badge: 'АКЦИЯ 5+1',
+    image: img2,
+  },
+  {
+    title: "Гелевая сыворотка Arkada's Serum Gel 15 мл.",
+    currentPrice: '2 700руб',
+    oldPrice: '3 900руб',
+    badge: '',
+    image: img3,
+  },
+  {
+    title: "Мазь для сухой кожи Arkada's Masc",
+    currentPrice: '2 590руб',
+    oldPrice: '2 950руб',
+    badge: 'АКЦИЯ ХИТ',
+    image: img4,
+  },
+];
+
+const productsRegeneration: ProductItem[] = [
+  {
+    title: "Коллагеновая сыворотка для ногтей Arkada's Serum TC16",
+    description:
+      'Обеспечивает защиту от инфекций, эффективно разглаживает рубцы, ускоряет заживление ожогов и обладает антисептическим действием.',
+    currentPrice: '2 300руб',
+    image: img1,
+  },
+  {
+    title: "Мазь для сухой кожи Arkada's Masc",
+    description:
+      'Специально разработана для восстановления, ухода и лечения сухой, потрескавшей кожи на стопах, коленях, локтях и ладонях.',
+    currentPrice: '2 590руб',
+    image: img2,
+  },
+  {
+    title: "Гелевая сыворотка Arkada's Serum Gel",
+    description: 'Предназначен для восстановления кожи, ногтевой пластины и ногтевого ложа.',
+    currentPrice: '2 700руб',
+    image: img3,
+  },
+];
+
+const productsProtection: ProductItem[] = [
+  {
+    title: "Защитная жидкость Arkada's 08 Oil для ногтей и кожи",
+    description:
+      'Поддерживает регенерацию кожи стоп и ногтей, а также обладает антибактериальными, противовирусными и антисептическими свойствами.',
+    currentPrice: '2 990 руб.',
+    image: img4,
+  },
+];
+
+const productsRelax: ProductItem[] = [
+  {
+    title: "Пенка Arkada's Foam Relax",
+    description: 'Питательная крем-пенка для ухода за кожей рук, стоп.',
+    currentPrice: '2 990 руб.',
+    image: img1,
+  },
+  {
+    title: 'Кератолитическая пенка AArkada',
+    description:
+      'Пена обладает выраженными антибактериальными и противогрибковыми свойствами, облегчает размягчение натоптышей, мозолей и огрубевших участков.',
+    currentPrice: '2 990 руб.',
+    image: img2,
+  },
+  {
+    title: "Скраб сахарный с календулой Arkada's",
+    description:
+      'Эффективное очищающее средство, которое помогает бережно и качественно снять верхний слой эпидермиса.',
+    currentPrice: '2 990 руб.',
+    image: img3,
+  },
+];
+
+const productsPro: ProductItem[] = [
+  {
+    title: "Кератолитический водный раствор Arkada's TT Sept",
+    description:
+      'Кератолитический водный раствор для активного отшелушивания ороговевшего слоя кожи и ногтей.',
+    currentPrice: '2 100 руб.',
+    image: img4,
+  },
+  {
+    title: "Очиститель кожи Arkada's Skin Cleaner",
+    description:
+      'Жидкость для обезжиривания кожи с натуральными эфирными маслами и салициловой кислотой в составе.',
+    currentPrice: '2 300руб',
+    image: img1,
+  },
+  {
+    title: "Ликвид (мономер) Arkada's Liquid",
+    description:
+      'Ликвид (мономер) Arkada предназначен для использования с акрилом Arkada для реконструкции и моделирования повреждённых ногтей.',
+    currentPrice: '2 250руб',
+    image: img2,
+  },
+	{
+		title: "Кератолитический водный раствор Arkada's TT Sept",
+		description:
+			'Кератолитический водный раствор для активного отшелушивания ороговевшего слоя кожи и ногтей.',
+		currentPrice: '22 100 руб.',
+		image: img4,
+	},
+];
+
 ---
 <Layout>
 	<Hero />
-	<Products />
+	<Products
+		class="section-header--products-1"
+		title="Откройте для себя бестселлеры"
+		description="Проверенные продукты, пользующиеся наибольшей популярностью и доверием среди профессионалов и пациентов."
+		products={productsHits}
+	/>
+	<Products
+		class="section-header--products-2"
+		title="Линейка продукции Регенерация"
+		description="Линия создана для регенерации кожи и ногтей."
+		products={productsRegeneration}
+	/>
+	<Products
+		class="section-header--products-3"
+		title="Линейка продукции Защита"
+		description="Линия с сильным защитным эффектом против бактериальных и грибковых инфекций."
+		products={productsProtection}
+	/>
+	<Products
+		class="section-header--products-4"
+		title="Линейка продукции Релакс"
+		description="Обладает релаксирующим, восстанавливающим эффектом для кожи и ногтевых пластин."
+		products={productsRelax}
+	/>
+	<Products
+		class="section-header--products-5"
+		title="Линейка PRO"
+		description="Высокотехнологичная косметика для использования подологами и мастерами ногтевого сервиса."
+		products={productsPro}
+	/>
 	<About />
 	<News />
-	<AarkadaExpertise />
 	<Download />
-	
+	<AarkadaExpertise />
 </Layout>
