@@ -9,16 +9,27 @@
     justify-content: space-between;
   }
   &__mobile-menu {
-    display: none;
+    display: block;
+    @include respond(xxl){
+      display: none;
+    }
   }
   &__main-inner {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    flex-wrap: wrap;
     gap: 24px;
+    justify-content: space-between;
+    @include respond(xxl){
+
+    }
   }
   &__search {
     position: relative;
+    display: none;
+    @include respond(xxl){
+      display: block;
+    }
     .input {
       min-width: 500px;
       border: none;
@@ -32,24 +43,48 @@
     transform: translateY(-50%);
   }
   &__contacts {
-    display: flex;
     align-items: center;
     gap: 12px;
+    margin-left: auto;
+    display: flex;
+    @include respond(xxl){
+      display: flex;
+    }
   }
   &__phone {
     font-size: 1.2rem;
     font-weight: 600;
+    display: none;
+    @include respond(xs){
+      display: block;
+    }
+  }
+  &__nav {
+    display: none;
+    @include respond(xxl){
+      display: block;
+    }
   }
   &__bottom {
     border-top: 1px solid #e5e7eb;
     border-bottom: 1px solid #e5e7eb;
+    display: none;
+    @include respond(xxl){
+      display: block;
+    }
+  }
+  &__actions {
+    display: none;
+    @include respond(xxl){
+      display: block;
+    }
   }
 }
 
 .logo-company {
   display: grid;
   align-items: center;
-  grid-template-columns: 82px auto;
+  grid-template-columns: 60px auto;
   gap: 12px;
   text-transform: uppercase;
   &__img {
@@ -59,6 +94,22 @@
   }
   &__text {
     font-size: 1.4rem;
+
+  }
+}
+
+.page-header {
+  .logo-company__img svg {
+    width: 60px;
+    @include respond(xs){
+
+    }
+  }
+  .logo-company__text {
+    display: none;
+    @include respond(md){
+      display: block;
+    }
   }
 }
 
@@ -217,5 +268,17 @@
   &-vk {
     background-color: #0077ff;
     color: #fff;
+  }
+}
+//
+section {
+  display: none;
+}
+
+.top-nav {
+  &__link {
+    &:hover {
+      color: #fff;
+    }
   }
 }
