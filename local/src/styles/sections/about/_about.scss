@@ -11,6 +11,7 @@
     clip-path: polygon(180% 0%, 100% 0%, 100% 100%, 0% 60%);
     @include respond(xxl){
       top: -120px;
+      clip-path: polygon(118% 0%, 100% 0%, 100% 100%, 0% 60%);
     }
   }
 
