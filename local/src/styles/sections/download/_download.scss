@@ -1,3 +1,5 @@
+@use '../../mixins/breakpoints' as *;
+
 .download-catalog {
   background-color: #d6dfe6;
   position: relative;
@@ -6,29 +8,25 @@
 
   &__inner {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+
     align-items: center;
     min-height: 380px;
-    gap: 24px;
+
     position: relative;
     z-index: 2;
+    text-align: center;
+    @include respond(md){
+      text-align: left;
+      gap: 24px;
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   &__left {
-    max-width: 470px;
-    padding: 56px 0;
-  }
-
-  h2 {
-    margin: 0 0 14px;
-    font-size: 2.4rem;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-
-  p {
-    margin: 0 0 26px;
-    line-height: 1.35;
+    padding: 24px 0;
+    @include respond(xxl){
+      padding: 56px 0;
+    }
   }
 
   .btn {
@@ -36,11 +34,13 @@
   }
 
   &__image {
-    width: 600px;
-    max-width: none;
     margin-left: auto;
-    transform: translate(14px, 12px);
+    max-width: 84%;
     filter: drop-shadow(0 28px 28px rgba(31, 41, 55, 0.15));
+    @include respond(xxl){
+      width: 600px;
+      transform: translate(14px, 12px);
+    }
   }
 
   &__pattern {
@@ -48,8 +48,11 @@
     max-width: 40%;
     object-fit: cover;
     object-position: left center;
-    clip-path: polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%);
+    clip-path: polygon(90% 0%, 100% 0%, 100% 100%, 0% 100%);
     pointer-events: none;
     z-index: 1;
+    @include respond(xxl){
+      clip-path: polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%);
+    }
   }
 }

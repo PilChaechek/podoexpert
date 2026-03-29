@@ -2,8 +2,11 @@
 
 .section-header {
   &__title {
-    font-size: 2.4rem;
+    font-size: 1.6rem;
     margin-bottom: 12px;
+    @include respond(xxl){
+      font-size: 2.4rem;
+    }
     &:after {
       background-color: var(--color-main);
       content: "";
@@ -42,11 +45,14 @@
   }
 }
 
+
 .products {
   position: relative;
 
   &__swiper {
     position: relative;
+    max-width: 1360px;
+    margin: 0 auto;
   }
 
   &__wrapper {
@@ -70,11 +76,14 @@
     border: 1px solid #d8d8d8;
     border-radius: 50%;
     background: #fff;
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    display: none;
+    @include respond(xs){
+      display: inline-flex;
+    }
 
     &--prev {
       left: -24px;
@@ -132,8 +141,13 @@
     margin: 0;
     display: flex;
     align-items: baseline;
-    gap: 10px;
+
     font-size: 1.2rem;
+    flex-direction: column;
+    @include respond(xs){
+      flex-direction: row;
+      gap: 10px;
+    }
   }
 
   &__price-current {

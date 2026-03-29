@@ -7,14 +7,21 @@
 
   &__pattern {
     position: absolute;
-    top: -120px;
+    top: 0;
+    clip-path: polygon(180% 0%, 100% 0%, 100% 100%, 0% 60%);
+    @include respond(xxl){
+      top: -120px;
+    }
   }
 
   &__grid {
     display: grid;
-    grid-template-columns: 660px 1fr;
-    gap: 48px;
+    gap: 24px;
     align-items: center;
+    @include respond(xxl){
+      grid-template-columns: 660px 1fr;
+      gap: 48px;
+    }
   }
 
   &__media {
@@ -26,8 +33,10 @@
   }
 
   &__img {
-    max-width: 300px;
     margin-top: -32px;
+    @include respond(xs){
+      max-width: 300px;
+    }
   }
 
   &__content {
@@ -59,6 +68,9 @@
   h1,h2,h3,h4 {
     color: var(--font-color);
     margin: 32px 0 16px 0;
+    &:first-child {
+      margin-top: 0;
+    };
     @include respond(md){
       margin: 24px 0;
     }
@@ -70,7 +82,10 @@
     }
   }
   h2 {
-    font-size: 2rem;
+    font-size: 1.6rem;
+    @include respond(xxl){
+      font-size: 2rem;
+    }
   }
   p {
     margin: 1rem 0;

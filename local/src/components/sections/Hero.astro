@@ -38,7 +38,7 @@ const slides = [
           <div class="hero-slider__content-wrap">
             <div class="container">
               <div class="hero-slider__content">
-                <h2 class="hero-slider__title h2 font-bold">{slide.title}</h2>
+                <h2 class="hero-slider__title h2 font-bold text-2xl lg:text-4xl">{slide.title}</h2>
                 <div class="hero-slider__text text-lg" set:html={slide.text} />
                 <a class="hero-slider__link btn" href={slide.link.href}>
                   {slide.link.label}
@@ -64,7 +64,7 @@ const slides = [
     const swiper = new Swiper(heroSlider, {
       direction: 'horizontal',
       loop: true,
-      effect: "fade",
+      //effect: "fade",
       speed: 700,
       pagination: {
         el: '.hero-slider .swiper-pagination',

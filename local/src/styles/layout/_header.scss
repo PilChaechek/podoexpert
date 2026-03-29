@@ -84,32 +84,35 @@
 .logo-company {
   display: grid;
   align-items: center;
-  grid-template-columns: 60px auto;
-  gap: 12px;
+  grid-template-columns: 44px auto;
+  gap: 6px;
   text-transform: uppercase;
+  @include respond(xs){
+    grid-template-columns: 60px auto;
+    gap: 12px;
+  }
   &__img {
     svg {
       height: auto;
     }
   }
   &__text {
-    font-size: 1.4rem;
-
+    font-size: 1rem;
+    @include respond(xxl){
+      font-size: 1.4rem;
+    }
   }
 }
 
 .page-header {
   .logo-company__img svg {
-    width: 60px;
+    width: 52px;
     @include respond(xs){
 
     }
   }
   .logo-company__text {
-    display: none;
-    @include respond(md){
-      display: block;
-    }
+
   }
 }
 
@@ -269,10 +272,6 @@
     background-color: #0077ff;
     color: #fff;
   }
-}
-//
-section {
-  display: none;
 }
 
 .top-nav {

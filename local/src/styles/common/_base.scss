@@ -6,10 +6,13 @@
 
 html {
   height: 100%;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   &:focus-within {
     scroll-behavior: smooth;
+  }
+  @include respond(xxl){
+    font-size: 16px;
   }
 }
 
@@ -174,6 +177,14 @@ h2 {
   @include respond(lg)  { max-width: 992px;  }
   @include respond(xl)  { max-width: 1200px; }
   @include respond(xxl) { max-width: 1360px; } // 1360 + 16*2
+}
+
+.container--fullwidth {
+  @include respond(xl)  {
+    max-width: 1200px;
+    padding-inline: 16px;
+  }
+  @include respond(xxl) { max-width: 1360px; }
 }
 
 .container--xl {

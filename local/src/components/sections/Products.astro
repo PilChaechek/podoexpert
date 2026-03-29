@@ -28,6 +28,9 @@ const { title, description, class: sectionHeaderClass, products } = Astro.props;
       <h2 class="section-header__title font-bold">{title}</h2>
       <p class="section-header__text">{description}</p>
     </div>
+  </div>
+  <div class="container--fullwidth">
+
 
     <div class="products__swiper">
 
@@ -85,9 +88,9 @@ const { title, description, class: sectionHeaderClass, products } = Astro.props;
       </button>
 
     </div>
-
-
   </div>
+
+
 </section>
 
 <script>
@@ -112,8 +115,10 @@ const { title, description, class: sectionHeaderClass, products } = Astro.props;
       const prevEl = root.querySelector('.products__nav--prev');
 
       const swiper = new SwiperConstructor(productsSlider, {
-        slidesPerView: 1,
-        spaceBetween: 16,
+        slidesPerView: 1.1,
+        slidesOffsetBefore: 12,
+        slidesOffsetAfter: 12,
+        spaceBetween: 12,
         speed: 600,
         navigation: {
           nextEl,
@@ -127,6 +132,8 @@ const { title, description, class: sectionHeaderClass, products } = Astro.props;
           992: {
             slidesPerView: 3,
             spaceBetween: 24,
+            slidesOffsetBefore: 0,
+            slidesOffsetAfter: 0,
           },
         },
       });
