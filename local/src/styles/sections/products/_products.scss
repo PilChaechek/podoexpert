@@ -102,6 +102,9 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
   &__badge {
     position: absolute;
     left: 12px;
@@ -116,17 +119,17 @@
 
   }
 
-  &__image {
-    border-radius: 12px;
-    //width: 100%;
-    //height: 100%;
-    //object-fit: contain;
+  &__content {
+    padding: 12px;
+    @include respond(xxl){
+      padding: 20px;
+    }
   }
 
   &__title {
     font-size: 1.125rem;
     font-weight: 700;
-    margin: 12px 0;
+    margin: 0 0 12px 0;
   }
 
   &__description {

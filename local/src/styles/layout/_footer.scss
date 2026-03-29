@@ -1,7 +1,7 @@
 @use '../mixins/breakpoints' as *;
 
 .page-footer {
-  margin-bottom: 72px;
+  margin-bottom: 62px;
   @include respond(xxl){
     margin-bottom: 0;
   }
@@ -59,7 +59,7 @@
     justify-items: center;
   }
   &__item {
-    padding: 12px 0;
+    padding: 8px 0;
   }
   &__item-link {
     display: block;
@@ -85,8 +85,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     position: absolute;
     background-color: #e62e05;
     color: #fff;

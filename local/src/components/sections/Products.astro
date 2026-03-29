@@ -52,22 +52,25 @@ const { title, description, class: sectionHeaderClass, products } = Astro.props;
                           />
                       )}
                     </div>
-                    <h3 class="product-card__title">{product.title}</h3>
-                    {product.description && (
-                      <p class="product-card__description">{product.description}</p>
-                    )}
-                    <div class="product-card__footer">
-                      <p class="product-card__price">
-                        <span class="product-card__price-current">{product.currentPrice}</span>
-                        {product.oldPrice && (
-                          <span class="product-card__price-old">{product.oldPrice}</span>
-                        )}
-                      </p>
-                      <a class="product-card__button btn btn-outline" href="#contact">
-                        Купить
-                        <Fragment set:html={productArrowSvg} />
-                      </a>
+                    <div class="product-card__content">
+                      <h3 class="product-card__title">{product.title}</h3>
+                      {product.description && (
+                          <p class="product-card__description">{product.description}</p>
+                      )}
+                      <div class="product-card__footer">
+                        <p class="product-card__price">
+                          <span class="product-card__price-current">{product.currentPrice}</span>
+                          {product.oldPrice && (
+                              <span class="product-card__price-old">{product.oldPrice}</span>
+                          )}
+                        </p>
+                        <a class="product-card__button btn btn-outline" href="#contact">
+                          Купить
+                          <Fragment set:html={productArrowSvg} />
+                        </a>
+                      </div>
                     </div>
+
                   </article>
                 </div>
             ))
