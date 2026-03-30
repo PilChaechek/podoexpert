@@ -1,6 +1,7 @@
 ---
 import LogoCompany from './LogoCompany.astro';
 import SocialLinks from './SocialLinks.astro';
+import MobileMenu from './MobileMenu.astro';
 import iconCart from '../../assets/icons/icon-cart.svg?raw';
 
 const topNavItems = [
@@ -126,6 +127,10 @@ const mainNavItems = [
                 </ul>
             </nav>
         </div>
-
     </div>
 </header>
+<MobileMenu
+        topNavItems={topNavItems}
+        catalogMenuItems={catalogMenuItems}
+        mainNavItems={mainNavItems}
+/>

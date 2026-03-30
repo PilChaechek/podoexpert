@@ -11,7 +11,7 @@ const mobileFooterNavItems = [
     { href: '/', text: 'Главная', icon: iconMobileNavHome, badge: null },
     { href: '/catalog/', text: 'Каталог', icon: iconMobileNavCatalog, badge: null },
     { href: '/cart', text: 'Корзина', icon: iconCart, badge: 'minicart' },
-    { href: '/menu', text: 'Меню', icon: iconMobileNavMenu, badge: 'favorites' },
+    { href: '/menu', text: 'Меню', icon: iconMobileNavMenu, badge: 'menu' },
 ];
 
 
@@ -130,13 +130,24 @@ const footerNavColumn2 = [
     <div class="mobile-footer-nav__inner">
         {mobileFooterNavItems.map((item) => (
             <div class="mobile-footer-nav__item">
-                <a href={item.href} class="mobile-footer-nav__item-link link">
-                    <span class="mobile-footer-nav__item-icon" set:html={item.icon} />
-                    {item.badge === 'minicart' && (
-                        <span class="mobile-footer-nav__total-count js-total-count-minicart">0</span>
-                    )}
-                    <span class="mobile-footer-nav__item-text text-sm">{item.text}</span>
-                </a>
+                {item.badge === 'menu' ? (
+                    <button
+                        type="button"
+                        class="mobile-footer-nav__item-link link btn-reset"
+                        onclick="document.body.classList.toggle('show-mobile-nav')"
+                    >
+                        <span class="mobile-footer-nav__item-icon" set:html={item.icon} />
+                        <span class="mobile-footer-nav__item-text text-sm">{item.text}</span>
+                    </button>
+                ) : (
+                    <a href={item.href} class="mobile-footer-nav__item-link link">
+                        <span class="mobile-footer-nav__item-icon" set:html={item.icon} />
+                        {item.badge === 'minicart' && (
+                            <span class="mobile-footer-nav__total-count js-total-count-minicart">0</span>
+                        )}
+                        <span class="mobile-footer-nav__item-text text-sm">{item.text}</span>
+                    </a>
+                )}
             </div>
         ))}
     </div>
