@@ -1,0 +1,77 @@
+---
+import { Image } from 'astro:assets';
+import methodCubeImage from '../../assets/images/methods/1.webp';
+import methodBraceImage from '../../assets/images/methods/2.webp';
+import productArrowSvg from '../../assets/icons/product-arrow.svg?raw';
+
+const methodsItems = [
+	{
+		title: 'Куб Аркады®',
+		description:
+			'Метод «Куб Аркады» — это инновационная методика коррекции вросших ногтей, разработанная Адрианом Аркадой. Она предполагает полную иммобилизацию ногтевого аппарата в специальном устройстве, что позволяет с помощью специальных манипуляторов точно добраться до самых труднодоступных проблемных участков.',
+		alt: 'Метод Куб Аркады',
+		image: methodCubeImage,
+		resultsHref: '#',
+		methodHref: '#',
+	},
+	{
+		title: "Arkada's Brace M®",
+		description:
+			'Метод Brace M от Arkada — это техника коррекции вросших ногтей, которая включает использование металлических брекетов, изготавливаемых специалистом непосредственно во время визита пациента с помощью инструмента Brace M. Индивидуальная подгонка брекета под конкретный случай повышает эффективность терапии.',
+		alt: "Метод Arkada's Brace M",
+		image: methodBraceImage,
+		resultsHref: '#',
+		methodHref: '#',
+	},
+];
+---
+
+<section class="section methods" aria-label="Методы Arkada">
+	<div class="container">
+		<div class="section-header text-center mb-8 md:mb-12">
+			<h2 class="section-header__title font-bold">Ознакомьтесь с методами Arkada.</h2>
+			<p class="section-header__text max-w-5xl mx-auto">
+				Откройте для себя инновационный подход к коррекции вросших и искривленных ногтей на ногах благодаря
+				методам Arkada BraceM ® и Arkada Cube ®.
+			</p>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+			{
+				methodsItems.map((item) => (
+					<article class="methods__item rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+						<Image
+							class="w-full h-[260px] md:h-[390px] object-cover"
+							src={item.image}
+							alt={item.alt}
+							width={640}
+							height={420}
+							fit="cover"
+							loading="lazy"
+						/>
+						<div class="p-6 md:p-8">
+							<div class="methods__item-header text-center">
+								<h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">{item.title}</h3>
+								<p class="text-slate-600  mb-4 md:mb-6">{item.description}</p>
+							</div>
+							<div class="flex flex-wrap justify-center gap-2">
+								<a
+									href={item.resultsHref}
+									class="btn btn-outline"
+								>
+									Посмотрите на результаты
+								</a>
+								<a
+									href={item.methodHref}
+									class="btn"
+								>
+									Изучите метод <Fragment set:html={productArrowSvg} />
+								</a>
+							</div>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</div>
+</section>
