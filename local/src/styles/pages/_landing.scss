@@ -207,3 +207,326 @@
     justify-content: flex-start;
   }
 }
+
+.landing-reviews {
+  position: relative;
+
+  &__swiper {
+    position: relative;
+    max-width: 1360px;
+    margin: 0 auto;
+  }
+
+  &__wrapper {
+    align-items: stretch;
+  }
+
+  &__slide.swiper-slide {
+    height: auto;
+  }
+
+  &__nav {
+    position: absolute;
+    top: 42%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    border: 1px solid #d8d8d8;
+    border-radius: 50%;
+    background: #fff;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    display: none;
+    @include respond(xs) {
+      display: inline-flex;
+    }
+
+    &--prev {
+      left: -44px;
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+
+    &--next {
+      right: -44px;
+    }
+  }
+}
+
+.landing-review-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  overflow: hidden;
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 14px 16px 16px;
+    @include respond(md) {
+      padding: 16px 20px 20px;
+    }
+  }
+
+  &__media {
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  &__media:hover &__play {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+
+  &__photo {
+    display: block;
+    aspect-ratio: 1;
+    width: 100%;
+    border-radius: 0;
+    object-fit: cover;
+  }
+
+  &__play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: var(--purple);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+    pointer-events: none;
+    transition: transform 0.2s ease;
+  }
+
+  &__play-icon {
+    margin-left: 4px;
+  }
+
+  &__category {
+    margin-top: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  &__author {
+    margin-top: 6px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  &__city {
+    margin-top: 2px;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  &__quote {
+    margin-top: 12px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: #3f3f46;
+    flex-grow: 1;
+    white-space: pre-line;
+  }
+
+  &__link {
+    margin-top: 14px;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--purple);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    align-self: flex-start;
+    &:hover {
+      color: var(--teal-dark);
+    }
+  }
+}
+
+/* Micromodal: корень #landing-review-modal получает класс .is-open */
+/* Без backdrop-filter: при анимации opacity он даёт рывки. Затемнение — сплошной rgba. */
+#landing-review-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &.is-open {
+    pointer-events: auto;
+    opacity: 1;
+  }
+}
+
+.review-modal-mm__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  background: rgba(24, 24, 27, 0.58);
+}
+
+.review-modal-mm__container {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 900px);
+  max-height: min(90vh, 920px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: #fff;
+  box-shadow: 0 24px 48px rgba(24, 24, 27, 0.18);
+  transform: translateY(12px) scale(0.985);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#landing-review-modal.is-open .review-modal-mm__container {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #landing-review-modal,
+  .review-modal-mm__container {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.review-modal-mm__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: color 0.15s ease, background 0.15s ease;
+  &:hover {
+    color: var(--purple);
+    background: #fff;
+  }
+}
+
+.review-modal-mm__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  flex: 1;
+  min-height: 0;
+  @include respond(md) {
+    grid-template-columns: minmax(240px, 1fr) minmax(0, 1.25fr);
+    align-items: stretch;
+  }
+}
+
+.review-modal-mm__media-col {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-height: 0;
+  background: #f4f4f5;
+  @include respond(md) {
+    min-height: 280px;
+  }
+}
+
+.review-modal-mm__img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  flex: 1 1 auto;
+  min-height: 200px;
+  max-height: 300px;
+  @include respond(md) {
+    max-height: none;
+    min-height: 180px;
+  }
+}
+
+.review-modal-mm__video {
+  flex: 0 0 auto;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #18181b;
+  border-top: 1px solid var(--line);
+}
+
+.review-modal-mm__iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.review-modal-mm__body {
+  padding: 48px 18px 22px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  @include respond(md) {
+    padding: 28px 28px 32px;
+    padding-top: 28px;
+  }
+}
+
+.review-modal-mm__name {
+  margin: 0 0 6px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.review-modal-mm__city {
+  margin: 0 0 14px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.review-modal-mm__text {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: #3f3f46;
+  white-space: pre-line;
+}
+
+.lead-form-grid {
+  &__img {
+    margin-bottom: -32px;
+  }
+}
