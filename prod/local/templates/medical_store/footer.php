@@ -32,7 +32,7 @@ $footerNavColumn1 = [
 ];
 
 $footerNavColumn2 = [
-    ['href' => '#', 'text' => 'Каталог'],
+    ['href' => '/katalog/', 'text' => 'Каталог'],
     ['href' => '#', 'text' => 'Акции'],
     ['href' => '#', 'text' => 'Доставка и оплата'],
     ['href' => '#', 'text' => 'Возврат и обмен'],

@@ -40,4 +40,36 @@ $arUrlRewrite=array (
     'PATH' => '/info/detail.php',
     'SORT' => 50,
   ),
+  6 =>
+  array (
+    'CONDITION' => '#^/katalog/#',
+    'RULE' => '',
+    'ID' => '',
+    'PATH' => '/katalog/index.php',
+    'SORT' => 100,
+  ),
+  7 =>
+  array (
+    'CONDITION' => '#^/personal/cart/#',
+    'RULE' => '',
+    'ID' => '',
+    'PATH' => '/personal/cart/index.php',
+    'SORT' => 100,
+  ),
+  8 =>
+  array (
+    'CONDITION' => '#^/personal/order/make/payment.php#',
+    'RULE' => '',
+    'ID' => '',
+    'PATH' => '/personal/order/make/payment.php',
+    'SORT' => 90,
+  ),
+  9 =>
+  array (
+    'CONDITION' => '#^/personal/order/make/#',
+    'RULE' => '',
+    'ID' => '',
+    'PATH' => '/personal/order/make/index.php',
+    'SORT' => 100,
+  ),
 );

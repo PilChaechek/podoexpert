@@ -39,13 +39,28 @@ $catalogMenuItems = [
     ['href' => '/prof-oborudovanie/', 'text' => 'Профессиональное оборудование'],
 ];
 
-$mainNavItems = [
-    ['href' => '#', 'text' => 'Профессиональная косметика'],
-    ['href' => '#', 'text' => 'Домашний уход и профилактика'],
-    ['href' => '#', 'text' => 'Косметика SUDA'],
-    ['href' => '#', 'text' => 'Инструменты'],
-    ['href' => '#', 'text' => 'Эксклюзивные'],
-];
+$pc = $GLOBALS['PODEXPERT_CATALOG'] ?? [];
+$mainNavItems = [];
+if (!empty($pc['MENU_SECTIONS']) && is_array($pc['MENU_SECTIONS'])) {
+    foreach ($pc['MENU_SECTIONS'] as $row) {
+        $code = isset($row['code']) ? trim((string) $row['code']) : '';
+        $title = isset($row['title']) ? (string) $row['title'] : '';
+        if ($title === '') {
+            continue;
+        }
+        $href = $code !== '' ? '/katalog/' . rawurlencode($code) . '/' : '/katalog/';
+        $mainNavItems[] = ['href' => $href, 'text' => $title];
+    }
+}
+if ($mainNavItems === []) {
+    $mainNavItems = [
+        ['href' => '/katalog/', 'text' => 'Профессиональная косметика'],
+        ['href' => '/katalog/', 'text' => 'Домашний уход и профилактика'],
+        ['href' => '/katalog/', 'text' => 'Косметика SUDA'],
+        ['href' => '/katalog/', 'text' => 'Инструменты'],
+        ['href' => '/katalog/', 'text' => 'Эксклюзивные'],
+    ];
+}
 ?><!DOCTYPE html>
 <html lang="ru">
 <head>
