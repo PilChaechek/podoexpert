@@ -42,10 +42,10 @@ $arUrlRewrite=array (
   ),
   6 =>
   array (
-    'CONDITION' => '#^/katalog/#',
+    'CONDITION' => '#^/catalog/#',
     'RULE' => '',
     'ID' => '',
-    'PATH' => '/katalog/index.php',
+    'PATH' => '/catalog/index.php',
     'SORT' => 100,
   ),
   7 =>

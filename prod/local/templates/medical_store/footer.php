@@ -32,7 +32,7 @@ $footerNavColumn1 = [
 ];
 
 $footerNavColumn2 = [
-    ['href' => '/katalog/', 'text' => 'Каталог'],
+    ['href' => '/catalog/', 'text' => 'Каталог'],
     ['href' => '#', 'text' => 'Акции'],
     ['href' => '#', 'text' => 'Доставка и оплата'],
     ['href' => '#', 'text' => 'Возврат и обмен'],
@@ -162,7 +162,7 @@ $iconMenu = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="
             </a>
         </div>
         <div class="mobile-footer-nav__item">
-            <a href="/katalog/" class="mobile-footer-nav__item-link link">
+            <a href="/catalog/" class="mobile-footer-nav__item-link link">
                 <span class="mobile-footer-nav__item-icon"><?= $iconCatalog ?></span>
                 <span class="mobile-footer-nav__item-text text-sm">Каталог</span>
             </a>

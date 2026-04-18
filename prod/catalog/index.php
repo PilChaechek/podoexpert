@@ -28,10 +28,10 @@ if ($iblockId <= 0) {
 <div class="container">
 <?php
 $APPLICATION->IncludeComponent(
-	"bitrix:catalog", 
-	".default", 
+	"bitrix:catalog",
+	".default",
 	[
-		"IBLOCK_TYPE" => "news",
+		"IBLOCK_TYPE" => $iblockType,
 		"IBLOCK_ID" => $iblockId,
 		"TEMPLATE_THEME" => "blue",
 		"HIDE_NOT_AVAILABLE" => "Y",
@@ -42,7 +42,7 @@ $APPLICATION->IncludeComponent(
 		"USER_CONSENT_IS_CHECKED" => "Y",
 		"USER_CONSENT_IS_LOADED" => "N",
 		"SEF_MODE" => "Y",
-		"SEF_FOLDER" => "/katalog/",
+		"SEF_FOLDER" => "/catalog/",
 		"COMPATIBLE_MODE" => "Y",
 		"USE_FILTER" => "Y",
 		"FILTER_NAME" => "arrFilter",

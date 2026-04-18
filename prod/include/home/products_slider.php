@@ -5,8 +5,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 
 CModule::IncludeModule('iblock');
 
-$IBLOCK_ID = 11;
-$SECTION_ID = 2;
+$IBLOCK_ID = isset($IBLOCK_ID) ? (int) $IBLOCK_ID : 11;
+$SECTION_ID = isset($SECTION_ID) ? (int) $SECTION_ID : 2;
 
 $arSection = null;
 $rsSection = CIBlockSection::GetList(
@@ -94,7 +94,22 @@ while ($ob = $res->GetNextElement()) {
         }
     }
 
+    $detailUrl = trim((string) ($fields['DETAIL_PAGE_URL'] ?? ''));
+    if ($detailUrl === '') {
+        $catalogCfg = is_array($GLOBALS['PODEXPERT_CATALOG'] ?? null) ? $GLOBALS['PODEXPERT_CATALOG'] : [];
+        $sefFolder = trim((string) ($catalogCfg['CATALOG_SEF_FOLDER'] ?? ''));
+        if ($sefFolder !== '') {
+            if ($sefFolder[0] !== '/') {
+                $sefFolder = '/' . $sefFolder;
+            }
+            $sefFolder = rtrim($sefFolder, '/') . '/';
+            $detailUrl = $sefFolder . '?ELEMENT_ID=' . (int) $fields['ID'];
+        }
+    }
+
     $products[] = [
+        'id' => (int) $fields['ID'],
+        'detailUrl' => $detailUrl,
         'title' => $title,
         'description' => $description,
         'imageSrc' => $imageSrc,
@@ -126,18 +141,29 @@ while ($ob = $res->GetNextElement()) {
                                     <p class="product-card__badge bg-gray-800"><?= htmlspecialchars($product['badge']) ?></p>
                                 <?php endif; ?>
                                 <div class="product-card__media">
-                                    <?php if ($product['imageSrc'] !== ''): ?>
-                                        <img
-                                            class="product-card__image"
-                                            src="<?= htmlspecialchars($product['imageSrc']) ?>"
-                                            alt="<?= htmlspecialchars($product['title']) ?>"
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                    <?php endif; ?>
+                                    <a
+                                        class="product-card__detail-link product-card__detail-link--media"
+                                        href="<?= htmlspecialchars($product['detailUrl'], ENT_QUOTES, 'UTF-8') ?>"
+                                        <?php if ($product['imageSrc'] === ''): ?>aria-label="<?= htmlspecialchars($product['title'], ENT_QUOTES, 'UTF-8') ?>"<?php endif; ?>
+                                    >
+                                        <?php if ($product['imageSrc'] !== ''): ?>
+                                            <img
+                                                class="product-card__image"
+                                                src="<?= htmlspecialchars($product['imageSrc']) ?>"
+                                                alt="<?= htmlspecialchars($product['title']) ?>"
+                                                loading="lazy"
+                                                decoding="async"
+                                            />
+                                        <?php endif; ?>
+                                    </a>
                                 </div>
                                 <div class="product-card__content">
-                                    <h3 class="product-card__title"><?= htmlspecialchars($product['title']) ?></h3>
+                                    <h3 class="product-card__title">
+                                        <a
+                                            class="product-card__title-link"
+                                            href="<?= htmlspecialchars($product['detailUrl'], ENT_QUOTES, 'UTF-8') ?>"
+                                        ><?= htmlspecialchars($product['title']) ?></a>
+                                    </h3>
                                     <?php if ($product['description'] !== ''): ?>
                                         <p class="product-card__description"><?= htmlspecialchars($product['description']) ?></p>
                                     <?php endif; ?>
@@ -157,12 +183,17 @@ while ($ob = $res->GetNextElement()) {
                                                 <span class="product-card__price-old"><?= htmlspecialchars($po, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></span>
                                             <?php endif; ?>
                                         </p>
-                                        <a class="product-card__button btn btn-outline" href="#contact">
-                                            Купить
+                                        <button
+                                            type="button"
+                                            class="product-card__button btn btn-outline js-product-add-basket"
+                                            data-product-id="<?= (int) $product['id'] ?>"
+                                            aria-label="В корзину: <?= htmlspecialchars($product['title'], ENT_QUOTES, 'UTF-8') ?>"
+                                        >
+                                            В корзину
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                                 <path d="M20 12L20.495 11.505L20.9899 12L20.495 12.495L20 12ZM5 12.7C4.6134 12.7 4.3 12.3866 4.3 12C4.3 11.6134 4.6134 11.3 5 11.3V12.7ZM14.495 5.50503L20.495 11.505L19.505 12.495L13.505 6.49497L14.495 5.50503ZM20.495 12.495L14.495 18.495L13.505 17.505L19.505 11.505L20.495 12.495ZM20 12.7H5V11.3H20V12.7Z" fill="currentColor"></path>
                                             </svg>
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </article>
@@ -187,7 +218,8 @@ while ($ob = $res->GetNextElement()) {
     </div>
 </section>
 
-<?php if ($products !== []): ?>
+<?php if ($products !== [] && empty($GLOBALS['products_slider_swiper_assets_loaded'])): ?>
+<?php $GLOBALS['products_slider_swiper_assets_loaded'] = true; ?>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 (function () {
@@ -239,6 +271,40 @@ while ($ob = $res->GetNextElement()) {
     } else {
         initProductsSliders();
     }
+})();
+</script>
+<?php endif; ?>
+<?php if ($products !== [] && empty($GLOBALS['products_slider_basket_js_loaded'])): ?>
+<?php $GLOBALS['products_slider_basket_js_loaded'] = true; ?>
+<script>
+(function () {
+    var sessid = <?= json_encode(bitrix_sessid(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    var endpoint = <?= json_encode('/local/ajax/podexpert_basket_add.php', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    document.body.addEventListener('click', function (e) {
+        var btn = e.target.closest('.js-product-add-basket');
+        if (!btn) {
+            return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        var id = btn.getAttribute('data-product-id');
+        if (!id) {
+            return;
+        }
+        var fd = new FormData();
+        fd.append('sessid', sessid);
+        fd.append('productId', id);
+        btn.disabled = true;
+        fetch(endpoint, { method: 'POST', body: fd, credentials: 'same-origin' })
+            .then(function (r) {
+                return r.json();
+            })
+            .then(function () {})
+            .catch(function () {})
+            .finally(function () {
+                btn.disabled = false;
+            });
+    });
 })();
 </script>
 <?php endif; ?>

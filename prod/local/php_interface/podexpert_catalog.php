@@ -10,9 +10,11 @@
 return [
     // Обязательно: ID инфоблока каталога (Контент → Инфоблоки). Пока 0 — витрина покажет подсказку.
     'CATALOG_IBLOCK_ID' => 11,
+    // ЧПУ витрины (как SEF_FOLDER у bitrix:catalog). Для запасной ссылки, если DETAIL_PAGE_URL пустой.
+    'CATALOG_SEF_FOLDER' => '/catalog/',
     // Символьный код типа инфоблока — как в настройках ИБ (например catalog, 1c_catalog).
     'IBLOCK_TYPE' => 'catalog',
-    // Коды типов цен в модуле «Торговый каталог» — по умолчанию BASE; при другом имени замените и в katalog/index.php.
+    // Коды типов цен в модуле «Торговый каталог» — по умолчанию BASE; при другом имени замените и в catalog/index.php.
     'PRICE_CODE' => ['BASE'],
     'MENU_SECTIONS' => [
         ['code' => 'professional', 'title' => 'Профессиональная косметика'],

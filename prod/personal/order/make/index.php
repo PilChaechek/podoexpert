@@ -22,7 +22,7 @@ $APPLICATION->IncludeComponent(
         'PAY_FROM_ACCOUNT' => 'N',
         'SHOW_MENU' => 'N',
         'DISABLE_BASKET_REDIRECT' => 'N',
-        'EMPTY_BASKET_HINT_PATH' => '/katalog/',
+        'EMPTY_BASKET_HINT_PATH' => '/catalog/',
         'USE_PHONE_NORMALIZATION' => 'Y',
         'DELIVERY_NO_AJAX' => 'N',
         'SHOW_NOT_CALCULATED_DELIVERIES' => 'L',

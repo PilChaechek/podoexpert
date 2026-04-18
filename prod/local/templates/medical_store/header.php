@@ -26,7 +26,7 @@ $topNavItems = [
 ];
 
 $catalogMenuItems = [
-    ['href' => '/katalog/', 'text' => 'Все'],
+    ['href' => '/catalog/', 'text' => 'Все'],
     ['href' => '/professionalnaya-kosmetika-arkada/', 'text' => 'Косметика Arkada'],
     ['href' => '/instrumenty-arkada/', 'text' => 'Инструменты Arkada'],
     ['href' => '/lechebnaya-kosmetika/', 'text' => 'Косметика SUDA'],
@@ -48,17 +48,17 @@ if (!empty($pc['MENU_SECTIONS']) && is_array($pc['MENU_SECTIONS'])) {
         if ($title === '') {
             continue;
         }
-        $href = $code !== '' ? '/katalog/' . rawurlencode($code) . '/' : '/katalog/';
+        $href = $code !== '' ? '/catalog/' . rawurlencode($code) . '/' : '/catalog/';
         $mainNavItems[] = ['href' => $href, 'text' => $title];
     }
 }
 if ($mainNavItems === []) {
     $mainNavItems = [
-        ['href' => '/katalog/', 'text' => 'Профессиональная косметика'],
-        ['href' => '/katalog/', 'text' => 'Домашний уход и профилактика'],
-        ['href' => '/katalog/', 'text' => 'Косметика SUDA'],
-        ['href' => '/katalog/', 'text' => 'Инструменты'],
-        ['href' => '/katalog/', 'text' => 'Эксклюзивные'],
+        ['href' => '/catalog/', 'text' => 'Профессиональная косметика'],
+        ['href' => '/catalog/', 'text' => 'Домашний уход и профилактика'],
+        ['href' => '/catalog/', 'text' => 'Косметика SUDA'],
+        ['href' => '/catalog/', 'text' => 'Инструменты'],
+        ['href' => '/catalog/', 'text' => 'Эксклюзивные'],
     ];
 }
 ?><!DOCTYPE html>
@@ -169,7 +169,7 @@ if ($mainNavItems === []) {
             <nav class="page-header__nav main-nav" aria-label="Основное меню">
                 <ul class="main-nav__items list">
                     <li class="main-nav__item main-nav__item--catalog">
-                        <a href="/katalog/" class="main-nav__catalog-trigger main-nav__link link" aria-label="Каталог">
+                        <a href="/catalog/" class="main-nav__catalog-trigger main-nav__link link" aria-label="Каталог">
                             Каталог
                             <svg class="icon-chevron-down" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 7.5 5 5 5-5"></path></svg>
                         </a>
