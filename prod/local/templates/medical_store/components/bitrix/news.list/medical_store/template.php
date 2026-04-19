@@ -36,7 +36,13 @@ foreach ($arResult['ITEMS'] as $arItem) {
     }
     $previewRaw = (string) ($arItem['PREVIEW_TEXT'] ?? '');
     $previewText = trim(strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $previewRaw)));
-    $date = (string) ($arItem['DISPLAY_ACTIVE_FROM'] ?? '');
+    $date = '';
+    if (!empty($arItem['ACTIVE_FROM'])) {
+        $ts = MakeTimeStamp($arItem['ACTIVE_FROM']);
+        if ($ts) {
+            $date = FormatDate('d.m.Y', $ts);
+        }
+    }
 
     $imgSrc = '';
     $imgAlt = $title;
@@ -77,8 +83,8 @@ foreach ($arResult['ITEMS'] as $arItem) {
         <?php if ($date !== '') { ?>
             <p class="news-card__date"><?= htmlspecialcharsbx($date) ?></p>
         <?php } ?>
-        <h2 class="news-card__title">
-            <a class="news-card__link" href="<?= htmlspecialcharsbx($url) ?>"><?= htmlspecialcharsbx($title) ?></a>
+        <h2 class="news-card__title text-2xl font-bold">
+            <a class="news-card__link link" href="<?= htmlspecialcharsbx($url) ?>"><?= htmlspecialcharsbx($title) ?></a>
         </h2>
         <?php if ($previewText !== '') { ?>
             <p class="news-card__excerpt"><?= htmlspecialcharsbx($previewText) ?></p>
