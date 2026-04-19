@@ -38,6 +38,21 @@
   border-radius: 0;
 }
 
+.input--search-header {
+  border-color: var(--color-border);
+  background-color: var(--color-2);
+  border-radius: 9999px;
+
+  &::placeholder {
+    color: var(--color-3);
+    opacity: 0.9;
+  }
+
+  &.input-icon__input {
+    padding-left: 2.75rem;
+  }
+}
+
 .textarea {
   resize: vertical;
 }
