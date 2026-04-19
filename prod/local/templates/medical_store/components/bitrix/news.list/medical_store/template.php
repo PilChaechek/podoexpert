@@ -41,9 +41,23 @@ foreach ($arResult['ITEMS'] as $arItem) {
     $imgSrc = '';
     $imgAlt = $title;
     if (!empty($arItem['PREVIEW_PICTURE']) && is_array($arItem['PREVIEW_PICTURE'])) {
-        $imgSrc = (string) ($arItem['PREVIEW_PICTURE']['SRC'] ?? '');
-        if (isset($arItem['PREVIEW_PICTURE']['ALT']) && (string) $arItem['PREVIEW_PICTURE']['ALT'] !== '') {
-            $imgAlt = (string) $arItem['PREVIEW_PICTURE']['ALT'];
+        $picture = $arItem['PREVIEW_PICTURE'];
+        if (isset($picture['ALT']) && (string) $picture['ALT'] !== '') {
+            $imgAlt = (string) $picture['ALT'];
+        }
+        if (!empty($picture['ID'])) {
+            $resized = CFile::ResizeImageGet(
+                (int) $picture['ID'],
+                ['width' => 500, 'height' => 500],
+                BX_RESIZE_IMAGE_PROPORTIONAL,
+                true
+            );
+            if (!empty($resized['src'])) {
+                $imgSrc = (string) $resized['src'];
+            }
+        }
+        if ($imgSrc === '') {
+            $imgSrc = (string) ($picture['SRC'] ?? '');
         }
     }
     ?>
