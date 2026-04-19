@@ -42,4 +42,12 @@ if (!$result->isSuccess()) {
     die();
 }
 
-echo json_encode(['ok' => true], JSON_UNESCAPED_UNICODE);
+$count = function_exists('podexpert_basket_total_quantity') ? podexpert_basket_total_quantity() : 0;
+echo json_encode(
+    [
+        'ok' => true,
+        'count' => $count,
+        'countBadge' => $count > 99 ? '99+' : (string) $count,
+    ],
+    JSON_UNESCAPED_UNICODE
+);

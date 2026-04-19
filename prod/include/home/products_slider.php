@@ -280,6 +280,53 @@ while ($ob = $res->GetNextElement()) {
 (function () {
     var sessid = <?= json_encode(bitrix_sessid(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     var endpoint = <?= json_encode('/local/ajax/podexpert_basket_add.php', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+    function podexpertSetCartCountBadge(data) {
+        if (!data || typeof data.count !== 'number') {
+            return;
+        }
+        var n = data.count;
+        var text = typeof data.countBadge === 'string' ? data.countBadge : (n > 99 ? '99+' : String(n));
+        var show = n > 0;
+        document.querySelectorAll('.js-header-cart-count').forEach(function (el) {
+            el.textContent = text;
+            var wrap = el.closest('.minicart__total');
+            if (wrap) {
+                wrap.classList.toggle('hidden', !show);
+            }
+        });
+        document.querySelectorAll('.js-total-count-minicart').forEach(function (el) {
+            el.textContent = text;
+            el.classList.toggle('hidden', !show);
+        });
+    }
+
+    function podexpertToast(message, variant) {
+        variant = variant || 'success';
+        var host = document.getElementById('podexpert-toast-host');
+        if (!host) {
+            host = document.createElement('div');
+            host.id = 'podexpert-toast-host';
+            host.className = 'podexpert-toast-host';
+            document.body.appendChild(host);
+        }
+        var el = document.createElement('div');
+        el.className = 'podexpert-toast podexpert-toast--' + variant;
+        el.setAttribute('role', 'status');
+        el.setAttribute('aria-live', 'polite');
+        el.textContent = message;
+        host.appendChild(el);
+        requestAnimationFrame(function () {
+            el.classList.add('podexpert-toast--visible');
+        });
+        window.setTimeout(function () {
+            el.classList.remove('podexpert-toast--visible');
+            window.setTimeout(function () {
+                el.remove();
+            }, 300);
+        }, 4000);
+    }
+
     document.body.addEventListener('click', function (e) {
         var btn = e.target.closest('.js-product-add-basket');
         if (!btn) {
@@ -297,10 +344,26 @@ while ($ob = $res->GetNextElement()) {
         btn.disabled = true;
         fetch(endpoint, { method: 'POST', body: fd, credentials: 'same-origin' })
             .then(function (r) {
+                if (!r.ok) {
+                    throw new Error('http');
+                }
                 return r.json();
             })
-            .then(function () {})
-            .catch(function () {})
+            .then(function (data) {
+                if (data && data.ok) {
+                    podexpertSetCartCountBadge(data);
+                    podexpertToast('Товар добавлен в корзину', 'success');
+                    return;
+                }
+                var msg = 'Не удалось добавить товар';
+                if (data && data.messages && data.messages.length) {
+                    msg = data.messages[0];
+                }
+                podexpertToast(msg, 'error');
+            })
+            .catch(function () {
+                podexpertToast('Ошибка сети. Попробуйте ещё раз.', 'error');
+            })
             .finally(function () {
                 btn.disabled = false;
             });

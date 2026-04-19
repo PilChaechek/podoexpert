@@ -31,3 +31,43 @@ AddEventHandler('main', 'OnBeforeProlog', static function () {
         $APPLICATION->SetTemplateID('medical_store');
     }
 });
+
+if (!function_exists('podexpert_basket_total_quantity')) {
+    /**
+     * Суммарное количество единиц товара в корзине текущего посетителя (без отложенных).
+     */
+    function podexpert_basket_total_quantity(): int
+    {
+        if (!\Bitrix\Main\Loader::includeModule('sale')) {
+            return 0;
+        }
+        $siteId = defined('SITE_ID') ? (string) SITE_ID : '';
+        if ($siteId === '') {
+            $siteId = (string) \Bitrix\Main\Context::getCurrent()->getSite();
+        }
+        try {
+            $fuserId = (int) \Bitrix\Sale\Fuser::getId();
+            $basket = \Bitrix\Sale\Basket::loadItemsForFUser($fuserId, $siteId);
+        } catch (\Throwable $e) {
+            return 0;
+        }
+        $total = 0;
+        foreach ($basket as $item) {
+            if ($item->isDelay()) {
+                continue;
+            }
+            $total += (int) round((float) $item->getQuantity());
+        }
+
+        return max(0, $total);
+    }
+}
+
+if (!function_exists('podexpert_basket_count_badge_text')) {
+    function podexpert_basket_count_badge_text(): string
+    {
+        $n = podexpert_basket_total_quantity();
+
+        return $n > 99 ? '99+' : (string) $n;
+    }
+}
