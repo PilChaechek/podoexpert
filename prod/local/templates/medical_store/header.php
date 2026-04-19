@@ -154,7 +154,7 @@ if ($mainNavItems === []) {
 
                 <div class="page-header__actions">
                     <div class="page-header__cart minicart">
-                        <a href="/personal/cart/" class="minicart__link link">
+                        <a href="/cart/" class="minicart__link link">
                             <span class="minicart__icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
                                     <rect width="24" height="24" fill="none"/>

@@ -86,7 +86,7 @@ $APPLICATION->IncludeComponent(
 		"PRICE_VAT_SHOW_VALUE" => "N",
 		"CONVERT_CURRENCY" => "Y",
 		"CURRENCY_ID" => "RUB",
-		"BASKET_URL" => "/personal/cart/",
+		"BASKET_URL" => "/cart/",
 		"ACTION_VARIABLE" => "action",
 		"ADD_PROPERTIES_TO_BASKET" => "Y",
 		"PARTIAL_PRODUCT_PROPERTIES" => "N",

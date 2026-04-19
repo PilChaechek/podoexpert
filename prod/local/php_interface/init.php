@@ -21,7 +21,7 @@ AddEventHandler('main', 'OnBeforeProlog', static function () {
     }
     $path = (string) (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
     if (
-        !preg_match('#^/(catalog|personal/cart|personal/order)(/|$)#', $path)
+        !preg_match('#^/(catalog|cart|personal/order)(/|$)#', $path)
     ) {
         return;
     }

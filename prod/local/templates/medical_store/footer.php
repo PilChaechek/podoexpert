@@ -175,7 +175,7 @@ $iconMenu = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="
             </a>
         </div>
         <div class="mobile-footer-nav__item">
-            <a href="/personal/cart/" class="mobile-footer-nav__item-link link">
+            <a href="/cart/" class="mobile-footer-nav__item-link link">
                 <span class="mobile-footer-nav__item-icon"><?= $iconCart ?></span>
                 <span class="mobile-footer-nav__total-count js-total-count-minicart<?= $cartQty > 0 ? '' : ' hidden' ?>"><?= $h($cartCountBadge) ?></span>
                 <span class="mobile-footer-nav__item-text text-sm">Корзина</span>

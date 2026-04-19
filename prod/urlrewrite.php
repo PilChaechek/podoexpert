@@ -50,10 +50,10 @@ $arUrlRewrite=array (
   ),
   7 =>
   array (
-    'CONDITION' => '#^/personal/cart/#',
+    'CONDITION' => '#^/cart/#',
     'RULE' => '',
     'ID' => '',
-    'PATH' => '/personal/cart/index.php',
+    'PATH' => '/cart/index.php',
     'SORT' => 100,
   ),
   8 =>
