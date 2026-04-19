@@ -21,7 +21,7 @@ $topNavItems = [
     ['href' => '#', 'text' => 'Акции'],
     ['href' => '#', 'text' => 'Мастерам'],
     ['href' => '#', 'text' => 'Доставка и оплата'],
-    ['href' => '#', 'text' => 'Статьи'],
+    ['href' => '/blog/', 'text' => 'Статьи'],
     ['href' => '/contacts/', 'text' => 'Контакты'],
 ];
 
@@ -90,7 +90,7 @@ if ($mainNavItems === []) {
             <div class="page-header__top-inner">
                 <div class="page-header__top-text text-sm">Официальный магазин профессиональной косметики AArkada</div>
                 <nav class="page-header__nav top-nav" aria-label="Верхнее меню">
-                    <ul class="top-nav__list flex gap-1 list">
+                    <ul class="top-nav__list flex gap-2 list">
                         <?php foreach ($topNavItems as $item) { ?>
                             <li class="top-nav__item">
                                 <a href="<?= $h($item['href']) ?>" class="top-nav__link link"><?= $h($item['text']) ?></a>

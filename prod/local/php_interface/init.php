@@ -14,6 +14,16 @@ if (is_file($podexpertCatalogFile)) {
     $GLOBALS['PODEXPERT_CATALOG'] = [];
 }
 
+$podexpertBlogFile = __DIR__ . '/podexpert_blog.php';
+if (is_file($podexpertBlogFile)) {
+    $GLOBALS['PODEXPERT_BLOG'] = include $podexpertBlogFile;
+    if (!is_array($GLOBALS['PODEXPERT_BLOG'])) {
+        $GLOBALS['PODEXPERT_BLOG'] = [];
+    }
+} else {
+    $GLOBALS['PODEXPERT_BLOG'] = [];
+}
+
 AddEventHandler('main', 'OnBeforeProlog', static function () {
     global $APPLICATION;
     if (!is_object($APPLICATION)) {
@@ -21,7 +31,7 @@ AddEventHandler('main', 'OnBeforeProlog', static function () {
     }
     $path = (string) (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
     if (
-        !preg_match('#^/(catalog|cart|personal/order)(/|$)#', $path)
+        !preg_match('#^/(catalog|cart|personal/order|blog)(/|$)#', $path)
     ) {
         return;
     }

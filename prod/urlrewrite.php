@@ -56,6 +56,22 @@ $arUrlRewrite=array (
     'PATH' => '/cart/index.php',
     'SORT' => 100,
   ),
+  11 =>
+  array (
+    'CONDITION' => '#^/blog/([^/]+)/#',
+    'RULE' => 'ELEMENT_CODE=$1',
+    'ID' => '',
+    'PATH' => '/blog/detail.php',
+    'SORT' => 40,
+  ),
+  10 =>
+  array (
+    'CONDITION' => '#^/blog/#',
+    'RULE' => '',
+    'ID' => '',
+    'PATH' => '/blog/index.php',
+    'SORT' => 100,
+  ),
   8 =>
   array (
     'CONDITION' => '#^/personal/order/make/payment.php#',
