@@ -14,6 +14,11 @@ if (is_file($podexpertCatalogFile)) {
     $GLOBALS['PODEXPERT_CATALOG'] = [];
 }
 
+$podexpertSiteContactsFile = __DIR__ . '/podexpert_site_contacts.php';
+if (is_file($podexpertSiteContactsFile)) {
+    require_once $podexpertSiteContactsFile;
+}
+
 $podexpertBlogFile = __DIR__ . '/podexpert_blog.php';
 if (is_file($podexpertBlogFile)) {
     $GLOBALS['PODEXPERT_BLOG'] = include $podexpertBlogFile;
