@@ -5,7 +5,7 @@
  *
  * CATALOG_IBLOCK_ID — ID инфоблока товаров (Контент → Инфоблоки → ваш каталог).
  * IBLOCK_TYPE — символьный код типа инфоблока (часто catalog, offers и т.д.).
- * MENU_SECTIONS — символьные коды разделов верхнего меню (должны совпадать с CODE разделов в ИБ).
+ * Главная полоса навигации (рядом с «Каталог») — тип меню main, файл /.main.menu.php.
  */
 return [
     // Обязательно: ID инфоблока каталога (Контент → Инфоблоки). Пока 0 — витрина покажет подсказку.
@@ -16,11 +16,6 @@ return [
     'IBLOCK_TYPE' => 'catalog',
     // Коды типов цен в модуле «Торговый каталог» — по умолчанию BASE; при другом имени замените и в catalog/index.php.
     'PRICE_CODE' => ['BASE'],
-    'MENU_SECTIONS' => [
-        ['code' => 'professional', 'title' => 'Профессиональная косметика'],
-        ['code' => 'home_care', 'title' => 'Домашний уход и профилактика'],
-        ['code' => 'suda', 'title' => 'Косметика SUDA'],
-        ['code' => 'tools', 'title' => 'Инструменты'],
-        ['code' => 'exclusive', 'title' => 'Эксклюзивные'],
-    ],
+    // Глубина дерева разделов для bitrix:menu.sections (тип меню catalog, файл /.catalog.menu.php).
+    'CATALOG_MENU_MAX_DEPTH' => 4,
 ];

@@ -38,12 +38,28 @@ $footerNavColumn1 = [
     ['href' => '/prof-oborudovanie/', 'text' => 'Профессиональное оборудование'],
 ];
 
-$footerNavColumn2 = [
-    ['href' => '/catalog/', 'text' => 'Каталог'],
-    ['href' => '#', 'text' => 'Акции'],
-    ['href' => '#', 'text' => 'Доставка и оплата'],
-    ['href' => '#', 'text' => 'Возврат и обмен'],
-    ['href' => '#', 'text' => 'Контакты'],
+$medicalStoreBottomInfoMenuBase = [
+    'ROOT_MENU_TYPE' => 'bottom_info',
+    'MAX_LEVEL' => '1',
+    'CHILD_MENU_TYPE' => 'bottom_info',
+    'USE_EXT' => 'Y',
+    'ALLOW_MULTI_SELECT' => 'N',
+    'MENU_CACHE_TYPE' => 'A',
+    'MENU_CACHE_TIME' => '36000000',
+    'MENU_CACHE_USE_GROUPS' => 'Y',
+    'CACHE_SELECTED_ITEMS' => 'N',
+];
+
+$medicalStoreBottomPdnMenuBase = [
+    'ROOT_MENU_TYPE' => 'bottom_pdn',
+    'MAX_LEVEL' => '1',
+    'CHILD_MENU_TYPE' => 'bottom_pdn',
+    'USE_EXT' => 'Y',
+    'ALLOW_MULTI_SELECT' => 'N',
+    'MENU_CACHE_TYPE' => 'A',
+    'MENU_CACHE_TIME' => '36000000',
+    'MENU_CACHE_USE_GROUPS' => 'Y',
+    'CACHE_SELECTED_ITEMS' => 'N',
 ];
 
 $iconHome = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
@@ -165,13 +181,17 @@ $iconMenu = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="
                             Информация
                         </p>
                         <nav class="col-span-2 lg:col-span-1" aria-label="Информация в подвале">
-                            <ul class="footer-nav__list list flex flex-col gap-2">
-                                <?php foreach ($footerNavColumn2 as $item) { ?>
-                                    <li class="footer-nav__item">
-                                        <a href="<?= $h($item['href']) ?>" class="footer-nav__link link"><?= $h($item['text']) ?></a>
-                                    </li>
-                                <?php } ?>
-                            </ul>
+                            <?php
+                            $APPLICATION->IncludeComponent(
+                                'bitrix:menu',
+                                'medical_store_top',
+                                array_merge($medicalStoreBottomInfoMenuBase, [
+                                    'MENU_UL_CLASS' => 'footer-nav__list list flex flex-col gap-2',
+                                    'MENU_LI_CLASS' => 'footer-nav__item',
+                                    'MENU_LINK_CLASS' => 'footer-nav__link link',
+                                ])
+                            );
+                            ?>
                         </nav>
                     </div>
                 </div>
@@ -181,11 +201,19 @@ $iconMenu = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="
         <hr class="col-span-2 border-gray-600 block my-4 lg:my-10">
 
         <div class="flex gap-4 justify-between flex-wrap">
-            <div class="page-footer__agreement flex flex-wrap gap-2 lg:gap-4">
-                <a href="#" class="footer-nav__link link">Политика обработки ПДн</a>
-                <a href="#" class="footer-nav__link link">Использования Cookie-файлов</a>
-                <a href="#" class="footer-nav__link link">Согласие на обработку ПДн</a>
-            </div>
+            <nav class="page-footer__agreement" aria-label="Документы и согласия">
+                <?php
+                $APPLICATION->IncludeComponent(
+                    'bitrix:menu',
+                    'medical_store_top',
+                    array_merge($medicalStoreBottomPdnMenuBase, [
+                        'MENU_UL_CLASS' => 'footer-nav__list list flex flex-wrap gap-2 lg:gap-4',
+                        'MENU_LI_CLASS' => 'footer-nav__item',
+                        'MENU_LINK_CLASS' => 'footer-nav__link link',
+                    ])
+                );
+                ?>
+            </nav>
             <p class="page-footer__copyright">© 2017–<?= (int) date('Y') ?><?php if (($contacts['copyright'] ?? '') !== '') { ?> <?= $h($contacts['copyright']) ?><?php } ?></p>
         </div>
 

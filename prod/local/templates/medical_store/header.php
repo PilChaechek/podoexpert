@@ -19,57 +19,55 @@ if (is_file($logoPath)) {
 $contacts = podexpert_medical_store_site_contacts();
 $headerPhone = $contacts['phones'][0] ?? null;
 
-$topNavItems = [
-    ['href' => '#', 'text' => 'О компании'],
-    ['href' => '#', 'text' => 'Акции'],
-    ['href' => '#', 'text' => 'Мастерам'],
-    ['href' => '#', 'text' => 'Доставка и оплата'],
-    ['href' => '/blog/', 'text' => 'Статьи'],
-    ['href' => '/contacts/', 'text' => 'Контакты'],
+$medicalStoreTopMenuBase = [
+    'ROOT_MENU_TYPE' => 'top',
+    'MAX_LEVEL' => '1',
+    'CHILD_MENU_TYPE' => 'top',
+    'USE_EXT' => 'Y',
+    'ALLOW_MULTI_SELECT' => 'N',
+    'MENU_CACHE_TYPE' => 'A',
+    'MENU_CACHE_TIME' => '36000000',
+    'MENU_CACHE_USE_GROUPS' => 'Y',
+    'CACHE_SELECTED_ITEMS' => 'N',
 ];
 
-$catalogMenuItems = [
-    ['href' => '/catalog/', 'text' => 'Все'],
-    ['href' => '/professionalnaya-kosmetika-arkada/', 'text' => 'Косметика Arkada'],
-    ['href' => '/instrumenty-arkada/', 'text' => 'Инструменты Arkada'],
-    ['href' => '/lechebnaya-kosmetika/', 'text' => 'Косметика SUDA'],
-    ['href' => '/domashnij-ukhod/', 'text' => 'Домашний уход и профилактика'],
-    ['href' => '/instrumenty/', 'text' => 'Инструменты'],
-    ['href' => '/fiksiruyushchie-materialy/', 'text' => 'Фиксирующие материалы'],
-    ['href' => '/brace/', 'text' => "Arkada's Brace-M"],
-    ['href' => '/arkadascube/', 'text' => "Arkada's Cube"],
-    ['href' => '/nail-insert-system/', 'text' => 'Nail Insert System'],
-    ['href' => '/prof-oborudovanie/', 'text' => 'Профессиональное оборудование'],
+$medicalStoreMainMenuBase = [
+    'ROOT_MENU_TYPE' => 'main',
+    'MAX_LEVEL' => '1',
+    'CHILD_MENU_TYPE' => 'main',
+    'USE_EXT' => 'Y',
+    'ALLOW_MULTI_SELECT' => 'N',
+    'MENU_CACHE_TYPE' => 'A',
+    'MENU_CACHE_TIME' => '36000000',
+    'MENU_CACHE_USE_GROUPS' => 'Y',
+    'CACHE_SELECTED_ITEMS' => 'N',
 ];
 
 $pc = $GLOBALS['PODEXPERT_CATALOG'] ?? [];
+$catalogMenuMaxDepth = (int) ($pc['CATALOG_MENU_MAX_DEPTH'] ?? 4);
+if ($catalogMenuMaxDepth < 1) {
+    $catalogMenuMaxDepth = 1;
+}
+if ($catalogMenuMaxDepth > 10) {
+    $catalogMenuMaxDepth = 10;
+}
+$medicalStoreCatalogMenuBase = [
+    'ROOT_MENU_TYPE' => 'catalog',
+    'MAX_LEVEL' => (string) $catalogMenuMaxDepth,
+    'CHILD_MENU_TYPE' => 'catalog',
+    'USE_EXT' => 'N',
+    'ALLOW_MULTI_SELECT' => 'N',
+    'MENU_CACHE_TYPE' => 'A',
+    'MENU_CACHE_TIME' => '36000000',
+    'MENU_CACHE_USE_GROUPS' => 'Y',
+    'CACHE_SELECTED_ITEMS' => 'N',
+];
 $cartQty = function_exists('podexpert_basket_total_quantity')
     ? podexpert_basket_total_quantity()
     : 0;
 $cartCountBadge = function_exists('podexpert_basket_count_badge_text')
     ? podexpert_basket_count_badge_text()
     : '0';
-$mainNavItems = [];
-if (!empty($pc['MENU_SECTIONS']) && is_array($pc['MENU_SECTIONS'])) {
-    foreach ($pc['MENU_SECTIONS'] as $row) {
-        $code = isset($row['code']) ? trim((string) $row['code']) : '';
-        $title = isset($row['title']) ? (string) $row['title'] : '';
-        if ($title === '') {
-            continue;
-        }
-        $href = $code !== '' ? '/catalog/' . rawurlencode($code) . '/' : '/catalog/';
-        $mainNavItems[] = ['href' => $href, 'text' => $title];
-    }
-}
-if ($mainNavItems === []) {
-    $mainNavItems = [
-        ['href' => '/catalog/', 'text' => 'Профессиональная косметика'],
-        ['href' => '/catalog/', 'text' => 'Домашний уход и профилактика'],
-        ['href' => '/catalog/', 'text' => 'Косметика SUDA'],
-        ['href' => '/catalog/', 'text' => 'Инструменты'],
-        ['href' => '/catalog/', 'text' => 'Эксклюзивные'],
-    ];
-}
 ?><!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -93,13 +91,17 @@ if ($mainNavItems === []) {
             <div class="page-header__top-inner">
                 <div class="page-header__top-text text-sm">Официальный магазин профессиональной косметики AArkada</div>
                 <nav class="page-header__nav top-nav" aria-label="Верхнее меню">
-                    <ul class="top-nav__list flex gap-2 list">
-                        <?php foreach ($topNavItems as $item) { ?>
-                            <li class="top-nav__item">
-                                <a href="<?= $h($item['href']) ?>" class="top-nav__link link"><?= $h($item['text']) ?></a>
-                            </li>
-                        <?php } ?>
-                    </ul>
+                    <?php
+                    $APPLICATION->IncludeComponent(
+                        'bitrix:menu',
+                        'medical_store_top',
+                        array_merge($medicalStoreTopMenuBase, [
+                            'MENU_UL_CLASS' => 'top-nav__list flex gap-2 list',
+                            'MENU_LI_CLASS' => 'top-nav__item',
+                            'MENU_LINK_CLASS' => 'top-nav__link link',
+                        ])
+                    );
+                    ?>
                 </nav>
             </div>
         </div>
@@ -196,20 +198,27 @@ if ($mainNavItems === []) {
                             <svg class="icon-chevron-down" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 7.5 5 5 5-5"></path></svg>
                         </a>
                         <div class="main-nav__catalog-dropdown">
-                            <ul class="main-nav__catalog-list list" role="menu" aria-label="Каталог">
-                                <?php foreach ($catalogMenuItems as $item) { ?>
-                                    <li class="main-nav__catalog-list-item" role="none">
-                                        <a href="<?= $h($item['href']) ?>" class="main-nav__catalog-link link" role="menuitem"><?= $h($item['text']) ?></a>
-                                    </li>
-                                <?php } ?>
-                            </ul>
+                            <?php
+                            $APPLICATION->IncludeComponent(
+                                'bitrix:menu',
+                                'medical_store_catalog',
+                                array_merge($medicalStoreCatalogMenuBase, [
+                                    'CATALOG_MENU_SKIN' => 'header',
+                                ])
+                            );
+                            ?>
                         </div>
                     </li>
-                    <?php foreach ($mainNavItems as $item) { ?>
-                        <li class="main-nav__item">
-                            <a href="<?= $h($item['href']) ?>" class="main-nav__link link"><?= $h($item['text']) ?></a>
-                        </li>
-                    <?php } ?>
+                    <?php
+                    $APPLICATION->IncludeComponent(
+                        'bitrix:menu',
+                        'medical_store_main_items',
+                        array_merge($medicalStoreMainMenuBase, [
+                            'MENU_LI_CLASS' => 'main-nav__item',
+                            'MENU_LINK_CLASS' => 'main-nav__link link',
+                        ])
+                    );
+                    ?>
                 </ul>
             </nav>
         </div>
@@ -224,13 +233,17 @@ if ($mainNavItems === []) {
             </svg>
         </button>
         <nav class="mobile-menu__nav mobile-nav" aria-label="Меню (моб.)">
-            <ul class="mobile-nav__menu list font-medium flex flex-col gap-2">
-                <?php foreach ($topNavItems as $item) { ?>
-                    <li class="mobile-nav__item">
-                        <a href="<?= $h($item['href']) ?>" class="mobile-nav__link link uppercase"><?= $h($item['text']) ?></a>
-                    </li>
-                <?php } ?>
-            </ul>
+            <?php
+            $APPLICATION->IncludeComponent(
+                'bitrix:menu',
+                'medical_store_top',
+                array_merge($medicalStoreTopMenuBase, [
+                    'MENU_UL_CLASS' => 'mobile-nav__menu list font-medium flex flex-col gap-2',
+                    'MENU_LI_CLASS' => 'mobile-nav__item',
+                    'MENU_LINK_CLASS' => 'mobile-nav__link link uppercase',
+                ])
+            );
+            ?>
         </nav>
 
         <nav class="mobile-menu__nav mobile-nav mb-6" aria-label="Каталог (моб.)">
@@ -245,20 +258,27 @@ if ($mainNavItems === []) {
                                 </svg>
                             </span>
                         </summary>
-                        <ul class="mobile-nav__catalog-list list">
-                            <?php foreach ($catalogMenuItems as $item) { ?>
-                                <li class="mobile-nav__catalog-item">
-                                    <a href="<?= $h($item['href']) ?>" class="mobile-nav__catalog-link link"><?= $h($item['text']) ?></a>
-                                </li>
-                            <?php } ?>
-                        </ul>
+                            <?php
+                            $APPLICATION->IncludeComponent(
+                                'bitrix:menu',
+                                'medical_store_catalog',
+                                array_merge($medicalStoreCatalogMenuBase, [
+                                    'CATALOG_MENU_SKIN' => 'mobile',
+                                ])
+                            );
+                            ?>
                     </details>
                 </li>
-                <?php foreach ($mainNavItems as $item) { ?>
-                    <li class="mobile-nav__item">
-                        <a href="<?= $h($item['href']) ?>" class="mobile-nav__link link uppercase"><?= $h($item['text']) ?></a>
-                    </li>
-                <?php } ?>
+                <?php
+                $APPLICATION->IncludeComponent(
+                    'bitrix:menu',
+                    'medical_store_main_items',
+                    array_merge($medicalStoreMainMenuBase, [
+                        'MENU_LI_CLASS' => 'mobile-nav__item',
+                        'MENU_LINK_CLASS' => 'mobile-nav__link link uppercase',
+                    ])
+                );
+                ?>
             </ul>
         </nav>
     </div>
