@@ -9,13 +9,6 @@ $h = static function (string $s): string {
     return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 };
 
-$logoPath = __DIR__ . '/images/logo.svg';
-$logoSvg = '';
-if (is_file($logoPath)) {
-    $logoSvg = (string) file_get_contents($logoPath);
-    $logoSvg = preg_replace('/^<\?xml[^>]*>\s*/', '', $logoSvg);
-}
-
 $contacts = podexpert_medical_store_site_contacts();
 $headerPhone = $contacts['phones'][0] ?? null;
 
@@ -111,7 +104,7 @@ $cartCountBadge = function_exists('podexpert_basket_count_badge_text')
             <div class="page-header__main-inner">
                 <div class="page-header__brand flex flex-col gap-1 shrink-0">
                     <a href="<?= $h(SITE_DIR) ?>" class="logo-company page-header__logo link">
-                        <span class="logo-company__img"><?= $logoSvg ?></span>
+                        <span class="logo-company__img"><img src="<?= $h(SITE_TEMPLATE_PATH . '/images/logo.svg') ?>" width="226" height="226" alt="" decoding="async"></span>
                         <?php if (($contacts['logo_text'] ?? '') !== '') { ?>
                         <span class="logo-company__text font-semibold"><?= $h((string) $contacts['logo_text']) ?></span>
                         <?php } ?>

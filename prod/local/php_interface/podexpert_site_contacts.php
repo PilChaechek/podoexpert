@@ -8,7 +8,7 @@ if (!function_exists('podexpert_medical_store_site_contacts')) {
     function podexpert_medical_store_site_contacts(): array
     {
         $base = array_fill_keys(
-            ['phone', 'phone2', 'email', 'address', 'mode', 'max', 'telegram', 'vk', 'yandex_map_link', 'logo_text', 'text_after_logo', 'copyright'],
+            ['phone', 'phone2', 'email', 'address', 'mode', 'max', 'telegram', 'vk', 'yandex_map_link', 'logo_text', 'text_after_logo', 'copyright', 'company_name', 'inn', 'ogrn'],
             ''
         );
 
@@ -17,7 +17,7 @@ if (!function_exists('podexpert_medical_store_site_contacts')) {
         }
 
         $cache = Cache::createInstance();
-        $cacheId = 'site_contacts_v15';
+        $cacheId = 'site_contacts_v16';
         $cacheDir = '/podexpert/site_contacts/';
         if ($cache->initCache(3600, $cacheId, $cacheDir)) {
             $vars = $cache->getVars();
@@ -50,6 +50,9 @@ if (!function_exists('podexpert_medical_store_site_contacts')) {
                 'LOGO_TEXT' => 'logo_text',
                 'TEXT_AFTER_LOGO' => 'text_after_logo',
                 'COPYRIGHT' => 'copyright',
+                'COMPANY_NAME' => 'company_name',
+                'INN' => 'inn',
+                'OGRN' => 'ogrn',
             ];
             $db = CIBlockElement::GetProperty(13, $elId, ['sort' => 'asc'], []);
             while ($row = $db->Fetch()) {
@@ -105,6 +108,9 @@ if (!function_exists('podexpert_site_contacts_pack')) {
             'telegram' => trim((string) ($b['telegram'] ?? '')),
             'vk' => trim((string) ($b['vk'] ?? '')),
             'copyright' => trim((string) ($b['copyright'] ?? '')),
+            'company_name' => trim((string) ($b['company_name'] ?? '')),
+            'inn' => trim((string) ($b['inn'] ?? '')),
+            'ogrn' => trim((string) ($b['ogrn'] ?? '')),
         ];
     }
 }

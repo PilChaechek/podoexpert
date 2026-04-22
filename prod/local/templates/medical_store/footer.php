@@ -17,12 +17,6 @@ $cartCountBadge = function_exists('podexpert_basket_count_badge_text')
     ? podexpert_basket_count_badge_text()
     : '0';
 
-$logoPath = __DIR__ . '/images/logo.svg';
-$logoSvg = '';
-if (is_file($logoPath)) {
-    $logoSvg = preg_replace('/^<\?xml[^>]*>\s*/', '', (string) file_get_contents($logoPath));
-}
-
 $contacts = podexpert_medical_store_site_contacts();
 
 $footerNavColumn1 = [
@@ -68,21 +62,21 @@ $iconCart = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" view
 $iconMenu = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
 ?>
 </main>
-<footer class="page-footer bg-gray-700 text-gray-300 py-8 md:py-16">
+<footer class="page-footer bg-gray-800 text-gray-200 py-8 md:py-16">
     <div class="wrapper container mx-auto">
         <div class="grid grid-cols-2 xl:grid-cols-[4fr_7.6fr] gap-4 lg:gap-10 xl:gap-x-[clamp(32px,6vw,75px)]">
             <div class="col-span-2 lg:col-span-1">
                 <figure class="mb-2 lg:mb-4 flex justify-center lg:justify-start">
                     <?php if ($footerLogoLinkToMain) { ?>
                     <a href="<?= $h(SITE_DIR) ?>" class="logo-company page-footer__logo link">
-                        <span class="logo-company__img"><?= $logoSvg ?></span>
+                        <span class="logo-company__img"><img src="<?= $h(SITE_TEMPLATE_PATH . '/images/logo.svg') ?>" width="226" height="226" alt="" decoding="async"></span>
                         <?php if (($contacts['logo_text'] ?? '') !== '') { ?>
                         <span class="logo-company__text font-semibold"><?= $h((string) $contacts['logo_text']) ?></span>
                         <?php } ?>
                     </a>
                     <?php } else { ?>
                     <div class="logo-company page-footer__logo">
-                        <span class="logo-company__img"><?= $logoSvg ?></span>
+                        <span class="logo-company__img"><img src="<?= $h(SITE_TEMPLATE_PATH . '/images/logo.svg') ?>" width="226" height="226" alt="" decoding="async"></span>
                         <?php if (($contacts['logo_text'] ?? '') !== '') { ?>
                         <span class="logo-company__text font-semibold"><?= $h((string) $contacts['logo_text']) ?></span>
                         <?php } ?>
@@ -90,8 +84,21 @@ $iconMenu = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="
                     <?php } ?>
                 </figure>
                 <?php if (($contacts['text_after_logo'] ?? '') !== '') { ?>
-                <div class="text-base text-center lg:text-left text-balance">
+                <div class="text-base text-center lg:text-left text-balance mb-4">
                     <?= $contacts['text_after_logo'] ?>
+                </div>
+                <?php } ?>
+                <?php if (($contacts['company_name'] ?? '') !== '' || ($contacts['inn'] ?? '') !== '' || ($contacts['ogrn'] ?? '') !== '') { ?>
+                <div class="flex flex-col gap-1">
+                    <?php if (($contacts['company_name'] ?? '') !== '') { ?>
+                    <div class=""><?= $h($contacts['company_name']) ?></div>
+                    <?php } ?>
+                    <?php if (($contacts['inn'] ?? '') !== '') { ?>
+                    <div class="">ИНН: <?= $h($contacts['inn']) ?></div>
+                    <?php } ?>
+                    <?php if (($contacts['ogrn'] ?? '') !== '') { ?>
+                    <div class="">ОГРН: <?= $h($contacts['ogrn']) ?></div>
+                    <?php } ?>
                 </div>
                 <?php } ?>
             </div>

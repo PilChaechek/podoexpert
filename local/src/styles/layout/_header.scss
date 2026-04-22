@@ -92,7 +92,8 @@
     gap: 12px;
   }
   &__img {
-    svg {
+    svg,
+    img {
       height: auto;
     }
   }
@@ -105,14 +106,12 @@
 }
 
 .page-header {
-  .logo-company__img svg {
-    width: 52px;
+  .logo-company__img svg,
+  .logo-company__img img {
+    //width: 52px;
     @include respond(xs){
 
     }
-  }
-  .logo-company__text {
-
   }
 }
 
