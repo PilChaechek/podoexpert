@@ -16,17 +16,23 @@ alwaysApply: true
 
 Оригиналы для справки в репозитории: `bitrix_components/<имя_компонента>/templates/...` (копия `bitrix/components/bitrix/` с ядра).
 
-**Переопределение в шаблоне сайта** (править здесь, не в ядре):
+**Переопределение в шаблоне сайта** (править здесь, не в ядре). Путь **без** промежуточной папки `templates`:
 
-`prod/local/templates/medical_store/components/bitrix/<имя_компонента>/templates/<имя_шаблона_компонента>/`
+`prod/local/templates/medical_store/components/bitrix/<имя_компонента>/<имя_шаблона_компонента>/`
 
-Примеры `<имя_компонента>`: `catalog`, `catalog.section`, `catalog.element`, `catalog.smart.filter`, `sale.basket.basket`, `sale.order.ajax`.
+Пример для каталога с шаблоном компонента `medical_store`:
+
+`prod/local/templates/medical_store/components/bitrix/catalog/medical_store/`
+
+**Неверно:** `.../components/bitrix/catalog/templates/medical_store/` — лишний уровень `templates`, так в этом проекте не делается.
+
+Другие примеры `<имя_компонента>`: `catalog.section`, `catalog.element`, `catalog.smart.filter`, `sale.basket.basket`, `sale.order.ajax` — та же схема: `.../bitrix/<компонент>/<шаблон>/`.
 
 ## Имя шаблона компонента
 
-- Для единообразия кастомных вёрсток используй имя шаблона компонента **`medical_store`** (подкаталог под `templates/`), если в вызове компонента выбран шаблон `medical_store`.
-- Если на странице явно указан `.default`, переопределяй папку `.default` внутри `.../components/bitrix/<компонент>/templates/` — предпочтительно завести отдельное имя **`medical_store`**, чтобы не смешивать с ядром.
+- Для кастомной вёрстки используй имя шаблона компонента **`medical_store`** (каталог рядом с именем компонента, см. путь выше), если в вызове компонента выбран шаблон `medical_store`.
+- Если на странице явно указан `.default`, можно переопределять каталог **`.default`** по тому же правилу: `.../bitrix/<компонент>/.default/` — либо завести отдельное имя **`medical_store`**, чтобы не смешивать с ядром.
 
 ## Не копировать
 
-- Не переносить в `local` целиком компонент с `component.php` из ядра — только ветку **`templates/`** (и при необходимости `lang` рядом с шаблоном).
+- Не переносить в `local` целиком компонент с `component.php` из ядра — только файлы шаблона (как в `templates/.default` оригинала: `template.php`, `style.css`, вложенные `bitrix/`, `lang` и т.д.) в каталог с именем шаблона по схеме выше.

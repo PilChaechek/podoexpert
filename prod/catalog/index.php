@@ -29,7 +29,7 @@ if ($iblockId <= 0) {
 <?php
 $APPLICATION->IncludeComponent(
 	"bitrix:catalog",
-	".default",
+	"medical_store",
 	[
 		"IBLOCK_TYPE" => $iblockType,
 		"IBLOCK_ID" => $iblockId,
@@ -116,7 +116,7 @@ $APPLICATION->IncludeComponent(
 		"SET_STATUS_404" => "Y",
 		"SHOW_404" => "Y",
 		"FILE_404" => "",
-		"COMPONENT_TEMPLATE" => ".default",
+		"COMPONENT_TEMPLATE" => "medical_store",
 		"COMMON_SHOW_CLOSE_POPUP" => "N",
 		"PRODUCT_SUBSCRIPTION" => "Y",
 		"SHOW_DISCOUNT_PERCENT" => "N",
