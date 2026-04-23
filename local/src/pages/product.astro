@@ -1,0 +1,641 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import g1main from '../assets/images/products/serum-tc16/1-main.png';
+import g1thumb from '../assets/images/products/serum-tc16/1-thumb.png';
+import g1full from '../assets/images/products/serum-tc16/1-full.png';
+import g2main from '../assets/images/products/serum-tc16/2-main.png';
+import g2thumb from '../assets/images/products/serum-tc16/2-thumb.png';
+import g2full from '../assets/images/products/serum-tc16/2-full.png';
+import g3main from '../assets/images/products/serum-tc16/3-main.png';
+import g3thumb from '../assets/images/products/serum-tc16/3-thumb.png';
+import g3full from '../assets/images/products/serum-tc16/3-full.png';
+import iconDelivery from '../assets/icons/product/delivery-truck.svg';
+import icon24h from '../assets/icons/product/24-hours.svg';
+import iconInfo from '../assets/icons/product/info.svg';
+import ingKolagen from '../assets/images/products/serum-tc16/ingredients/kolagen.svg';
+import ingTeaTree from '../assets/images/products/serum-tc16/ingredients/tea-tree.svg';
+import ingGlycerin from '../assets/images/products/serum-tc16/ingredients/glycerin.svg';
+import ingSklad150 from '../assets/images/products/serum-tc16/ingredients/skladniki-150.png';
+import ingSklad100 from '../assets/images/products/serum-tc16/ingredients/skladniki-100.png';
+import 'glightbox/dist/css/glightbox.min.css';
+
+const productBreadcrumbs = [
+  { label: 'Главная', href: '/', home: true as const },
+  { label: 'Каталог', href: '/catalog' },
+  { label: 'Линейка Регенерации', href: '/catalog/liniya-regeneracii' },
+  { label: "Arkada's Serum TC16" },
+];
+
+const gallery: { main: ImageMetadata; thumb: ImageMetadata; full: ImageMetadata; alt: string }[] = [
+  {
+    main: g1main,
+    thumb: g1thumb,
+    full: g1full,
+    alt: 'Сыворотка Arkada Serum TC16, флакон',
+  },
+  {
+    main: g2main,
+    thumb: g2thumb,
+    full: g2full,
+    alt: 'Упаковка Arkada Serum TC16',
+  },
+  {
+    main: g3main,
+    thumb: g3thumb,
+    full: g3full,
+    alt: 'Arkada Serum TC16, комплект',
+  },
+];
+
+const glightboxElements = gallery.map((item) => ({
+  href: item.full.src,
+  type: 'image' as const,
+  alt: item.alt,
+  zoomable: false,
+  draggable: true,
+}));
+---
+
+<Layout title="Arkada's Serum TC16 — сыворотка для ногтей">
+  <section class="section section--t2 product">
+    <div class="container">
+      <Breadcrumbs items={productBreadcrumbs} />
+
+      <div
+        class="grid grid-cols-1 gap-8 items-start mt-6 lg:mt-8 lg:grid-cols-2 lg:gap-x-12"
+      >
+        <!-- Правая колонка на десктопе: сначала текст (на моб. — тоже сверху) -->
+        <div class="min-w-0 order-2 lg:order-2 space-y-5 lg:space-y-4">
+          <div>
+            <h1
+              class="product__title text-3xl font-bold tracking-tight text-neutral-900 md:text-4xl text-balance"
+            >
+              Коллагеновая сыворотка для ногтей Arkada's Serum TC16, 11&nbsp;мл
+            </h1>
+            <p class="mt-2 font-bold text-neutral-800">
+              <span>Объём: 11 мл</span>
+            </p>
+          </div>
+
+          <div class="border-b border-gray-300 pb-8 lg:pb-5">
+            <p
+              class="text-white text-xl font-bold px-2 py-1.5 leading-snug font-headings inline-block my-0"
+              style="background-color: var(--color-main);"
+            >
+              Линия регенерации
+            </p>
+            <div class="product__description mt-3 text-neutral-700">
+              <p>
+                Сыворотка Аркада — новаторский препарат, в котором сочетаются
+                натуральные компоненты и современные технологии. Питает кожу, даёт
+                защиту от инфекций, сглаживает рубцы, ускоряет заживление ожогов и
+                обладает антисептическим эффектом. В формуле 16% морского коллагена,
+                эфирное масло чайного дерева и глицерин. Для лучшего результата
+                наносите сыворотку не реже двух раз в день.
+              </p>
+            </div>
+          </div>
+          
+          <p
+            class="product-price price mt-0 mb-5 flex flex-wrap items-baseline gap-x-3 gap-y-1"
+          >
+            <span
+              class="text-2xl font-bold tabular-nums"
+              style="color: var(--color-accent);"
+            >
+              <span class="woocommerce-Price-amount amount" data-wg-notranslate="">2&nbsp;300&nbsp;руб</span>
+            </span>
+            <span
+              class="text-sm font-medium tabular-nums text-neutral-500 line-through decoration-neutral-400"
+              aria-label="Прежняя цена 3 400 руб"
+            >
+              <span class="woocommerce-Price-amount amount" data-wg-notranslate="">3&nbsp;400&nbsp;руб</span>
+            </span>
+          </p>
+
+          <form class="cart product-cart pt-1" action="#" method="post" enctype="multipart/form-data">
+            <div
+              class="product-cart__row flex w-full min-w-0 items-stretch gap-3"
+              data-quantity-wrapper=""
+            >
+              <div
+                class="product-cart__qty flex h-12 shrink-0 items-stretch overflow-hidden rounded-lg border"
+                style="background-color: var(--color-2); border-color: var(--color-border);"
+              >
+                <button
+                  class="product-cart__qty-btn flex w-9 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-neutral-600 transition-opacity hover:opacity-70"
+                  data-quantity-changer="decrease"
+                  type="button"
+                  aria-label="Меньше"
+                >
+                  <svg
+                    class="pointer-events-none h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M18 12L6 12"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <input
+                  type="number"
+                  id="qty_serum_tc16"
+                  class="product-cart__qty-input qty text w-9 min-w-0 shrink border-0 bg-transparent text-center text-sm font-medium tabular-nums text-neutral-800 focus:ring-0 focus:outline-none"
+                  name="quantity"
+                  value="1"
+                  aria-label="Количество товара"
+                  min="1"
+                  step="1"
+                  inputmode="numeric"
+                  autocomplete="off"
+                />
+                <button
+                  class="product-cart__qty-btn flex w-9 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-neutral-600 transition-opacity hover:opacity-70"
+                  data-quantity-changer="increase"
+                  type="button"
+                  aria-label="Больше"
+                >
+                  <svg
+                    class="pointer-events-none h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M12 6L12 18"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M18 12L6 12"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="square"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <button
+                type="submit"
+                name="add-to-cart"
+                class="product-cart__submit inline-flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-full border-0 px-4 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+                style="background-color: var(--color-accent);"
+              >
+                В корзину
+                <svg
+                  class="h-4 w-4 shrink-0"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M20 12L20.495 11.505L20.9899 12L20.495 12.495L20 12ZM5 12.7C4.6134 12.7 4.3 12.3866 4.3 12C4.3 11.6134 4.6134 11.3 5 11.3V12.7ZM14.495 5.50503L20.495 11.505L19.505 12.495L13.505 6.49497L14.495 5.50503ZM20.495 12.495L14.495 18.495L13.505 17.505L19.505 11.505L20.495 12.495ZM20 12.7H5V11.3H20V12.7Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+            </div>
+          </form>
+
+          <ul class="list-none space-y-2 p-0 pt-2 mt-0 mb-5">
+            <li>
+              <div
+                class="flex items-center text-xs sm:text-sm uppercase text-neutral-600 font-headings font-semibold tracking-tight"
+              >
+                <img
+                  class="w-6 h-6 lg:w-8 lg:h-8 mr-2 shrink-0"
+                  width="32"
+                  height="32"
+                  src={iconDelivery.src}
+                  alt=""
+                  loading="lazy"
+                />
+                <span>Бесплатная доставка от 300 zł</span>
+              </div>
+            </li>
+            <li>
+              <div
+                class="flex items-center text-xs sm:text-sm uppercase text-neutral-600 font-headings font-semibold tracking-tight"
+              >
+                <img
+                  class="w-6 h-6 lg:w-8 lg:h-8 mr-2 shrink-0"
+                  width="32"
+                  height="32"
+                  src={icon24h.src}
+                  alt=""
+                  loading="lazy"
+                />
+                <span>Отправка в течение 24 часов</span>
+              </div>
+            </li>
+          </ul>
+          
+          <div class="prose my-2 max-w-none">
+            <p class="mb-2 text-base">
+              <strong>Смотрите также товары в категориях</strong>
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <a
+                class="product-tag inline-block rounded-full border border-secondary-200 bg-secondary-100 px-2 py-1 text-sm text-neutral-800 transition-colors hover:bg-transparent"
+                href="#"
+                >Кожа и ногти</a
+              >
+              <a
+                class="product-tag inline-block rounded-full border border-secondary-200 bg-secondary-100 px-2 py-1 text-sm text-neutral-800 transition-colors hover:bg-transparent"
+                href="#"
+                >Регенерация</a
+              >
+              <a
+                class="product-tag inline-block rounded-full border border-secondary-200 bg-secondary-100 px-2 py-1 text-sm text-neutral-800 transition-colors hover:bg-transparent"
+                href="#"
+                >Релакс</a
+              >
+              <a
+                class="product-tag inline-block rounded-full border border-secondary-200 bg-secondary-100 px-2 py-1 text-sm text-neutral-800 transition-colors hover:bg-transparent"
+                href="#"
+                >Время расслабиться</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Слева на десктопе: галерея, миниатюры в ряд под основным фото -->
+        <div class="min-w-0 order-1 lg:order-1">
+          <div class="product-hero w-full max-w-2xl mx-auto lg:mx-0 lg:max-w-none">
+            <div
+              class="product-hero__main-wrap relative aspect-square w-full overflow-hidden bg-neutral-50 rounded-sm"
+            >
+              <span
+                class="product-hero__badge absolute left-0 top-0 z-20 inline-block px-2.5 py-1.5 text-xs font-bold uppercase tracking-wide text-white"
+                style="background-color: var(--color-accent);"
+              >
+                Бестселлер
+              </span>
+              <div
+                class="swiper product-hero__main js-product-hero-main h-full w-full"
+                aria-label="Галерея товара"
+              >
+                <div class="swiper-wrapper">
+                  {
+                    gallery.map((item, i) => (
+                      <div class="swiper-slide h-full w-full !flex items-center justify-center p-2">
+                        <div class="h-full w-full max-h-full">
+                          <Image
+                            class="h-full w-full object-contain object-center"
+                            src={item.main}
+                            alt={item.alt}
+                            width={item.main.width}
+                            height={item.main.height}
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            loading={i === 0 ? 'eager' : 'lazy'}
+                            fetchpriority={i === 0 ? 'high' : undefined}
+                            decoding="async"
+                          />
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+            <script
+              type="application/json"
+              id="product-hero-glightbox-elements"
+              set:html={JSON.stringify(glightboxElements)}
+            />
+
+            <div
+              class="swiper product-hero__thumbs js-product-hero-thumbs mt-4 w-1/2 min-w-0 max-w-full self-start"
+              aria-label="Миниатюры"
+            >
+              <div class="swiper-wrapper">
+                {
+                  gallery.map((item) => (
+                    <div
+                      class="swiper-slide h-auto cursor-pointer"
+                    >
+                      <div
+                        class="product-hero__thumb box-border aspect-square w-full overflow-hidden rounded border-2 border-transparent bg-neutral-50 p-0.5 transition-[border-color,opacity]"
+                      >
+                        <Image
+                          class="h-full w-full object-contain"
+                          src={item.thumb}
+                          alt=""
+                          width={item.thumb.width}
+                          height={item.thumb.height}
+                          sizes="(max-width: 640px) 15vw, 60px"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-14 lg:py-20" aria-labelledby="product-composition-heading">
+    <div class="container">
+      <div class="wrapper-max px-4 lg:main-px mx-auto text-center">
+        <h2 id="product-composition-heading" class="section-header__title text-4xl md:text-5xl font-bold">
+          Основные компоненты
+        </h2>
+      </div>
+      <div class="wrapper-max px-4 lg:main-px mx-auto mt-10 lg:mt-20">
+        <ul class="flex flex-wrap justify-center gap-10">
+          <li class="grow-0 shrink-1 basis-[370px] min-w-[370px] rounded-lg px-9 flex items-center flex-col justify-start text-center lg:basis-0 lg:grow">
+            <div>
+              <div class="w-16 h-16 rounded-full p-2 bg-gray-100 mx-auto">
+                <img
+                  width="64"
+                  height="64"
+                  src={ingKolagen.src}
+                  class="h-full w-full object-contain mx-auto"
+                  alt="Коллаген"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="mt-6">
+                <p class="font-bold text-2xl text-gray-800 font-headings mb-3">Натуральный рыбий коллаген, 15&nbsp;%</p>
+                <p>
+                  Укрепляет, повышает эластичность и улучшает состояние ногтей и кожи. Коллаген участвует
+                  в восстановлении повреждённых тканей, оказывает защитное и регенерирующее действие, снижает
+                  раздражение и воспаление.
+                </p>
+              </div>
+            </div>
+          </li>
+          <li class="grow-0 shrink-1 basis-[370px] min-w-[370px] rounded-lg px-9 flex items-center flex-col justify-start text-center lg:basis-0 lg:grow">
+            <div>
+              <div class="w-16 h-16 rounded-full p-2 bg-gray-100 mx-auto">
+                <img
+                  width="64"
+                  height="64"
+                  src={ingTeaTree.src}
+                  class="h-full w-full object-contain mx-auto"
+                  alt="Масло чайного дерева"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="mt-6">
+                <p class="font-bold text-2xl text-gray-800 font-headings mb-3">
+                  Масло чайного дерева 1&nbsp;% (оптимальная концентрация)
+                </p>
+                <p>
+                  Обладает антибактериальным, противовирусным и противогрибковым действием. Масло чайного дерева
+                  — одно из наиболее известных противовоспалительных и антисептических средств с широкой сферой
+                  применения.
+                </p>
+              </div>
+            </div>
+          </li>
+          <li class="grow-0 shrink-1 basis-[370px] min-w-[370px] rounded-lg px-9 flex items-center flex-col justify-start text-center lg:basis-0 lg:grow">
+            <div>
+              <div class="w-16 h-16 rounded-full p-2 bg-gray-100 mx-auto">
+                <img
+                  width="64"
+                  height="64"
+                  src={ingGlycerin.src}
+                  class="h-full w-full object-contain mx-auto"
+                  alt="Глицерин"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="mt-6">
+                <p class="font-bold text-2xl text-gray-800 font-headings mb-3">Глицерин</p>
+                <p>
+                  Связывает и удерживает влагу, облегчает проникновение активных веществ. Выполняет защитную
+                  функцию, способствует заживлению микротрещин, поддерживает уровень увлажнения.
+                </p>
+              </div>
+            </div>
+          </li>
+          <li class="grow-0 shrink-1 basis-[370px] min-w-[370px] rounded-lg px-9 flex items-center flex-col justify-start text-center lg:basis-0 lg:grow">
+            <div>
+              <div class="w-16 h-16 rounded-full p-2 bg-gray-100 mx-auto">
+                <img
+                  width="64"
+                  height="64"
+                  src={ingSklad150.src}
+                  class="h-full w-full object-contain mx-auto"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  srcset={`${ingSklad100.src} 100w, ${ingSklad150.src} 150w`}
+                  sizes="(max-width: 150px) 100px, 64px"
+                />
+              </div>
+              <div class="mt-6">
+                <p class="font-bold text-2xl text-gray-800 font-headings mb-3">Прочие ингредиенты (INCI)</p>
+                <p class="text-balance">
+                  Aqua, Hydrolyzed Collagen, Glycerin, Polysorbate 20, Melaleuca Alternifolia Leaf Oil,
+                  Phenoxyethanol, Ethylhexylglycerin, Limonene.
+                </p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style is:global>
+  /* GLightbox: без компенсации ширины скроллбара (gscrollbar-fixer иначе даёт margin-right ~16px и сдвиг) */
+  body.gscrollbar-fixer {
+    margin-right: 0 !important;
+  }
+  @media (min-width: 769px) {
+    .glightbox-clean .gslide-media {
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
+  }
+  .js-product-hero-main .swiper-slide:not(.swiper-slide-active) {
+    pointer-events: none;
+  }
+  .js-product-hero-main .swiper-slide.swiper-slide-active {
+    pointer-events: auto;
+  }
+  .product-hero__thumbs .swiper-slide:not(.swiper-slide-thumb-active) .product-hero__thumb {
+    opacity: 0.7;
+  }
+  .product-hero__thumbs .swiper-slide-thumb-active .product-hero__thumb {
+    border-color: var(--color-border) !important;
+    opacity: 1;
+  }
+  .product-cart__qty-input::-webkit-outer-spin-button,
+  .product-cart__qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .product-cart__qty-input {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+</style>
+
+<script>
+  import GLightbox from 'glightbox';
+
+  type GlightboxSlide = { href: string; type: 'image'; alt: string; zoomable: boolean; draggable: boolean };
+
+  const initProductHero = () => {
+    const SwiperClass = (window as unknown as { Swiper?: new (el: Element, options: object) => unknown }).Swiper;
+    if (typeof SwiperClass === 'undefined') {
+      return;
+    }
+
+    const thumbsEl = document.querySelector<HTMLElement>('.js-product-hero-thumbs');
+    const mainEl = document.querySelector<HTMLElement>('.js-product-hero-main');
+    if (!thumbsEl || !mainEl || mainEl.dataset.initialized === 'true') {
+      return;
+    }
+
+    const jsonEl = document.getElementById('product-hero-glightbox-elements');
+    let elements: GlightboxSlide[] = [];
+    try {
+      if (jsonEl?.textContent) {
+        elements = JSON.parse(jsonEl.textContent) as GlightboxSlide[];
+      }
+    } catch {
+      return;
+    }
+    if (elements.length === 0) {
+      return;
+    }
+
+    const lightbox = GLightbox({
+      elements: elements as unknown as [],
+      loop: true,
+      touchNavigation: true,
+      keyboardNavigation: true,
+      openEffect: 'fade',
+      closeEffect: 'fade',
+      zoomable: false,
+    });
+
+    // GLightbox блокирует скролл (overflow: hidden), на мобильных после закрытия
+    // без restore позиция ломается — страница «прыгает».
+    // let pageScrollYBeforeOpen = 0;
+    // lightbox.on('open', () => {
+    //   pageScrollYBeforeOpen = window.scrollY || document.documentElement.scrollTop || 0;
+    // });
+    // lightbox.on('close', () => {
+    //   const y = pageScrollYBeforeOpen;
+    //   requestAnimationFrame(() => {
+    //     requestAnimationFrame(() => {
+    //       window.scrollTo(0, y);
+    //     });
+    //   });
+    // });
+
+    const thumbSwiper = new SwiperClass(thumbsEl, {
+      spaceBetween: 5,
+      slidesPerView: 3,
+      freeMode: true,
+      watchSlidesProgress: true,
+      breakpoints: {
+        0: { slidesPerView: 3, spaceBetween: 5 },
+        480: { slidesPerView: 3, spaceBetween: 6 },
+      },
+    });
+
+    new SwiperClass(mainEl, {
+      effect: 'fade',
+      fadeEffect: { crossFade: true },
+      speed: 450,
+      spaceBetween: 0,
+      allowTouchMove: true,
+      preventClicks: false,
+      preventClicksPropagation: false,
+      threshold: 20,
+      thumbs: {
+        swiper: thumbSwiper,
+      },
+      on: {
+        click: (swiper: { activeIndex: number }) => {
+          lightbox.openAt(swiper.activeIndex);
+        },
+      },
+    });
+
+    mainEl.dataset.initialized = 'true';
+  };
+
+  const initProductCartQty = () => {
+    document.querySelectorAll<HTMLElement>('[data-quantity-wrapper]').forEach((wrapper) => {
+      if (wrapper.dataset.qtyInited === 'true') {
+        return;
+      }
+      const input = wrapper.querySelector<HTMLInputElement>(
+        'input.qty, input.product-cart__qty-input, input[name="quantity"]',
+      );
+      if (!input) {
+        return;
+      }
+      const getMin = () => Math.max(1, parseInt(input.getAttribute('min') || '1', 10) || 1);
+      const getStep = () => Math.max(1, parseInt(input.getAttribute('step') || '1', 10) || 1);
+      wrapper.addEventListener('click', (e) => {
+        const t = (e.target as HTMLElement).closest('[data-quantity-changer]');
+        if (!t || !wrapper.contains(t)) {
+          return;
+        }
+        e.preventDefault();
+        const dir = t.getAttribute('data-quantity-changer');
+        const min = getMin();
+        const step = getStep();
+        let n = parseInt(String(input.value), 10);
+        if (Number.isNaN(n)) {
+          n = min;
+        }
+        if (dir === 'increase') {
+          n += step;
+        } else if (dir === 'decrease') {
+          n -= step;
+        } else {
+          return;
+        }
+        n = Math.max(min, n);
+        input.value = String(n);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      wrapper.dataset.qtyInited = 'true';
+    });
+  };
+
+  const initProductPage = () => {
+    initProductHero();
+    initProductCartQty();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProductPage, { once: true });
+  } else {
+    initProductPage();
+  }
+</script>

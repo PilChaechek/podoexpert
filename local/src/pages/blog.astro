@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
 import { Image } from 'astro:assets';
 import news1 from '../assets/images/news/1.webp';
 import news2 from '../assets/images/news/2.webp';
@@ -72,23 +73,18 @@ const newsItems = [
     image: news3,
   },
 ];
+
+const blogBreadcrumbs = [
+  { label: 'Главная', href: '/', home: true as const },
+  { label: 'AArkada', href: '/' },
+  { label: 'Новости' },
+];
 ---
 
 <Layout title="Новости">
   <section class="section header-title">
     <div class="container">
-      <nav class="header-title__breadcrumbs" aria-label="Навигация по разделу">
-        <a href="/" aria-label="Главная">
-          <span class="sr-only">Главная</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </a>
-        <span class="header-title__crumb-sep" aria-hidden="true">&gt;</span>
-        <a href="/">AArkada</a>
-        <span class="header-title__crumb-sep" aria-hidden="true">&gt;</span>
-        <span class="header-title__crumb-current">Новости</span>
-      </nav>
+      <Breadcrumbs items={blogBreadcrumbs} />
 
       <div class="header-title__center">
         <h1 class="header-title__heading text-3xl md:text-4xl font-bold">Новости</h1>

@@ -42,15 +42,17 @@ const { title, description, class: sectionHeaderClass, products } = Astro.props;
                   <article class="product-card">
                     {product.badge && <p class="product-card__badge bg-gray-800">{product.badge}</p>}
                     <div class="product-card__media">
-                      {product.image && (
-                          <img
-                              class="product-card__image"
-                              src={product.image.src}
-                              alt={product.title}
-                              loading="lazy"
-                              decoding="async"
-                          />
-                      )}
+                      <a href="/product/" class="link block">
+                        {product.image && (
+                            <img
+                                class="product-card__image"
+                                src={product.image.src}
+                                alt={product.title}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        )}
+                      </a>
                     </div>
                     <div class="product-card__content">
                       <h3 class="product-card__title">{product.title}</h3>
