@@ -272,6 +272,20 @@ $podexpertShowHeroDebug = isset($_GET['debug_hero']) && (string)$_GET['debug_her
 	<?php endif; ?>
 	<section class="section section--t2 product">
 		<div class="container">
+			<div class="mb-2">
+				<?php
+				global $APPLICATION;
+				$APPLICATION->IncludeComponent(
+					'bitrix:breadcrumb',
+					'medical_store',
+					[
+						'START_FROM' => '0',
+						'SITE_ID' => SITE_ID,
+					],
+					false
+				);
+				?>
+			</div>
 			<div class="grid grid-cols-1 gap-8 items-start mt-6 lg:mt-8 lg:grid-cols-2 lg:gap-x-12">
 				<div class="min-w-0 order-1 lg:order-1 w-full">
 					<div class="product-hero w-full max-w-2xl mx-auto lg:mx-0 lg:max-w-none">
