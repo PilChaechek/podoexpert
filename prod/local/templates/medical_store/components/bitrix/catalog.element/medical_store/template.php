@@ -620,6 +620,20 @@ $podexpertShowHeroDebug = isset($_GET['debug_hero']) && (string)$_GET['debug_her
 					?>
 					<div class="product__pay-block">
 							<?php
+							$productPayBlockOrder = $arParams['PRODUCT_PAY_BLOCK_ORDER'];
+							$productPayQtyIdx = is_array($productPayBlockOrder)
+								? array_search('quantity', $productPayBlockOrder, true)
+								: false;
+							$productPayButtonsIdx = is_array($productPayBlockOrder)
+								? array_search('buttons', $productPayBlockOrder, true)
+								: false;
+							$productCartQtyButtonsMerged = !empty($arParams['USE_PRODUCT_QUANTITY'])
+								&& $actualItem['CAN_BUY']
+								&& $productPayQtyIdx !== false
+								&& $productPayButtonsIdx !== false
+								&& $productPayQtyIdx < $productPayButtonsIdx;
+							unset($productPayBlockOrder, $productPayQtyIdx, $productPayButtonsIdx);
+
 							foreach ($arParams['PRODUCT_PAY_BLOCK_ORDER'] as $blockName)
 							{
 								switch ($blockName)
@@ -817,9 +831,65 @@ $podexpertShowHeroDebug = isset($_GET['debug_hero']) && (string)$_GET['debug_her
 									case 'quantity':
 										if ($arParams['USE_PRODUCT_QUANTITY'])
 										{
-											?>
-											<div class="product-item-detail-info-container" style="<?=(!$actualItem['CAN_BUY'] ? 'display: none;' : '')?>"
-												data-entity="quantity-block">
+											if ($productCartQtyButtonsMerged)
+											{
+												?>
+												<div data-entity="main-button-container" class="cart product-cart w-full min-w-0 pt-1">
+												<div
+													class="product-cart__row flex w-full min-w-0 items-stretch gap-3"
+													data-quantity-wrapper=""
+												>
+												<div class="product-item-detail-info-container" data-entity="quantity-block">
+												<div
+													class="product-cart__qty flex h-12 shrink-0 items-center overflow-hidden rounded-lg border"
+													style="background-color: var(--color-2); border-color: var(--color-border);"
+												>
+													<button
+														type="button"
+														class="product-cart__qty-btn flex w-9 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-neutral-600 transition-opacity hover:opacity-70"
+														data-quantity-changer="decrease"
+														id="<?=$itemIds['QUANTITY_DOWN_ID']?>"
+														aria-label="<?=htmlspecialcharsbx(Loc::getMessage('CATALOG_QUANTITY'))?>"
+													>
+														<svg class="pointer-events-none h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+															<path d="M18 12L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round" />
+														</svg>
+													</button>
+													<input
+														class="product-cart__qty-input product-item-amount-field qty text w-9 min-w-0 shrink border-0 bg-transparent text-center text-sm font-medium tabular-nums text-neutral-800 focus:ring-0 focus:outline-none"
+														id="<?=$itemIds['QUANTITY_ID']?>"
+														type="number"
+														name="quantity"
+														value="<?=$price['MIN_QUANTITY']?>"
+														min="1"
+														step="1"
+														aria-label="<?=htmlspecialcharsbx(Loc::getMessage('CATALOG_QUANTITY'))?>"
+													>
+													<button
+														type="button"
+														class="product-cart__qty-btn flex w-9 shrink-0 items-center justify-center border-0 bg-transparent p-0 text-neutral-600 transition-opacity hover:opacity-70"
+														data-quantity-changer="increase"
+														id="<?=$itemIds['QUANTITY_UP_ID']?>"
+														aria-label="<?=htmlspecialcharsbx(Loc::getMessage('CATALOG_QUANTITY'))?>"
+													>
+														<svg class="pointer-events-none h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+															<path d="M12 6L12 18" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round" />
+															<path d="M18 12L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round" />
+														</svg>
+													</button>
+												</div>
+												<span class="product-item-amount-description-container sr-only" aria-hidden="true">
+													<span id="<?=$itemIds['QUANTITY_MEASURE']?>"><?=$actualItem['ITEM_MEASURE']['TITLE']?></span>
+													<span id="<?=$itemIds['PRICE_TOTAL']?>"></span>
+												</span>
+												</div>
+												<?php
+											}
+											else
+											{
+												?>
+												<div class="product-item-detail-info-container" style="<?=(!$actualItem['CAN_BUY'] ? 'display: none;' : '')?>"
+													data-entity="quantity-block">
 												<div
 													class="product-cart__row flex w-full min-w-0 items-stretch gap-3"
 													data-quantity-wrapper=""
@@ -866,15 +936,90 @@ $podexpertShowHeroDebug = isset($_GET['debug_hero']) && (string)$_GET['debug_her
 													<span id="<?=$itemIds['QUANTITY_MEASURE']?>"><?=$actualItem['ITEM_MEASURE']['TITLE']?></span>
 													<span id="<?=$itemIds['PRICE_TOTAL']?>"></span>
 												</span>
-											</div>
-											</div>
-											<?php
+												</div>
+												</div>
+												<?php
+											}
 										}
 
 										break;
 
 									case 'buttons':
-										?>
+										if ($productCartQtyButtonsMerged)
+										{
+											?>
+											<div id="<?=$itemIds['BASKET_ACTIONS_ID']?>" class="flex min-w-0 flex-1 flex-col gap-2" style="display: <?=($actualItem['CAN_BUY'] ? '' : 'none')?>;">
+												<?php
+												if ($showAddBtn)
+												{
+													?>
+												<div class="min-w-0 flex-1">
+													<a class="product-cart__submit inline-flex h-12 w-full min-w-0 flex-1 items-center justify-center gap-2 rounded-full border-0 px-4 text-sm font-semibold text-white transition-opacity hover:opacity-80 product-item-detail-buy-button" id="<?=$itemIds['ADD_BASKET_LINK']?>"
+														href="javascript:void(0);"
+														style="background-color: var(--color-accent);"
+													>
+														<?=htmlspecialcharsbx($arParams['MESS_BTN_ADD_TO_BASKET'])?>
+														<svg class="h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+															<path d="M20 12L20.495 11.505L20.9899 12L20.495 12.495L20 12ZM5 12.7C4.6134 12.7 4.3 12.3866 4.3 12C4.3 11.6134 4.6134 11.3 5 11.3V12.7ZM14.495 5.50503L20.495 11.505L19.505 12.495L13.505 6.49497L14.495 5.50503ZM20.495 12.495L14.495 18.495L13.505 17.505L19.505 11.505L20.495 12.495ZM20 12.7H5V11.3H20V12.7Z" fill="currentColor" />
+														</svg>
+													</a>
+												</div>
+													<?php
+												}
+
+												if ($showBuyBtn)
+												{
+													?>
+												<div class="product-item-detail-info-container min-w-0 flex-1">
+													<a class="product-cart__submit inline-flex h-12 w-full min-w-0 flex-1 items-center justify-center gap-2 rounded-full border-0 px-4 text-sm font-semibold text-white transition-opacity hover:opacity-80 btn <?=$buyButtonClassName?> product-item-detail-buy-button" id="<?=$itemIds['BUY_LINK']?>"
+														href="javascript:void(0);"
+													>
+														<span><?=htmlspecialcharsbx($arParams['MESS_BTN_BUY'])?></span>
+													</a>
+												</div>
+													<?php
+												}
+												?>
+											</div>
+											</div>
+											<?php
+											if ($showSubscribe)
+											{
+												?>
+												<div class="product-item-detail-info-container">
+													<?php
+													$APPLICATION->IncludeComponent(
+														'bitrix:catalog.product.subscribe',
+														'',
+														array(
+															'CUSTOM_SITE_ID' => $arParams['CUSTOM_SITE_ID'] ?? null,
+															'PRODUCT_ID' => $arResult['ID'],
+															'BUTTON_ID' => $itemIds['SUBSCRIBE_LINK'],
+															'BUTTON_CLASS' => 'btn btn-default product-item-detail-buy-button',
+															'DEFAULT_DISPLAY' => !$actualItem['CAN_BUY'],
+															'MESS_BTN_SUBSCRIBE' => $arParams['~MESS_BTN_SUBSCRIBE'],
+														),
+														$component,
+														array('HIDE_ICONS' => 'Y')
+													);
+													?>
+												</div>
+												<?php
+											}
+											?>
+											<div class="product-item-detail-info-container">
+												<a class="btn btn-link product-item-detail-buy-button" id="<?=$itemIds['NOT_AVAILABLE_MESS']?>"
+													href="javascript:void(0)"
+													rel="nofollow" style="display: <?=(!$actualItem['CAN_BUY'] ? '' : 'none')?>;">
+													<?=$arParams['MESS_NOT_AVAILABLE']?>
+												</a>
+											</div>
+										</div>
+											<?php
+										}
+										else
+										{
+											?>
 										<div data-entity="main-button-container" class="cart product-cart w-full min-w-0 pt-1">
 											<div id="<?=$itemIds['BASKET_ACTIONS_ID']?>" style="display: <?=($actualItem['CAN_BUY'] ? '' : 'none')?>;">
 												<?php
@@ -942,7 +1087,8 @@ $podexpertShowHeroDebug = isset($_GET['debug_hero']) && (string)$_GET['debug_her
 												</a>
 											</div>
 										</div>
-										<?php
+											<?php
+										}
 										break;
 								}
 							}
