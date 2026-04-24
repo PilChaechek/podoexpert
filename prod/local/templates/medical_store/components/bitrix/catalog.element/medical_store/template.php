@@ -347,7 +347,7 @@ $podexpertShowHeroDebug = isset($_GET['debug_hero']) && (string)$_GET['debug_her
 								foreach ($podexpertGalleryPhotos as $key => $photo)
 								{
 									?>
-									<div class="swiper-slide h-full w-full !flex items-center justify-center p-2">
+									<div class="swiper-slide h-full w-full !flex items-center justify-center">
 										<div class="h-full w-full max-h-full<?=($key == 0 ? ' active' : '')?>" data-entity="image" data-id="<?=(int)$photo['ID']?>">
 											<img class="h-full w-full object-contain object-center" src="<?=htmlspecialchars($photo['SRC'])?>" alt="<?=htmlspecialchars($alt)?>" title="<?=htmlspecialchars($title)?>" loading="<?= $key === 0 ? 'eager' : 'lazy' ?>" decoding="async"<?=($key == 0 ? ' itemprop="image"' : '')?>>
 										</div>

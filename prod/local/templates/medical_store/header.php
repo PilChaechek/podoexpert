@@ -4,6 +4,10 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 }
 
 $APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH . '/styles.css');
+$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH . '/vendor/toastify-js/toastify.css');
+$APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH . '/js/podexpert-minicart.js');
+$APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH . '/vendor/toastify-js/toastify.js');
+$APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH . '/js/podexpert-toastify.js');
 
 $h = static function (string $s): string {
     return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');

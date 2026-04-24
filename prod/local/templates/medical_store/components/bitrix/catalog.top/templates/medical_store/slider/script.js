@@ -1514,10 +1514,8 @@ window.JCCatalogTopSlider.prototype.Basket = function()
 
 window.JCCatalogTopSlider.prototype.BasketResult = function(arResult)
 {
-	var strContent = '',
-		strPict = '',
-		successful,
-		buttons = [];
+	var strPict = '',
+		successful;
 
 	if (!!this.obPopupWin)
 		this.obPopupWin.close();
@@ -1529,77 +1527,44 @@ window.JCCatalogTopSlider.prototype.BasketResult = function(arResult)
 	if (successful && this.basketAction === 'BUY')
 	{
 		this.BasketRedirect();
+		return;
 	}
-	else
+
+	if (!successful)
 	{
-		this.InitPopupWindow();
-		if (successful)
+		if (window.podexpertToastifySimple)
 		{
-			BX.onCustomEvent('OnBasketChange');
-			switch(this.productType)
-			{
-				case 1://
-				case 2://
-					strPict = this.product.pict.SRC;
-					break;
-				case 3:
-					strPict = (!!this.offers[this.offerNum].PREVIEW_PICTURE ?
-						this.offers[this.offerNum].PREVIEW_PICTURE.SRC :
-						this.defaultPict.pict.SRC
-						);
-					break;
-			}
-			strContent = '<div style="width: 100%; margin: 0; text-align: center;"><img src="'+strPict+'" height="130" style="max-height:130px"><p>'+this.product.name+'</p></div>';
-			if (this.showClosePopup)
-			{
-				buttons = [
-					new BasketButton({
-						ownerClass: this.obProduct.parentNode.parentNode.parentNode.parentNode.className,
-						text: BX.message("BTN_MESSAGE_BASKET_REDIRECT"),
-						events: {
-							click: BX.delegate(this.BasketRedirect, this)
-						},
-						style: {marginRight: '10px'}
-					}),
-					new BasketButton({
-						ownerClass: this.obProduct.parentNode.parentNode.parentNode.parentNode.className,
-						text: BX.message("BTN_MESSAGE_CLOSE_POPUP"),
-						events: {
-							click: BX.delegate(this.obPopupWin.close, this.obPopupWin)
-						}
-					})
-				];
-			}
-			else
-			{
-				buttons = [
-					new BasketButton({
-						ownerClass: this.obProduct.parentNode.parentNode.parentNode.parentNode.className,
-						text: BX.message("BTN_MESSAGE_BASKET_REDIRECT"),
-						events: {
-							click: BX.delegate(this.BasketRedirect, this)
-						}
-					})
-				];
-			}
+			window.podexpertToastifySimple(
+				!!arResult.MESSAGE ? arResult.MESSAGE : BX.message('BASKET_UNKNOWN_ERROR'),
+				'error'
+			);
 		}
-		else
-		{
-			strContent = '<div style="width: 100%; margin: 0; text-align: center;"><p>'+(!!arResult.MESSAGE ? arResult.MESSAGE : BX.message('BASKET_UNKNOWN_ERROR'))+'</p></div>';
-			buttons = [
-				new BasketButton({
-					ownerClass: this.obProduct.parentNode.parentNode.parentNode.parentNode.className,
-					text: BX.message('BTN_MESSAGE_CLOSE'),
-					events: {
-						click: BX.delegate(this.obPopupWin.close, this.obPopupWin)
-					}
-				})
-			];
-		}
-		this.obPopupWin.setTitleBar(successful ? BX.message('TITLE_SUCCESSFUL') : BX.message('TITLE_ERROR'));
-		this.obPopupWin.setContent(strContent);
-		this.obPopupWin.setButtons(buttons);
-		this.obPopupWin.show();
+		return;
+	}
+
+	BX.onCustomEvent('OnBasketChange');
+	switch(this.productType)
+	{
+		case 1://
+		case 2://
+			strPict = this.product.pict.SRC;
+			break;
+		case 3:
+			strPict = (!!this.offers[this.offerNum].PREVIEW_PICTURE ?
+				this.offers[this.offerNum].PREVIEW_PICTURE.SRC :
+				this.defaultPict.pict.SRC
+				);
+			break;
+	}
+	if (window.podexpertToastifyCart)
+	{
+		window.podexpertToastifyCart({
+			imageSrc: strPict,
+			title: BX.message('TITLE_SUCCESSFUL'),
+			productName: this.product.name,
+			basketUrl: !!this.basketData.basketUrl ? this.basketData.basketUrl : BX.message('BASKET_URL'),
+			cartLinkText: BX.message('BTN_MESSAGE_BASKET_REDIRECT')
+		});
 	}
 };
 

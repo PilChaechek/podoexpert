@@ -1048,11 +1048,9 @@
 
 	window.JCCatalogTopBanner.prototype.BasketResult = function(arResult)
 	{
-		var strContent = '',
-			strName = '',
+		var strName = '',
 			strPict = '',
-			successful,
-			buttons = [];
+			successful;
 
 		if (!!this.obPopupWin)
 			this.obPopupWin.close();
@@ -1061,54 +1059,43 @@
 			return;
 
 		successful = ('OK' === arResult.STATUS);
-		if (successful)
+		if (!successful)
 		{
-			BX.onCustomEvent('OnBasketChange');
-			strName = this.product.name;
-			switch(this.productType)
+			if (window.podexpertToastifySimple)
 			{
-				case 1://
-				case 2://
-					strPict = this.product.pict.SRC;
-					break;
-				case 3:
-					strPict = (!!this.offers[this.offerNum].PREVIEW_PICTURE ?
-						this.offers[this.offerNum].PREVIEW_PICTURE.SRC :
-						this.defaultPict.pict.SRC
-						);
-					break;
+				window.podexpertToastifySimple(
+					!!arResult.MESSAGE ? arResult.MESSAGE : BX.message('BASKET_UNKNOWN_ERROR'),
+					'error'
+				);
 			}
-			strContent = '<div style="width: 100%; margin: 0; text-align: center;"><img src="'+strPict+'" height="130"><p>'+strName+'</p></div>';
-			buttons = [
-				new BasketButton({
-					ownerClass: this.obProduct.parentNode.parentNode.className,
-					text: BX.message("BTN_MESSAGE_BASKET_REDIRECT"),
-					events: {
-						click: BX.delegate(function(){
-							location.href = (!!this.basketData.basketUrl ? this.basketData.basketUrl : BX.message('BASKET_URL'));
-						}, this)
-					}
-				})
-			];
+			return;
 		}
-		else
+
+		BX.onCustomEvent('OnBasketChange');
+		strName = this.product.name;
+		switch(this.productType)
 		{
-			strContent = (!!arResult.MESSAGE ? arResult.MESSAGE : BX.message('BASKET_UNKNOWN_ERROR'));
-			buttons = [
-				new BasketButton({
-					ownerClass: this.obProduct.parentNode.parentNode.className,
-					text: BX.message('BTN_MESSAGE_CLOSE'),
-					events: {
-						click: BX.delegate(this.obPopupWin.close, this.obPopupWin)
-					}
-				})
-			];
+			case 1://
+			case 2://
+				strPict = this.product.pict.SRC;
+				break;
+			case 3:
+				strPict = (!!this.offers[this.offerNum].PREVIEW_PICTURE ?
+					this.offers[this.offerNum].PREVIEW_PICTURE.SRC :
+					this.defaultPict.pict.SRC
+					);
+				break;
 		}
-		this.InitPopupWindow();
-		this.obPopupWin.setTitleBar(successful ? BX.message('TITLE_SUCCESSFUL') : BX.message('TITLE_ERROR'));
-		this.obPopupWin.setContent(strContent);
-		this.obPopupWin.setButtons(buttons);
-		this.obPopupWin.show();
+		if (window.podexpertToastifyCart)
+		{
+			window.podexpertToastifyCart({
+				imageSrc: strPict,
+				title: BX.message('TITLE_SUCCESSFUL'),
+				productName: strName,
+				basketUrl: !!this.basketData.basketUrl ? this.basketData.basketUrl : BX.message('BASKET_URL'),
+				cartLinkText: BX.message('BTN_MESSAGE_BASKET_REDIRECT')
+			});
+		}
 	};
 
 	window.JCCatalogTopBanner.prototype.InitPopupWindow = function()
