@@ -57,6 +57,9 @@ const glightboxElements = gallery.map((item) => ({
   zoomable: false,
   draggable: true,
 }));
+
+/** Bitrix-инфоблок: свойство COUNTRY (Страна производителя), список */
+const COUNTRY = 'Польша';
 ---
 
 <Layout title="Arkada's Serum TC16 — сыворотка для ногтей">
@@ -76,7 +79,9 @@ const glightboxElements = gallery.map((item) => ({
               Коллагеновая сыворотка для ногтей Arkada's Serum TC16, 11&nbsp;мл
             </h1>
             <p class="mt-2 font-bold text-neutral-800">
-              <span>Объём: 11 мл</span>
+              <span class="block">Объём: 11 мл</span>
+              <span class="mt-1 block"
+                >Страна производителя: {COUNTRY}</span>
             </p>
           </div>
 

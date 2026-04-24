@@ -59,6 +59,8 @@ $APPLICATION->IncludeComponent(
 		"USE_MAIN_ELEMENT_SECTION" => "Y",
 		"DETAIL_PROPERTY_CODE" => [
 			0 => "GALLERY",
+			1 => "VOLUME",
+			2 => "COUNTRY",
 		],
 		"LIST_PROPERTY_CODE" => [
 			0 => "-",

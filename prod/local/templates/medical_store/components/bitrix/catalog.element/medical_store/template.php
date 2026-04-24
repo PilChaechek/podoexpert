@@ -121,6 +121,31 @@ elseif (!empty($actualItem['PROPERTIES']['VOLUME']))
 	$volumeDisplay = is_array($v) ? implode(', ', $v) : (string)$v;
 }
 
+$countryName = '';
+$countryDisplay = '';
+if (!empty($actualItem['DISPLAY_PROPERTIES']['COUNTRY']))
+{
+	$cprop = $actualItem['DISPLAY_PROPERTIES']['COUNTRY'];
+	$countryName = (string)($cprop['NAME'] ?? '');
+	$countryDisplay = $cprop['DISPLAY_VALUE'] ?? $cprop['VALUE'] ?? '';
+	if (is_array($countryDisplay))
+	{
+		$countryDisplay = implode(', ', $countryDisplay);
+	}
+}
+elseif (!empty($actualItem['PROPERTIES']['COUNTRY']))
+{
+	$cprop = $actualItem['PROPERTIES']['COUNTRY'];
+	$countryName = (string)($cprop['NAME'] ?? '');
+	$v = $cprop['VALUE'] ?? '';
+	$countryDisplay = is_array($v) ? implode(', ', $v) : (string)$v;
+	if ($countryDisplay === '' && !empty($cprop['VALUE_ENUM']))
+	{
+		$ve = $cprop['VALUE_ENUM'];
+		$countryDisplay = is_array($ve) ? implode(', ', $ve) : (string)$ve;
+	}
+}
+
 $skuProps = array();
 $price = $actualItem['ITEM_PRICES'][$actualItem['ITEM_PRICE_SELECTED']];
 $measureRatio = $actualItem['ITEM_MEASURE_RATIOS'][$actualItem['ITEM_MEASURE_RATIO_SELECTED']]['RATIO'];
@@ -407,11 +432,24 @@ $podexpertShowHeroDebug = isset($_GET['debug_hero']) && (string)$_GET['debug_her
 							<?=htmlspecialcharsEx($name)?>
 						</h1>
 						<?php
-						if ($volumeDisplay !== '')
+						if ($volumeDisplay !== '' || $countryDisplay !== '')
 						{
 							?>
 						<p class="mt-2 font-bold text-neutral-800">
-							<span><?= $volumeName !== '' ? htmlspecialcharsEx($volumeName).': ' : '' ?><?=htmlspecialcharsEx($volumeDisplay)?></span>
+							<?php
+							if ($volumeDisplay !== '')
+							{
+								?>
+							<span class="block"><?= $volumeName !== '' ? htmlspecialcharsEx($volumeName).': ' : '' ?><?=htmlspecialcharsEx($volumeDisplay)?></span>
+								<?php
+							}
+							if ($countryDisplay !== '')
+							{
+								?>
+							<span class="block<?= $volumeDisplay !== '' ? ' mt-1' : '' ?>"><?= $countryName !== '' ? htmlspecialcharsEx($countryName).': ' : '' ?><?=htmlspecialcharsEx($countryDisplay)?></span>
+								<?php
+							}
+							?>
 						</p>
 							<?php
 						}
