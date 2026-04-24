@@ -24,9 +24,6 @@ if ($iblockId <= 0) {
     return;
 }
 
-?>
-<div class="container">
-<?php
 $APPLICATION->IncludeComponent(
 	"bitrix:catalog", 
 	"medical_store", 
@@ -61,13 +58,13 @@ $APPLICATION->IncludeComponent(
 		],
 		"USE_MAIN_ELEMENT_SECTION" => "Y",
 		"DETAIL_PROPERTY_CODE" => [
-			0 => "-",
+			0 => "GALLERY",
 		],
 		"LIST_PROPERTY_CODE" => [
 			0 => "-",
 		],
 		"DETAIL_OFFERS_PROPERTY_CODE" => [
-			0 => "-",
+			0 => "GALLERY",
 		],
 		"LIST_META_KEYWORDS" => "-",
 		"LIST_META_DESCRIPTION" => "-",
@@ -180,10 +177,8 @@ $APPLICATION->IncludeComponent(
 		"DETAIL_PRODUCT_PAY_BLOCK_ORDER" => "rating,price,priceRanges,quantityLimit,quantity,buttons",
 		"DETAIL_SHOW_SLIDER" => "N",
 		"DETAIL_DETAIL_PICTURE_MODE" => [
-			0 => "POPUP",
-			1 => "MAGNIFIER",
 		],
-		"DETAIL_ADD_DETAIL_TO_SLIDER" => "N",
+		"DETAIL_ADD_DETAIL_TO_SLIDER" => "Y",
 		"DETAIL_DISPLAY_PREVIEW_TEXT_MODE" => "E",
 		"MESS_PRICE_RANGES_TITLE" => "Цены",
 		"MESS_DESCRIPTION_TAB" => "Описание",
@@ -229,7 +224,8 @@ $APPLICATION->IncludeComponent(
 		"LOAD_ON_SCROLL" => "N",
 		"DISABLE_INIT_JS_IN_COMPONENT" => "N",
 		"DETAIL_SET_VIEWED_IN_COMPONENT" => "N",
-		"ADD_PICT_PROP" => "-",
+		"ADD_PICT_PROP" => "GALLERY",
+		"OFFER_ADD_PICT_PROP" => "GALLERY",
 		"LABEL_PROP" => [
 		],
 		"LIST_PROPERTY_CODE_MOBILE" => [
@@ -256,7 +252,5 @@ $APPLICATION->IncludeComponent(
 	],
 	false
 );
-?>
-</div>
-<?php
+
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/footer.php';

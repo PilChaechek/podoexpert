@@ -1,6 +1,8 @@
 <?php
 if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 
+require_once __DIR__ . '/gallery_photos.php';
+
 use Bitrix\Main\Localization\Loc;
 use Bitrix\Catalog\ProductTable;
 
@@ -93,21 +95,10 @@ $alt = !empty($arResult['IPROPERTY_VALUES']['ELEMENT_DETAIL_PICTURE_FILE_ALT'])
 if ($haveOffers)
 {
 	$actualItem = $arResult['OFFERS'][$arResult['OFFERS_SELECTED']] ?? reset($arResult['OFFERS']);
-	$showSliderControls = false;
-
-	foreach ($arResult['OFFERS'] as $offer)
-	{
-		if ($offer['MORE_PHOTO_COUNT'] > 1)
-		{
-			$showSliderControls = true;
-			break;
-		}
-	}
 }
 else
 {
 	$actualItem = $arResult;
-	$showSliderControls = $arResult['MORE_PHOTO_COUNT'] > 1;
 }
 
 $volumeName = '';
@@ -218,85 +209,128 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 		$labelPositionClass .= isset($positionClassMap[$pos]) ? ' '.$positionClassMap[$pos] : '';
 	}
 }
+
+$podexpertGalleryPhotos = medical_store_podexpert_gallery_photos($arResult, $arParams);
+$showSliderControls = count($podexpertGalleryPhotos) > 1;
+$podexpertGlightboxElements = array();
+foreach ($podexpertGalleryPhotos as $gp)
+{
+	$podexpertGlightboxElements[] = array(
+		'href' => $gp['SRC'],
+		'type' => 'image',
+		'alt' => $alt,
+		'zoomable' => false,
+		'draggable' => true,
+	);
+}
+$podexpertCatalogGalleryJs = array();
+foreach ($podexpertGalleryPhotos as $gp)
+{
+	$podexpertCatalogGalleryJs[] = array(
+		'ID' => (int)($gp['ID'] ?? 0),
+		'SRC' => (string)($gp['SRC'] ?? ''),
+		'WIDTH' => (int)($gp['WIDTH'] ?? 0),
+		'HEIGHT' => (int)($gp['HEIGHT'] ?? 0),
+	);
+}
+$podexpertShowHeroDebug = isset($_GET['debug_hero']) && (string)$_GET['debug_hero'] !== '0';
 ?>
-<div class="bx-catalog-element bx-<?=$arParams['TEMPLATE_THEME']?>" id="<?=$itemIds['ID']?>"
+<div class="product-tmp" id="<?=$itemIds['ID']?>"
 	itemscope itemtype="http://schema.org/Product">
+	<script>window.PODEXPERT_CATALOG_GALLERY_SLIDER=<?=CUtil::PhpToJSObject($podexpertCatalogGalleryJs, false, false, true)?>;</script>
+	<?php if (!empty($podexpertShowHeroDebug)): ?>
+	<script>window.__PODEXPERT_CATALOG_HERO_DEBUG=1;</script>
+	<div class="mb-4 max-w-4xl rounded border border-amber-600/80 bg-amber-50 p-3 text-left text-xs text-neutral-900" id="podexpert-hero-debug-wrap" role="region" aria-label="Отладка product-hero (debug_hero)">
+		<div class="mb-1 text-[11px] text-neutral-600">URL-параметр <code>debug_hero=1</code> · <code>window.__PODEXPERT_HERO_DEBUG</code> · при флаге — консоль: <code>[podexpert-hero]</code></div>
+		<pre id="podexpert-hero-debug" class="m-0 max-h-96 overflow-auto whitespace-pre-wrap break-words font-mono">ожидание init…</pre>
+	</div>
+	<?php endif; ?>
 	<section class="section section--t2 product">
 		<div class="container">
 			<div class="grid grid-cols-1 gap-8 items-start mt-6 lg:mt-8 lg:grid-cols-2 lg:gap-x-12">
 				<div class="min-w-0 order-1 lg:order-1 w-full">
 					<div class="product-hero w-full max-w-2xl mx-auto lg:mx-0 lg:max-w-none">
-				<div class="product-item-detail-slider-container" id="<?=$itemIds['BIG_SLIDER_ID']?>">
-					<span class="product-item-detail-slider-close" data-entity="close-popup"></span>
-					<div class="product-item-detail-slider-block
-						<?=($arParams['IMAGE_RESOLUTION'] === '1by1' ? 'product-item-detail-slider-block-square' : '')?>"
-						data-entity="images-slider-block">
-						<span class="product-item-detail-slider-left" data-entity="slider-control-left" style="display: none;"></span>
-						<span class="product-item-detail-slider-right" data-entity="slider-control-right" style="display: none;"></span>
-						<div class="product-item-label-text <?=$labelPositionClass?>" id="<?=$itemIds['STICKER_ID']?>"
-							<?=(!$arResult['LABEL'] ? 'style="display: none;"' : '' )?>>
+				<div class="relative w-full" id="<?=$itemIds['BIG_SLIDER_ID']?>" data-product-hero-root="1">
+					<span class="hidden" data-entity="close-popup" aria-hidden="true"></span>
+					<div class="!pt-0 !h-auto w-full" data-entity="images-slider-block" data-podexpert-hero="1">
+						<span class="hidden" data-entity="slider-control-left" aria-hidden="true"></span>
+						<span class="hidden" data-entity="slider-control-right" aria-hidden="true"></span>
+						<div class="product-hero__main-wrap relative aspect-square w-full overflow-hidden bg-neutral-50 rounded-sm">
+							<div class="product-item-label-text <?=$labelPositionClass?> absolute left-0 top-0 z-20 max-w-[min(100%,20rem)]" id="<?=$itemIds['STICKER_ID']?>"
+								<?=(!$arResult['LABEL'] ? 'style="display: none;"' : '' )?>>
+								<?php
+								if ($arResult['LABEL'] && !empty($arResult['LABEL_ARRAY_VALUE']))
+								{
+									foreach ($arResult['LABEL_ARRAY_VALUE'] as $code => $value)
+									{
+										?>
+										<div<?=(!isset($arParams['LABEL_PROP_MOBILE'][$code]) ? ' class="hidden-xs"' : '')?>>
+											<span title="<?=$value?>"><?=$value?></span>
+										</div>
+										<?php
+									}
+								}
+								?>
+							</div>
 							<?php
-							if ($arResult['LABEL'] && !empty($arResult['LABEL_ARRAY_VALUE']))
+							if ($arParams['SHOW_DISCOUNT_PERCENT'] === 'Y')
 							{
-								foreach ($arResult['LABEL_ARRAY_VALUE'] as $code => $value)
+								if ($haveOffers)
 								{
 									?>
-									<div<?=(!isset($arParams['LABEL_PROP_MOBILE'][$code]) ? ' class="hidden-xs"' : '')?>>
-										<span title="<?=$value?>"><?=$value?></span>
+									<div class="product-item-label-ring <?=$discountPositionClass?> absolute z-20" id="<?=$itemIds['DISCOUNT_PERCENT_ID']?>"
+										style="display: none;">
 									</div>
 									<?php
 								}
+								else
+								{
+									if ($price['DISCOUNT'] > 0)
+									{
+										?>
+										<div class="product-item-label-ring <?=$discountPositionClass?> absolute z-20" id="<?=$itemIds['DISCOUNT_PERCENT_ID']?>"
+											title="<?=-$price['PERCENT']?>%">
+											<span><?=-$price['PERCENT']?>%</span>
+										</div>
+										<?php
+									}
+								}
 							}
 							?>
-						</div>
-						<?php
-						if ($arParams['SHOW_DISCOUNT_PERCENT'] === 'Y')
-						{
-							if ($haveOffers)
+							<div class="h-full" data-entity="images-container">
+							<?php
+							if (!empty($podexpertGalleryPhotos))
 							{
 								?>
-								<div class="product-item-label-ring <?=$discountPositionClass?>" id="<?=$itemIds['DISCOUNT_PERCENT_ID']?>"
-									style="display: none;">
+								<div class="swiper product-hero__main js-product-hero-main h-full w-full" aria-label="Галерея товара">
+									<div class="swiper-wrapper">
+								<?php
+								foreach ($podexpertGalleryPhotos as $key => $photo)
+								{
+									?>
+									<div class="swiper-slide h-full w-full !flex items-center justify-center p-2">
+										<div class="h-full w-full max-h-full<?=($key == 0 ? ' active' : '')?>" data-entity="image" data-id="<?=(int)$photo['ID']?>">
+											<img class="h-full w-full object-contain object-center" src="<?=htmlspecialchars($photo['SRC'])?>" alt="<?=htmlspecialchars($alt)?>" title="<?=htmlspecialchars($title)?>" loading="<?= $key === 0 ? 'eager' : 'lazy' ?>" decoding="async"<?=($key == 0 ? ' itemprop="image"' : '')?>>
+										</div>
+									</div>
+									<?php
+								}
+								?>
+									</div>
 								</div>
 								<?php
 							}
-							else
-							{
-								if ($price['DISCOUNT'] > 0)
-								{
-									?>
-									<div class="product-item-label-ring <?=$discountPositionClass?>" id="<?=$itemIds['DISCOUNT_PERCENT_ID']?>"
-										title="<?=-$price['PERCENT']?>%">
-										<span><?=-$price['PERCENT']?>%</span>
-									</div>
-									<?php
-								}
-							}
-						}
-						?>
-						<div class="product-item-detail-slider-images-container" data-entity="images-container">
-							<?php
-							if (!empty($actualItem['MORE_PHOTO']))
-							{
-								foreach ($actualItem['MORE_PHOTO'] as $key => $photo)
-								{
-									?>
-									<div class="product-item-detail-slider-image<?=($key == 0 ? ' active' : '')?>" data-entity="image" data-id="<?=$photo['ID']?>">
-										<img src="<?=$photo['SRC']?>" alt="<?=$alt?>" title="<?=$title?>"<?=($key == 0 ? ' itemprop="image"' : '')?>>
-									</div>
-									<?php
-								}
-							}
-
 							if ($arParams['SLIDER_PROGRESS'] === 'Y')
 							{
 								?>
-								<div class="product-item-detail-slider-progress-bar" data-entity="slider-progress-bar" style="width: 0;"></div>
+								<div class="absolute bottom-0 left-0 z-[180] h-0.5 w-0 bg-neutral-400" data-entity="slider-progress-bar" style="width: 0;"></div>
 								<?php
 							}
 							?>
+							</div>
 						</div>
 					</div>
+					<script type="application/json" id="product-hero-glightbox-elements"><?= htmlspecialcharsbx(json_encode($podexpertGlightboxElements, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?></script>
 					<?php
 					if ($showSliderControls)
 					{
@@ -304,23 +338,29 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 						{
 							foreach ($arResult['OFFERS'] as $keyOffer => $offer)
 							{
-								if (!isset($offer['MORE_PHOTO_COUNT']) || $offer['MORE_PHOTO_COUNT'] <= 0)
-									continue;
-
 								$strVisible = $arResult['OFFERS_SELECTED'] == $keyOffer ? '' : 'none';
 								?>
-								<div class="product-item-detail-slider-controls-block" id="<?=$itemIds['SLIDER_CONT_OF_ID'].$offer['ID']?>" style="display: <?=$strVisible?>;">
+								<div id="<?=$itemIds['SLIDER_CONT_OF_ID'].$offer['ID']?>" style="display: <?=$strVisible?>;">
+									<div class="swiper product-hero__thumbs js-product-hero-thumbs mt-4 w-full min-w-0 max-w-full self-start" aria-label="Миниатюры">
+										<div class="swiper-wrapper">
 									<?php
-									foreach ($offer['MORE_PHOTO'] as $keyPhoto => $photo)
+									if (!empty($podexpertGalleryPhotos))
+									{
+									foreach ($podexpertGalleryPhotos as $keyPhoto => $photo)
 									{
 										?>
-										<div class="product-item-detail-slider-controls-image<?=($keyPhoto == 0 ? ' active' : '')?>"
-											data-entity="slider-control" data-value="<?=$offer['ID'].'_'.$photo['ID']?>">
-											<img src="<?=$photo['SRC']?>">
+										<div class="swiper-slide h-auto cursor-pointer">
+										<div class="product-hero__thumb box-border aspect-square w-full overflow-hidden rounded border-2 border-transparent bg-neutral-50 p-0.5 transition-[border-color,opacity]<?=($keyPhoto == 0 ? ' active' : '')?>"
+											data-entity="slider-control" data-value="<?=(int)$offer['ID']?>_<?=(int)$photo['ID']?>">
+											<img class="h-full w-full object-contain" src="<?=htmlspecialchars($photo['SRC'])?>" alt="" loading="lazy" decoding="async" sizes="(max-width: 640px) 15vw, 60px">
+										</div>
 										</div>
 										<?php
 									}
+									}
 									?>
+										</div>
+									</div>
 								</div>
 								<?php
 							}
@@ -328,21 +368,27 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 						else
 						{
 							?>
-							<div class="product-item-detail-slider-controls-block" id="<?=$itemIds['SLIDER_CONT_ID']?>">
-								<?php
-								if (!empty($actualItem['MORE_PHOTO']))
+							<div id="<?=$itemIds['SLIDER_CONT_ID']?>">
+								<div class="swiper product-hero__thumbs js-product-hero-thumbs mt-4 w-full min-w-0 max-w-full self-start" aria-label="Миниатюры">
+									<div class="swiper-wrapper">
+							<?php
+							if (!empty($podexpertGalleryPhotos))
+							{
+								foreach ($podexpertGalleryPhotos as $key => $photo)
 								{
-									foreach ($actualItem['MORE_PHOTO'] as $key => $photo)
-									{
-										?>
-										<div class="product-item-detail-slider-controls-image<?=($key == 0 ? ' active' : '')?>"
-											data-entity="slider-control" data-value="<?=$photo['ID']?>">
-											<img src="<?=$photo['SRC']?>">
-										</div>
-										<?php
-									}
+									?>
+									<div class="swiper-slide h-auto cursor-pointer">
+									<div class="product-hero__thumb box-border aspect-square w-full overflow-hidden rounded border-2 border-transparent bg-neutral-50 p-0.5 transition-[border-color,opacity]<?=($key == 0 ? ' active' : '')?>"
+										data-entity="slider-control" data-value="<?=(int)$photo['ID']?>">
+										<img class="h-full w-full object-contain" src="<?=htmlspecialchars($photo['SRC'])?>" alt="" loading="lazy" decoding="async" sizes="(max-width: 640px) 15vw, 60px">
+									</div>
+									</div>
+									<?php
 								}
-								?>
+							}
+							?>
+									</div>
+								</div>
 							</div>
 							<?php
 						}
@@ -1314,6 +1360,8 @@ $jsParams["IS_FACEBOOK_CONVERSION_CUSTOMIZE_PRODUCT_EVENT_ENABLED"] =
 	});
 
 	var <?=$obName?> = new JCCatalogElement(<?=CUtil::PhpToJSObject($jsParams, false, true)?>);
+	window.podexpertCatalogElement = <?=$obName?>;
 </script>
+<script src="<?=$this->GetFolder()?>/product_hero_gallery.js" defer></script>
 <?php
 unset($actualItem, $itemIds, $jsParams);

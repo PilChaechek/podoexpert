@@ -26,12 +26,7 @@ else
 	$basketAction = (isset($arParams['DETAIL_ADD_TO_BASKET_ACTION']) ? $arParams['DETAIL_ADD_TO_BASKET_ACTION'] : array());
 }
 
-$isSidebar = ($arParams['SIDEBAR_DETAIL_SHOW'] == 'Y' && !empty($arParams['SIDEBAR_PATH']));
-?>
-<div>
-	<div>
-		<?
-		if ($arParams["USE_COMPARE"] === "Y")
+if ($arParams["USE_COMPARE"] === "Y")
 		{
 			$APPLICATION->IncludeComponent(
 				"bitrix:catalog.compare.list",
@@ -681,23 +676,3 @@ $isSidebar = ($arParams['SIDEBAR_DETAIL_SHOW'] == 'Y' && !empty($arParams['SIDEB
 			}
 		}
 		?>
-	</div>
-	<? if ($isSidebar): ?>
-		<div>
-			<?
-			$APPLICATION->IncludeComponent(
-				'bitrix:main.include',
-				'',
-				array(
-					'AREA_FILE_SHOW' => 'file',
-					'PATH' => $arParams['SIDEBAR_PATH'],
-					'AREA_FILE_RECURSIVE' => 'N',
-					'EDIT_MODE' => 'html',
-				),
-				false,
-				array('HIDE_ICONS' => 'Y')
-			);
-			?>
-		</div>
-	<? endif ?>
-</div>

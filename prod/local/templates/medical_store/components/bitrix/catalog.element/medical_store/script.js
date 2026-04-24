@@ -132,6 +132,10 @@
 			controls: []
 		};
 
+		this.productHeroMainSwiper = null;
+		this.productHeroThumbsSwiper = null;
+		this.productHeroGlightbox = null;
+
 		this.quantityDelay = null;
 		this.quantityTimer = null;
 
@@ -553,6 +557,7 @@
 					case 7: // service
 						if (this.product.useSlider)
 						{
+							var isPodexpertHero = this.node.imageSliderBlock && this.node.imageSliderBlock.getAttribute('data-podexpert-hero') === '1';
 							this.product.slider = {
 								ID: this.visual.SLIDER_CONT_ID,
 								CONT: BX(this.visual.SLIDER_CONT_ID),
@@ -561,8 +566,11 @@
 							this.product.slider.ITEMS = this.getEntities(this.product.slider.CONT, 'slider-control');
 							for (j = 0; j < this.product.slider.ITEMS.length; j++)
 							{
-								BX.bind(this.product.slider.ITEMS[j], 'mouseenter', BX.delegate(this.onSliderControlHover, this));
-								BX.bind(this.product.slider.ITEMS[j], 'mouseleave', BX.delegate(this.onSliderControlLeave, this));
+								if (!isPodexpertHero)
+								{
+									BX.bind(this.product.slider.ITEMS[j], 'mouseenter', BX.delegate(this.onSliderControlHover, this));
+									BX.bind(this.product.slider.ITEMS[j], 'mouseleave', BX.delegate(this.onSliderControlLeave, this));
+								}
 								BX.bind(this.product.slider.ITEMS[j], 'click', BX.delegate(this.selectSliderImg, this));
 							}
 
@@ -580,6 +588,8 @@
 						this.setAnalyticsDataLayer('showDetail');
 						break;
 					case 3: // sku
+					{
+						var isPodexpertHeroSku = this.node.imageSliderBlock && this.node.imageSliderBlock.getAttribute('data-podexpert-hero') === '1';
 						treeItems = this.obTree.querySelectorAll('li');
 						for (i = 0; i < treeItems.length; i++)
 						{
@@ -616,15 +626,18 @@
 								this.slider.controls[i].ITEMS = this.getEntities(this.slider.controls[i].CONT, 'slider-control');
 								for (j = 0; j < this.slider.controls[i].ITEMS.length; j++)
 								{
-									BX.bind(this.slider.controls[i].ITEMS[j], 'mouseenter', BX.delegate(this.onSliderControlHover, this));
-									BX.bind(this.slider.controls[i].ITEMS[j], 'mouseleave', BX.delegate(this.onSliderControlLeave, this));
+									if (!isPodexpertHeroSku)
+									{
+										BX.bind(this.slider.controls[i].ITEMS[j], 'mouseenter', BX.delegate(this.onSliderControlHover, this));
+										BX.bind(this.slider.controls[i].ITEMS[j], 'mouseleave', BX.delegate(this.onSliderControlLeave, this));
+									}
 									BX.bind(this.slider.controls[i].ITEMS[j], 'click', BX.delegate(this.selectSliderImg, this));
 								}
 							}
 						}
-
 						this.setCurrent();
 						break;
+					}
 				}
 
 				this.obBuyBtn && BX.bind(this.obBuyBtn, 'click', BX.proxy(this.buyBasket, this));
@@ -801,6 +814,26 @@
 			if (this.params.OFFERS && BX.type.isArray(this.params.OFFERS))
 			{
 				this.offers = this.params.OFFERS;
+				(function (self) {
+					var g = window.PODEXPERT_CATALOG_GALLERY_SLIDER, i, j, p;
+					if (BX.type.isArray(g) && g.length > 0)
+					{
+						for (j = 0; j < g.length; j++)
+						{
+							p = g[j];
+							if (p)
+							{
+								p.WIDTH = parseInt(p.WIDTH, 10);
+								p.HEIGHT = parseInt(p.HEIGHT, 10);
+							}
+						}
+						for (i = 0; i < self.offers.length; i++)
+						{
+							self.offers[i].SLIDER = g;
+							self.offers[i].SLIDER_COUNT = g.length;
+						}
+					}
+				}(this));
 				this.offerNum = 0;
 
 				if (this.params.OFFER_SELECTED)
@@ -1370,13 +1403,21 @@
 		{
 			var display = count > 1 ? '' : 'none';
 
+			if (
+				this.node.imageSliderBlock
+				&& this.node.imageSliderBlock.getAttribute('data-podexpert-hero') === '1'
+			)
+			{
+				display = 'none';
+			}
+
 			this.node.sliderControlLeft && (this.node.sliderControlLeft.style.display = display);
 			this.node.sliderControlRight && (this.node.sliderControlRight.style.display = display);
 		},
 
 		setCurrentImg: function(img, showImage, showPanelImage)
 		{
-			var images, l;
+			var images, l, k, sid, idxSlide = -1;
 
 			this.currentImg.id = img.ID;
 			this.currentImg.src = img.SRC;
@@ -1403,6 +1444,28 @@
 						BX.removeClass(images[l], 'active');
 					}
 				}
+			}
+
+			if (showImage && this.productHeroMainSwiper && this.node.imageContainer)
+			{
+				sid = String(img.ID);
+				images = this.getEntities(this.node.imageContainer, 'image');
+				for (k = 0; k < images.length; k++)
+				{
+					if (String(images[k].getAttribute('data-id')) === sid)
+					{
+						idxSlide = k;
+						break;
+					}
+				}
+				if (idxSlide > -1 && this.productHeroMainSwiper.activeIndex !== idxSlide)
+				{
+					this.productHeroMainSwiper.slideTo(idxSlide, 0, false);
+				}
+			}
+			if (showImage)
+			{
+				this.podexpertSyncThumbsToCurrentImg();
 			}
 
 			if (showPanelImage && this.smallCardNodes.picture)
@@ -2674,47 +2737,132 @@
 			}
 			BX.adjust(this.obDescription, {html: currentDescription});
 		},
+		podexpertSyncThumbsToCurrentImg: function()
+		{
+			if (!this.product.slider || !this.product.slider.ITEMS || this.product.slider.ITEMS.length === 0)
+			{
+				return;
+			}
+
+			var i,
+				v,
+				need = String(this.currentImg.id),
+				tv;
+
+			if (this.offers && this.offers.length > 0 && this.offers[this.offerNum])
+			{
+				need = String(this.offers[this.offerNum].ID) + '_' + need;
+			}
+
+			for (i = 0; i < this.product.slider.ITEMS.length; i++)
+			{
+				v = this.product.slider.ITEMS[i].getAttribute('data-value');
+				if (v === need)
+				{
+					BX.addClass(this.product.slider.ITEMS[i], 'active');
+					if (this.productHeroThumbsSwiper)
+					{
+						tv = BX.util.array_values(this.product.slider.ITEMS).indexOf(this.product.slider.ITEMS[i]);
+						if (tv > -1 && this.productHeroThumbsSwiper.activeIndex !== tv)
+						{
+							this.productHeroThumbsSwiper.slideTo(tv, 0, false);
+						}
+					}
+				}
+				else if (BX.hasClass(this.product.slider.ITEMS[i], 'active'))
+				{
+					BX.removeClass(this.product.slider.ITEMS[i], 'active');
+				}
+			}
+		},
+
 		drawImages: function(images)
 		{
 			if (!this.node.imageContainer)
-				return;
-
-			var i, img, entities = this.getEntities(this.node.imageContainer, 'image');
-			for (i in entities)
 			{
-				if (entities.hasOwnProperty(i) && BX.type.isDomNode(entities[i]))
-				{
-					BX.remove(entities[i]);
-				}
+				return;
 			}
 
-			for (i = 0; i < images.length; i++)
+			var i,
+				img,
+				pb = this.node.sliderProgressBar,
+				swiperEl,
+				wrapper,
+				slide,
+				inner,
+				glJson,
+				els,
+				self = this;
+
+			if (pb && pb.parentNode)
 			{
-				img = BX.create('IMG', {
-					props: {
-						src: images[i].SRC,
-						alt: this.config.alt,
-						title: this.config.title
-					}
+				pb.parentNode.removeChild(pb);
+			}
+
+			BX.cleanNode(this.node.imageContainer);
+
+			if (BX.type.isArray(images) && images.length > 0)
+			{
+				swiperEl = BX.create('DIV', {
+					props: { className: 'swiper product-hero__main js-product-hero-main h-full w-full' }
 				});
+				wrapper = BX.create('DIV', { props: { className: 'swiper-wrapper' } });
 
-				if (i == 0)
+				for (i = 0; i < images.length; i++)
 				{
-					img.setAttribute('itemprop', 'image');
-				}
+					img = BX.create('IMG', {
+						props: {
+							src: images[i].SRC,
+							alt: this.config.alt,
+							title: this.config.title
+						}
+					});
 
-				this.node.imageContainer.appendChild(
-					BX.create('DIV', {
+					if (i == 0)
+					{
+						img.setAttribute('itemprop', 'image');
+					}
+
+					inner = BX.create('DIV', {
 						attrs: {
 							'data-entity': 'image',
 							'data-id': images[i].ID
 						},
 						props: {
-							className: 'product-item-detail-slider-image' + (i == 0 ? ' active' : '')
+							className: 'h-full w-full max-h-full' + (i == 0 ? ' active' : '')
 						},
 						children: [img]
-					})
-				);
+					});
+
+					slide = BX.create('DIV', {
+						props: { className: 'swiper-slide h-full w-full !flex items-center justify-center p-2' },
+						children: [inner]
+					});
+					wrapper.appendChild(slide);
+				}
+
+				swiperEl.appendChild(wrapper);
+				this.node.imageContainer.appendChild(swiperEl);
+			}
+
+			if (pb)
+			{
+				this.node.imageContainer.appendChild(pb);
+			}
+
+			glJson = document.getElementById('product-hero-glightbox-elements');
+			// Только при непустом SLIDER: иначе [] перезатрёт JSON из шаблона, podexpertProductHeroRefresh не создаст GLightbox.
+			if (glJson && BX.type.isArray(images) && images.length > 0)
+			{
+				els = images.map(function (p) {
+					return { href: p.SRC, type: 'image', alt: self.config.alt, zoomable: false, draggable: true };
+				});
+				glJson.textContent = JSON.stringify(els);
+			}
+
+			if (window.podexpertProductHeroRefresh)
+			{
+				window.podexpertProductHeroRefresh(this.node.imageContainer, this);
 			}
 		},
 

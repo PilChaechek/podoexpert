@@ -112,11 +112,7 @@ $cartCountBadge = function_exists('podexpert_basket_count_badge_text')
 
                 </div>
 
-                <div class="page-header__mobile-menu">
-                    <button type="button" class="btn-reset mobile-menu-open" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu" onclick="document.body.classList.add('show-mobile-nav')">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/></svg>
-                    </button>
-                </div>
+
 
                 <div class="page-header__search">
                     <form class="page-header__search-form flex w-full items-center relative" action="/search/" method="get" role="search">
