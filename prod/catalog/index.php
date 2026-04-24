@@ -28,12 +28,12 @@ if ($iblockId <= 0) {
 <div class="container">
 <?php
 $APPLICATION->IncludeComponent(
-	"bitrix:catalog",
-	"medical_store",
+	"bitrix:catalog", 
+	"medical_store", 
 	[
-		"IBLOCK_TYPE" => $iblockType,
-		"IBLOCK_ID" => $iblockId,
-		"TEMPLATE_THEME" => "blue",
+		"IBLOCK_TYPE" => "catalog",
+		"IBLOCK_ID" => "11",
+		"TEMPLATE_THEME" => "",
 		"HIDE_NOT_AVAILABLE" => "Y",
 		"HIDE_NOT_AVAILABLE_OFFERS" => "Y",
 		"SHOW_DEACTIVATED" => "N",
@@ -52,11 +52,12 @@ $APPLICATION->IncludeComponent(
 			2 => "",
 		],
 		"FILTER_PROPERTY_CODE" => [
-			0 => "",
+			0 => "VOLUME",
 			1 => "-",
 			2 => "",
 		],
 		"FILTER_PRICE_CODE" => [
+			0 => "base",
 		],
 		"USE_MAIN_ELEMENT_SECTION" => "Y",
 		"DETAIL_PROPERTY_CODE" => [
@@ -118,9 +119,9 @@ $APPLICATION->IncludeComponent(
 		"FILE_404" => "",
 		"COMPONENT_TEMPLATE" => "medical_store",
 		"COMMON_SHOW_CLOSE_POPUP" => "N",
-		"PRODUCT_SUBSCRIPTION" => "Y",
+		"PRODUCT_SUBSCRIPTION" => "N",
 		"SHOW_DISCOUNT_PERCENT" => "N",
-		"SHOW_OLD_PRICE" => "N",
+		"SHOW_OLD_PRICE" => "Y",
 		"SHOW_MAX_QUANTITY" => "N",
 		"MESS_BTN_BUY" => "Купить",
 		"MESS_BTN_ADD_TO_BASKET" => "В корзину",
@@ -188,8 +189,8 @@ $APPLICATION->IncludeComponent(
 		"MESS_DESCRIPTION_TAB" => "Описание",
 		"MESS_PROPERTIES_TAB" => "Характеристики",
 		"MESS_COMMENTS_TAB" => "Комментарии",
-		"DETAIL_SHOW_POPULAR" => "Y",
-		"DETAIL_SHOW_VIEWED" => "Y",
+		"DETAIL_SHOW_POPULAR" => "N",
+		"DETAIL_SHOW_VIEWED" => "N",
 		"LINK_IBLOCK_TYPE" => "",
 		"LINK_IBLOCK_ID" => "",
 		"LINK_PROPERTY_SID" => "",
@@ -228,6 +229,18 @@ $APPLICATION->IncludeComponent(
 		"LOAD_ON_SCROLL" => "N",
 		"DISABLE_INIT_JS_IN_COMPONENT" => "N",
 		"DETAIL_SET_VIEWED_IN_COMPONENT" => "N",
+		"ADD_PICT_PROP" => "-",
+		"LABEL_PROP" => [
+		],
+		"LIST_PROPERTY_CODE_MOBILE" => [
+		],
+		"LIST_PRODUCT_BLOCKS_ORDER" => "price,props,sku,quantityLimit,quantity,buttons",
+		"LIST_PRODUCT_ROW_VARIANTS" => "[{'VARIANT':'3','BIG_DATA':false},{'VARIANT':'3','BIG_DATA':false},{'VARIANT':'3','BIG_DATA':false},{'VARIANT':'3','BIG_DATA':false},{'VARIANT':'3','BIG_DATA':false},{'VARIANT':'3','BIG_DATA':false}]",
+		"LIST_ENLARGE_PRODUCT" => "STRICT",
+		"LIST_SLIDER_INTERVAL" => "3000",
+		"LIST_SLIDER_PROGRESS" => "N",
+		"DETAIL_MAIN_BLOCK_PROPERTY_CODE" => [
+		],
 		"SEF_URL_TEMPLATES" => [
 			"sections" => "",
 			"section" => "#SECTION_CODE_PATH#/",

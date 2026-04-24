@@ -106,14 +106,18 @@ const glightboxElements = gallery.map((item) => ({
               class="text-2xl font-bold tabular-nums"
               style="color: var(--color-accent);"
             >
-              <span class="woocommerce-Price-amount amount" data-wg-notranslate="">2&nbsp;300&nbsp;руб</span>
+              <span class="price-amount" data-wg-notranslate="">2&nbsp;300&nbsp;руб</span>
             </span>
             <span
               class="text-sm font-medium tabular-nums text-neutral-500 line-through decoration-neutral-400"
               aria-label="Прежняя цена 3 400 руб"
             >
-              <span class="woocommerce-Price-amount amount" data-wg-notranslate="">3&nbsp;400&nbsp;руб</span>
+              <span class="price-amount" data-wg-notranslate="">3&nbsp;400&nbsp;руб</span>
             </span>
+            <span
+              class="inline-block rounded-md px-2 py-0.5 text-sm font-medium tabular-nums"
+              style="background-color: var(--background-error); color: var(--color-error);"
+            >-10%</span>
           </p>
 
           <form class="cart product-cart pt-1" action="#" method="post" enctype="multipart/form-data">

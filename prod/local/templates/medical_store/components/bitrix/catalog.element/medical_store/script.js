@@ -2930,7 +2930,7 @@
 
 		setPrice: function()
 		{
-			var economyInfo = '', price;
+			var price;
 
 			if (this.obQuantity)
 			{
@@ -2978,9 +2978,7 @@
 
 						if (this.obPrice.discount)
 						{
-							economyInfo = BX.message('ECONOMY_INFO_MESSAGE');
-							economyInfo = economyInfo.replace('#ECONOMY#', BX.Currency.currencyFormat(price.RATIO_DISCOUNT, price.CURRENCY, true));
-							BX.adjust(this.obPrice.discount, {style: {display: ''}, html: economyInfo});
+							BX.adjust(this.obPrice.discount, {style: {display: 'inline-block'}, html: -price.PERCENT + '%'});
 						}
 					}
 

@@ -59,7 +59,23 @@ while ($ob = $res->GetNextElement()) {
         ? preg_replace('/\s+/u', ' ', trim(html_entity_decode(strip_tags($preview), ENT_QUOTES | ENT_HTML5, 'UTF-8')))
         : preg_replace('/\s+/u', ' ', $detailPlain);
 
-    $imgId = (int) ($fields['PREVIEW_PICTURE'] ?: $fields['DETAIL_PICTURE']);
+    $galleryFirstId = 0;
+    if (!empty($props['GALLERY']['VALUE'])) {
+        $gVal = $props['GALLERY']['VALUE'];
+        if (is_array($gVal)) {
+            $gVal = array_values(array_filter($gVal, static function ($id) {
+                return (int) $id > 0;
+            }));
+            if ($gVal !== []) {
+                $galleryFirstId = (int) $gVal[0];
+            }
+        } else {
+            $galleryFirstId = (int) $gVal;
+        }
+    }
+    $imgId = $galleryFirstId > 0
+        ? $galleryFirstId
+        : (int) ($fields['PREVIEW_PICTURE'] ?: $fields['DETAIL_PICTURE']);
     $imageSrc = $imgId ? (string) CFile::GetPath($imgId) : '';
 
     $priceCurrent = '';

@@ -16,8 +16,6 @@ use Bitrix\Catalog\ProductTable;
  * @var string $componentPath
  */
 
-$this->addExternalCss('/bitrix/css/main/bootstrap.css');
-
 global $APPLICATION;
 
 $positionClassMap = array(
