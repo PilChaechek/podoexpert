@@ -42,14 +42,14 @@ if ($iblockId > 0 && is_object($APPLICATION)) {
     }
 }
 
-array_unshift($aMenuLinks, [
-    'Все',
-    $sefFolder,
-    [],
-    [
-        'FROM_IBLOCK' => false,
-        'IS_PARENT' => false,
-        'DEPTH_LEVEL' => 1,
-    ],
-    '',
-]);
+//array_unshift($aMenuLinks, [
+//    'Все',
+//    $sefFolder,
+//    [],
+//    [
+//        'FROM_IBLOCK' => false,
+//        'IS_PARENT' => false,
+//        'DEPTH_LEVEL' => 1,
+//    ],
+//    '',
+//]);
