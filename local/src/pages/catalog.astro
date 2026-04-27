@@ -1,0 +1,226 @@
+---
+import type { ImageMetadata } from 'astro';
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import productArrowSvg from '../assets/icons/product-arrow.svg?raw';
+
+import img1 from '../assets/images/products/1.webp';
+import img2 from '../assets/images/products/2.webp';
+import img3 from '../assets/images/products/3.webp';
+import img4 from '../assets/images/products/4.webp';
+import img5 from '../assets/images/products/5.webp';
+import g1main from '../assets/images/products/serum-tc16/1-main.png';
+import g2main from '../assets/images/products/serum-tc16/2-main.png';
+import g3main from '../assets/images/products/serum-tc16/3-main.png';
+
+const catalogBreadcrumbs = [
+  { label: 'Главная', href: '/', home: true as const },
+  { label: 'AArkada', href: '/' },
+  { label: 'Магазин', href: '/catalog' },
+  { label: 'Хиты продаж' },
+];
+
+type CatalogCategory = { label: string; count: number; href: string; current?: boolean };
+
+const categories: CatalogCategory[] = [
+  { label: 'Магазин', count: 132, href: '/catalog' },
+  { label: 'Новинки', count: 24, href: '/catalog' },
+  { label: 'Аутлет', count: 8, href: '/catalog' },
+  { label: 'Хиты продаж', count: 16, href: '/catalog', current: true },
+  { label: 'Косметические серии', count: 41, href: '/catalog' },
+  { label: 'Инструменты подолога', count: 57, href: '/catalog' },
+  { label: 'Кожа и ногти', count: 63, href: '/catalog' },
+  { label: 'Для специалиста', count: 38, href: '/catalog' },
+  { label: 'Время отдохнуть', count: 19, href: '/catalog' },
+];
+
+type CatalogProduct = {
+  title: string;
+  description: string;
+  currentPrice: string;
+  previousLowestPrice?: string;
+  oldPrice?: string;
+  image: ImageMetadata;
+  badge?: string;
+};
+
+const products: CatalogProduct[] = [
+  {
+    title: "Коллагеновая сыворотка для ногтей Arkada's Serum TC16, 11 мл",
+    description: 'Объём: 11 мл',
+    currentPrice: '2 300 руб',
+    previousLowestPrice: 'Предыдущая минимальная цена: 2 100 руб.',
+    oldPrice: '3 400 руб',
+    image: img1,
+    badge: 'Хит',
+  },
+  {
+    title: "Набор коллагеновых сывороток Arkada's Serum TC16",
+    description: 'Набор 5+1',
+    currentPrice: '9 540 руб',
+    previousLowestPrice: 'Предыдущая минимальная цена: 9 200 руб.',
+    oldPrice: '20 400 руб',
+    image: img2,
+    badge: 'Хит',
+  },
+  {
+    title: "Гелевая сыворотка Arkada's Serum Gel",
+    description: 'Объём: 15 мл',
+    currentPrice: '2 700 руб',
+    previousLowestPrice: 'Предыдущая минимальная цена: 2 590 руб.',
+    oldPrice: '3 900 руб',
+    image: img3,
+  },
+  {
+    title: "Мазь для сухой кожи Arkada's Masc",
+    description: 'Для стоп, локтей, коленей и ладоней',
+    currentPrice: '2 590 руб',
+    previousLowestPrice: 'Предыдущая минимальная цена: 2 450 руб.',
+    oldPrice: '2 950 руб',
+    image: img4,
+    badge: 'Акция',
+  },
+  {
+    title: "Защитная жидкость Arkada's 08 Oil",
+    description: 'Для ногтей и кожи',
+    currentPrice: '2 990 руб',
+    image: img5,
+  },
+  {
+    title: "Пенка Arkada's Foam Relax",
+    description: 'Крем-пенка для рук и стоп',
+    currentPrice: '2 990 руб',
+    image: g1main,
+  },
+  {
+    title: 'Кератолитическая пенка AArkada',
+    description: 'Антибактериальный уход, размягчение натоптышей',
+    currentPrice: '2 990 руб',
+    previousLowestPrice: 'Предыдущая минимальная цена: 2 890 руб.',
+    image: g2main,
+  },
+  {
+    title: "Скраб сахарный с календулой Arkada's",
+    description: 'Мягкое обновление кожи',
+    currentPrice: '2 990 руб',
+    image: g3main,
+  },
+  {
+    title: "Кератолитический раствор Arkada's TT Sept",
+    description: 'Активное отшелушивание ороговевшего слоя',
+    currentPrice: '2 100 руб',
+    image: img3,
+  },
+];
+---
+
+<Layout title="Каталог — хиты продаж">
+
+  <section class="section section--t2 header-title">
+    <div class="container">
+      <Breadcrumbs items={catalogBreadcrumbs} />
+
+      <div class="header-title__center2">
+        <h1 class="header-title__heading text-3xl md:text-4xl font-bold">Каталог</h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--p0 catalog-page">
+    <div class="container">
+
+      <div class="catalog-page__layout">
+        <aside
+          class="catalog-page__sidebar bg-gray-100 p-5 lg:p-6 lg:self-start"
+          aria-label="Категории магазина"
+        >
+          <h2 class="m-0 text-lg font-bold text-neutral-900">Категории</h2>
+          <ul class="catalog-page__cat-list mt-4 list-none space-y-2 p-0 m-0">
+            {
+              categories.map((cat) => (
+                <li>
+                  {cat.current ? (
+                    <span class="font-bold text-neutral-900" aria-current="page">
+                      {cat.label} ({cat.count})
+                    </span>
+                  ) : (
+                    <a
+                      class="text-neutral-800 no-underline hover:underline focus-visible:underline"
+                      href={cat.href}
+                    >
+                      {cat.label} ({cat.count})
+                    </a>
+                  )}
+                </li>
+              ))
+            }
+          </ul>
+        </aside>
+
+        <div class="catalog-page__main min-w-0">
+          <div class="flex flex-wrap items-center justify-start gap-3 mb-6">
+            <button
+              type="button"
+              class="catalog-page__sort inline-flex items-center gap-2 border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-900 shadow-sm hover:bg-neutral-50 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-neutral-400"
+            >
+              Сортировка
+              <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                <path d="M7 10l5 5 5-5H7z" />
+              </svg>
+            </button>
+          </div>
+
+          <div
+            class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3 xl:gap-2"
+          >
+            {
+              products.map((product) => (
+                <article class="product-card relative h-full flex flex-col">
+                  {product.badge ? (
+                    <p class="product-card__badge bg-gray-800 z-[1]">{product.badge}</p>
+                  ) : null}
+                  <div class="product-card__media relative">
+                    <a href="/product/" class="link block">
+                      <img
+                        class="product-card__image"
+                        src={product.image.src}
+                        alt={product.title}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </a>
+                  </div>
+                  <div class="product-card__content">
+                    <h3 class="product-card__title">
+                      <a class="product-card__title-link" href="/product/">
+                        {product.title}
+                      </a>
+                    </h3>
+                    <p class="product-card__description">{product.description}</p>
+                    {product.previousLowestPrice && (
+                      <p class="mt-0 mb-2 text-sm text-neutral-500 leading-snug">
+                        {product.previousLowestPrice}
+                      </p>
+                    )}
+                    <div class="product-card__footer">
+                      <p class="product-card__price">
+                        <span class="product-card__price-current">{product.currentPrice}</span>
+                        {product.oldPrice && (
+                          <span class="product-card__price-old text-sm">{product.oldPrice}</span>
+                        )}
+                      </p>
+                      <a class="product-card__button btn btn-outline" href="/product/">
+                        Купить
+                        <Fragment set:html={productArrowSvg} />
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

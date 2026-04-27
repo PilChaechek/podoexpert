@@ -63,7 +63,7 @@ const { title, description, class: sectionHeaderClass, products } = Astro.props;
                         <p class="product-card__price">
                           <span class="product-card__price-current">{product.currentPrice}</span>
                           {product.oldPrice && (
-                              <span class="product-card__price-old">{product.oldPrice}</span>
+                              <span class="product-card__price-old text-sm">{product.oldPrice}</span>
                           )}
                         </p>
                         <a class="product-card__button btn btn-outline" href="#contact">

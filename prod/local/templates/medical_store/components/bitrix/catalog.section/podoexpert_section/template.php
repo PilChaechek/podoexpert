@@ -1,813 +1,285 @@
-<?php
-if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
-
-// Копия `bitrix_components/catalog.section/templates/.default/template.php` — кастом списка править здесь (как `medical_store` у catalog.element).
-
-use Bitrix\Main\Localization\Loc;
-use Bitrix\Catalog\ProductTable;
-
-/**
- * @global CMain $APPLICATION
- * @var array $arParams
- * @var array $arResult
- * @var CatalogSectionComponent $component
- * @var CBitrixComponentTemplate $this
- * @var string $templateName
- * @var string $componentPath
- *
- *  _________________________________________________________________________
- * |	Attention!
- * |	The following comments are for system use
- * |	and are required for the component to work correctly in ajax mode:
- * |	<!-- items-container -->
- * |	<!-- pagination-container -->
- * |	<!-- component-end -->
- */
-
+<?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
+/** @var array $arParams */
+/** @var array $arResult */
+/** @global CMain $APPLICATION */
+/** @global CUser $USER */
+/** @global CDatabase $DB */
+/** @var CBitrixComponentTemplate $this */
+/** @var string $templateName */
+/** @var string $templateFile */
+/** @var string $templateFolder */
+/** @var string $componentPath */
+/** @var CBitrixComponent $component */
 $this->setFrameMode(true);
-$this->addExternalCss('/bitrix/css/main/bootstrap.css');
-
-if (!empty($arResult['NAV_RESULT']))
-{
-	$navParams =  array(
-		'NavPageCount' => $arResult['NAV_RESULT']->NavPageCount,
-		'NavPageNomer' => $arResult['NAV_RESULT']->NavPageNomer,
-		'NavNum' => $arResult['NAV_RESULT']->NavNum
-	);
-}
-else
-{
-	$navParams = array(
-		'NavPageCount' => 1,
-		'NavPageNomer' => 1,
-		'NavNum' => $this->randString()
-	);
-}
-
-$showTopPager = false;
-$showBottomPager = false;
-$showLazyLoad = false;
-
-if ($arParams['PAGE_ELEMENT_COUNT'] > 0 && $navParams['NavPageCount'] > 1)
-{
-	$showTopPager = $arParams['DISPLAY_TOP_PAGER'];
-	$showBottomPager = $arParams['DISPLAY_BOTTOM_PAGER'];
-	$showLazyLoad = $arParams['LAZY_LOAD'] === 'Y' && $navParams['NavPageNomer'] != $navParams['NavPageCount'];
-}
-
-$templateLibrary = array('popup', 'ajax', 'fx');
-$currencyList = '';
-
-if (!empty($arResult['CURRENCIES']))
-{
-	$templateLibrary[] = 'currency';
-	$currencyList = CUtil::PhpToJSObject($arResult['CURRENCIES'], false, true, true);
-}
-
-$templateData = array(
-	'TEMPLATE_THEME' => $arParams['TEMPLATE_THEME'],
-	'TEMPLATE_LIBRARY' => $templateLibrary,
-	'CURRENCIES' => $currencyList,
-	'USE_PAGINATION_CONTAINER' => $showTopPager || $showBottomPager,
-);
-unset($currencyList, $templateLibrary);
-
-$elementEdit = CIBlock::GetArrayByID($arParams['IBLOCK_ID'], 'ELEMENT_EDIT');
-$elementDelete = CIBlock::GetArrayByID($arParams['IBLOCK_ID'], 'ELEMENT_DELETE');
-$elementDeleteParams = array('CONFIRM' => GetMessage('CT_BCS_TPL_ELEMENT_DELETE_CONFIRM'));
-
-$positionClassMap = array(
-	'left' => 'product-item-label-left',
-	'center' => 'product-item-label-center',
-	'right' => 'product-item-label-right',
-	'bottom' => 'product-item-label-bottom',
-	'middle' => 'product-item-label-middle',
-	'top' => 'product-item-label-top'
-);
-
-$discountPositionClass = '';
-if ($arParams['SHOW_DISCOUNT_PERCENT'] === 'Y' && !empty($arParams['DISCOUNT_PERCENT_POSITION']))
-{
-	foreach (explode('-', $arParams['DISCOUNT_PERCENT_POSITION']) as $pos)
-	{
-		$discountPositionClass .= isset($positionClassMap[$pos]) ? ' '.$positionClassMap[$pos] : '';
-	}
-}
-
-$labelPositionClass = '';
-if (!empty($arParams['LABEL_PROP_POSITION']))
-{
-	foreach (explode('-', $arParams['LABEL_PROP_POSITION']) as $pos)
-	{
-		$labelPositionClass .= isset($positionClassMap[$pos]) ? ' '.$positionClassMap[$pos] : '';
-	}
-}
-
-$arParams['~MESS_BTN_BUY'] = ($arParams['~MESS_BTN_BUY'] ?? '') ?: Loc::getMessage('CT_BCS_TPL_MESS_BTN_BUY');
-$arParams['~MESS_BTN_DETAIL'] = ($arParams['~MESS_BTN_DETAIL'] ?? '') ?: Loc::getMessage('CT_BCS_TPL_MESS_BTN_DETAIL');
-$arParams['~MESS_BTN_COMPARE'] = ($arParams['~MESS_BTN_COMPARE'] ?? '') ?: Loc::getMessage('CT_BCS_TPL_MESS_BTN_COMPARE');
-$arParams['~MESS_BTN_SUBSCRIBE'] = ($arParams['~MESS_BTN_SUBSCRIBE'] ?? '') ?: Loc::getMessage('CT_BCS_TPL_MESS_BTN_SUBSCRIBE');
-$arParams['~MESS_BTN_ADD_TO_BASKET'] = ($arParams['~MESS_BTN_ADD_TO_BASKET'] ?? '') ?: Loc::getMessage('CT_BCS_TPL_MESS_BTN_ADD_TO_BASKET');
-$arParams['~MESS_NOT_AVAILABLE'] = ($arParams['~MESS_NOT_AVAILABLE'] ?? '') ?: Loc::getMessage('CT_BCS_TPL_MESS_PRODUCT_NOT_AVAILABLE');
-$arParams['~MESS_NOT_AVAILABLE_SERVICE'] = ($arParams['~MESS_NOT_AVAILABLE_SERVICE'] ?? '') ?: Loc::getMessage('CP_BCS_TPL_MESS_PRODUCT_NOT_AVAILABLE_SERVICE');
-$arParams['~MESS_SHOW_MAX_QUANTITY'] = ($arParams['~MESS_SHOW_MAX_QUANTITY'] ?? '') ?: Loc::getMessage('CT_BCS_CATALOG_SHOW_MAX_QUANTITY');
-$arParams['~MESS_RELATIVE_QUANTITY_MANY'] = ($arParams['~MESS_RELATIVE_QUANTITY_MANY'] ?? '') ?: Loc::getMessage('CT_BCS_CATALOG_RELATIVE_QUANTITY_MANY');
-$arParams['MESS_RELATIVE_QUANTITY_MANY'] = ($arParams['MESS_RELATIVE_QUANTITY_MANY'] ?? '') ?: Loc::getMessage('CT_BCS_CATALOG_RELATIVE_QUANTITY_MANY');
-$arParams['~MESS_RELATIVE_QUANTITY_FEW'] = ($arParams['~MESS_RELATIVE_QUANTITY_FEW'] ?? '') ?: Loc::getMessage('CT_BCS_CATALOG_RELATIVE_QUANTITY_FEW');
-$arParams['MESS_RELATIVE_QUANTITY_FEW'] = ($arParams['MESS_RELATIVE_QUANTITY_FEW'] ?? '') ?: Loc::getMessage('CT_BCS_CATALOG_RELATIVE_QUANTITY_FEW');
-
-$arParams['MESS_BTN_LAZY_LOAD'] = $arParams['MESS_BTN_LAZY_LOAD'] ?: Loc::getMessage('CT_BCS_CATALOG_MESS_BTN_LAZY_LOAD');
-
-$obName = 'ob'.preg_replace('/[^a-zA-Z0-9_]/', 'x', $this->GetEditAreaId($navParams['NavNum']));
-$containerName = 'container-'.$navParams['NavNum'];
-
-if ($showTopPager)
-{
-	?>
-	<div data-pagination-num="<?=$navParams['NavNum']?>">
-		<!-- pagination-container -->
-		<?=$arResult['NAV_STRING']?>
-		<!-- pagination-container -->
-	</div>
-	<?
-}
-
-if (!isset($arParams['HIDE_SECTION_DESCRIPTION']) || $arParams['HIDE_SECTION_DESCRIPTION'] !== 'Y')
-{
-	?>
-	<div class="bx-section-desc bx-<?=$arParams['TEMPLATE_THEME']?>">
-		<p class="bx-section-desc-post"><?=$arResult['DESCRIPTION'] ?? ''?></p>
-	</div>
-	<?
-}
 ?>
-
-<div class="catalog-section bx-<?=$arParams['TEMPLATE_THEME']?>" data-entity="<?=$containerName?>">
-	<?
-	if (!empty($arResult['ITEMS']) && !empty($arResult['ITEM_ROWS']))
-	{
-		$generalParams = [
-			'SHOW_DISCOUNT_PERCENT' => $arParams['SHOW_DISCOUNT_PERCENT'],
-			'PRODUCT_DISPLAY_MODE' => $arParams['PRODUCT_DISPLAY_MODE'],
-			'SHOW_MAX_QUANTITY' => $arParams['SHOW_MAX_QUANTITY'],
-			'RELATIVE_QUANTITY_FACTOR' => $arParams['RELATIVE_QUANTITY_FACTOR'],
-			'MESS_SHOW_MAX_QUANTITY' => $arParams['~MESS_SHOW_MAX_QUANTITY'],
-			'MESS_RELATIVE_QUANTITY_MANY' => $arParams['~MESS_RELATIVE_QUANTITY_MANY'],
-			'MESS_RELATIVE_QUANTITY_FEW' => $arParams['~MESS_RELATIVE_QUANTITY_FEW'],
-			'SHOW_OLD_PRICE' => $arParams['SHOW_OLD_PRICE'],
-			'USE_PRODUCT_QUANTITY' => $arParams['USE_PRODUCT_QUANTITY'],
-			'PRODUCT_QUANTITY_VARIABLE' => $arParams['PRODUCT_QUANTITY_VARIABLE'],
-			'ADD_TO_BASKET_ACTION' => $arParams['ADD_TO_BASKET_ACTION'],
-			'ADD_PROPERTIES_TO_BASKET' => $arParams['ADD_PROPERTIES_TO_BASKET'],
-			'PRODUCT_PROPS_VARIABLE' => $arParams['PRODUCT_PROPS_VARIABLE'],
-			'SHOW_CLOSE_POPUP' => $arParams['SHOW_CLOSE_POPUP'],
-			'DISPLAY_COMPARE' => $arParams['DISPLAY_COMPARE'],
-			'COMPARE_PATH' => $arParams['COMPARE_PATH'],
-			'COMPARE_NAME' => $arParams['COMPARE_NAME'],
-			'PRODUCT_SUBSCRIPTION' => $arParams['PRODUCT_SUBSCRIPTION'],
-			'PRODUCT_BLOCKS_ORDER' => $arParams['PRODUCT_BLOCKS_ORDER'],
-			'LABEL_POSITION_CLASS' => $labelPositionClass,
-			'DISCOUNT_POSITION_CLASS' => $discountPositionClass,
-			'SLIDER_INTERVAL' => $arParams['SLIDER_INTERVAL'],
-			'SLIDER_PROGRESS' => $arParams['SLIDER_PROGRESS'],
-			'~BASKET_URL' => $arParams['~BASKET_URL'],
-			'~ADD_URL_TEMPLATE' => $arResult['~ADD_URL_TEMPLATE'],
-			'~BUY_URL_TEMPLATE' => $arResult['~BUY_URL_TEMPLATE'],
-			'~COMPARE_URL_TEMPLATE' => $arResult['~COMPARE_URL_TEMPLATE'],
-			'~COMPARE_DELETE_URL_TEMPLATE' => $arResult['~COMPARE_DELETE_URL_TEMPLATE'],
-			'TEMPLATE_THEME' => $arParams['TEMPLATE_THEME'],
-			'USE_ENHANCED_ECOMMERCE' => $arParams['USE_ENHANCED_ECOMMERCE'],
-			'DATA_LAYER_NAME' => $arParams['DATA_LAYER_NAME'],
-			'BRAND_PROPERTY' => $arParams['BRAND_PROPERTY'],
-			'MESS_BTN_BUY' => $arParams['~MESS_BTN_BUY'],
-			'MESS_BTN_DETAIL' => $arParams['~MESS_BTN_DETAIL'],
-			'MESS_BTN_COMPARE' => $arParams['~MESS_BTN_COMPARE'],
-			'MESS_BTN_SUBSCRIBE' => $arParams['~MESS_BTN_SUBSCRIBE'],
-			'MESS_BTN_ADD_TO_BASKET' => $arParams['~MESS_BTN_ADD_TO_BASKET'],
-		];
-
-		$areaIds = [];
-		$itemParameters = [];
-
-		foreach ($arResult['ITEMS'] as $item)
-		{
-			$uniqueId = $item['ID'].'_'.md5($this->randString().$component->getAction());
-			$areaIds[$item['ID']] = $this->GetEditAreaId($uniqueId);
-			$this->AddEditAction($uniqueId, $item['EDIT_LINK'], $elementEdit);
-			$this->AddDeleteAction($uniqueId, $item['DELETE_LINK'], $elementDelete, $elementDeleteParams);
-
-			$itemParameters[$item['ID']] = [
-				'SKU_PROPS' => $arResult['SKU_PROPS'][$item['IBLOCK_ID']],
-				'MESS_NOT_AVAILABLE' => ($arResult['MODULES']['catalog'] && $item['PRODUCT']['TYPE'] === ProductTable::TYPE_SERVICE
-					? $arParams['~MESS_NOT_AVAILABLE_SERVICE']
-					: $arParams['~MESS_NOT_AVAILABLE']
-				),
-			];
-		}
-		?>
-		<!-- items-container -->
-		<?
-		foreach ($arResult['ITEM_ROWS'] as $rowData)
-		{
-			$rowItems = array_splice($arResult['ITEMS'], 0, $rowData['COUNT']);
-			?>
-			<div class="row <?=$rowData['CLASS']?>" data-entity="items-row">
-				<?
-				switch ($rowData['VARIANT'])
-				{
-					case 0:
-						?>
-						<div class="col-xs-12 product-item-small-card">
-							<div class="row">
-								<div class="col-xs-12 product-item-big-card">
-									<div class="row">
-										<div class="col-md-12">
-											<?
-											$item = reset($rowItems);
-											$APPLICATION->IncludeComponent(
-												'bitrix:catalog.item',
-												'',
-												array(
-													'RESULT' => array(
-														'ITEM' => $item,
-														'AREA_ID' => $areaIds[$item['ID']],
-														'TYPE' => $rowData['TYPE'],
-														'BIG_LABEL' => 'N',
-														'BIG_DISCOUNT_PERCENT' => 'N',
-														'BIG_BUTTONS' => 'N',
-														'SCALABLE' => 'N'
-													),
-													'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-												),
-												$component,
-												array('HIDE_ICONS' => 'Y')
-											);
-											?>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<?
-						break;
-
-					case 1:
-						?>
-						<div class="col-xs-12 product-item-small-card">
-							<div class="row">
-								<?
-								foreach ($rowItems as $item)
-								{
-									?>
-									<div class="col-xs-6 product-item-big-card">
-										<div class="row">
-											<div class="col-md-12">
-												<?
-												$APPLICATION->IncludeComponent(
-													'bitrix:catalog.item',
-													'',
-													array(
-														'RESULT' => array(
-															'ITEM' => $item,
-															'AREA_ID' => $areaIds[$item['ID']],
-															'TYPE' => $rowData['TYPE'],
-															'BIG_LABEL' => 'N',
-															'BIG_DISCOUNT_PERCENT' => 'N',
-															'BIG_BUTTONS' => 'N',
-															'SCALABLE' => 'N'
-														),
-														'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-													),
-													$component,
-													array('HIDE_ICONS' => 'Y')
-												);
-												?>
-											</div>
-										</div>
-									</div>
-									<?
-								}
-								?>
-							</div>
-						</div>
-						<?
-						break;
-
-					case 2:
-						?>
-						<div class="col-xs-12 product-item-small-card">
-							<div class="row">
-								<?
-								foreach ($rowItems as $item)
-								{
-									?>
-									<div class="col-sm-4 product-item-big-card">
-										<div class="row">
-											<div class="col-md-12">
-												<?
-												$APPLICATION->IncludeComponent(
-													'bitrix:catalog.item',
-													'',
-													array(
-														'RESULT' => array(
-															'ITEM' => $item,
-															'AREA_ID' => $areaIds[$item['ID']],
-															'TYPE' => $rowData['TYPE'],
-															'BIG_LABEL' => 'N',
-															'BIG_DISCOUNT_PERCENT' => 'N',
-															'BIG_BUTTONS' => 'Y',
-															'SCALABLE' => 'N'
-														),
-														'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-													),
-													$component,
-													array('HIDE_ICONS' => 'Y')
-												);
-												?>
-											</div>
-										</div>
-									</div>
-									<?
-								}
-								?>
-							</div>
-						</div>
-						<?
-						break;
-
-					case 3:
-						?>
-						<div class="col-xs-12 product-item-small-card">
-							<div class="row">
-								<?
-								foreach ($rowItems as $item)
-								{
-									?>
-									<div class="col-xs-6 col-md-3">
-										<?
-										$APPLICATION->IncludeComponent(
-											'bitrix:catalog.item',
-											'',
-											array(
-												'RESULT' => array(
-													'ITEM' => $item,
-													'AREA_ID' => $areaIds[$item['ID']],
-													'TYPE' => $rowData['TYPE'],
-													'BIG_LABEL' => 'N',
-													'BIG_DISCOUNT_PERCENT' => 'N',
-													'BIG_BUTTONS' => 'N',
-													'SCALABLE' => 'N'
-												),
-												'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-											),
-											$component,
-											array('HIDE_ICONS' => 'Y')
-										);
-										?>
-									</div>
-									<?
-								}
-								?>
-							</div>
-						</div>
-						<?
-						break;
-
-					case 4:
-						$rowItemsCount = count($rowItems);
-						?>
-						<div class="col-sm-6 product-item-big-card">
-							<div class="row">
-								<div class="col-md-12">
-									<?
-									$item = array_shift($rowItems);
-									$APPLICATION->IncludeComponent(
-										'bitrix:catalog.item',
-										'',
-										array(
-											'RESULT' => array(
-												'ITEM' => $item,
-												'AREA_ID' => $areaIds[$item['ID']],
-												'TYPE' => $rowData['TYPE'],
-												'BIG_LABEL' => 'N',
-												'BIG_DISCOUNT_PERCENT' => 'N',
-												'BIG_BUTTONS' => 'Y',
-												'SCALABLE' => 'Y'
-											),
-											'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-										),
-										$component,
-										array('HIDE_ICONS' => 'Y')
-									);
-									unset($item);
-									?>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-6 product-item-small-card">
-							<div class="row">
-								<?
-								for ($i = 0; $i < $rowItemsCount - 1; $i++)
-								{
-									?>
-									<div class="col-xs-6">
-										<?
-										$APPLICATION->IncludeComponent(
-											'bitrix:catalog.item',
-											'',
-											array(
-												'RESULT' => array(
-													'ITEM' => $rowItems[$i],
-													'AREA_ID' => $areaIds[$rowItems[$i]['ID']],
-													'TYPE' => $rowData['TYPE'],
-													'BIG_LABEL' => 'N',
-													'BIG_DISCOUNT_PERCENT' => 'N',
-													'BIG_BUTTONS' => 'N',
-													'SCALABLE' => 'N'
-												),
-												'PARAMS' => $generalParams + $itemParameters[$rowItems[$i]['ID']],
-											),
-											$component,
-											array('HIDE_ICONS' => 'Y')
-										);
-										?>
-									</div>
-									<?
-								}
-								?>
-							</div>
-						</div>
-						<?
-						break;
-
-					case 5:
-						$rowItemsCount = count($rowItems);
-						?>
-						<div class="col-sm-6 product-item-small-card">
-							<div class="row">
-								<?
-								for ($i = 0; $i < $rowItemsCount - 1; $i++)
-								{
-									?>
-									<div class="col-xs-6">
-										<?
-										$APPLICATION->IncludeComponent(
-											'bitrix:catalog.item',
-											'',
-											array(
-												'RESULT' => array(
-													'ITEM' => $rowItems[$i],
-													'AREA_ID' => $areaIds[$rowItems[$i]['ID']],
-													'TYPE' => $rowData['TYPE'],
-													'BIG_LABEL' => 'N',
-													'BIG_DISCOUNT_PERCENT' => 'N',
-													'BIG_BUTTONS' => 'N',
-													'SCALABLE' => 'N'
-												),
-												'PARAMS' => $generalParams + $itemParameters[$rowItems[$i]['ID']],
-											),
-											$component,
-											array('HIDE_ICONS' => 'Y')
-										);
-										?>
-									</div>
-									<?
-								}
-								?>
-							</div>
-						</div>
-						<div class="col-sm-6 product-item-big-card">
-							<div class="row">
-								<div class="col-md-12">
-									<?
-									$item = end($rowItems);
-									$APPLICATION->IncludeComponent(
-										'bitrix:catalog.item',
-										'',
-										array(
-											'RESULT' => array(
-												'ITEM' => $item,
-												'AREA_ID' => $areaIds[$item['ID']],
-												'TYPE' => $rowData['TYPE'],
-												'BIG_LABEL' => 'N',
-												'BIG_DISCOUNT_PERCENT' => 'N',
-												'BIG_BUTTONS' => 'Y',
-												'SCALABLE' => 'Y'
-											),
-											'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-										),
-										$component,
-										array('HIDE_ICONS' => 'Y')
-									);
-									unset($item);
-									?>
-								</div>
-							</div>
-						</div>
-						<?
-						break;
-
-					case 6:
-						?>
-						<div class="col-xs-12 product-item-small-card">
-							<div class="row">
-								<?
-								foreach ($rowItems as $item)
-								{
-									?>
-									<div class="col-xs-6 col-sm-4 col-md-2">
-										<?
-										$APPLICATION->IncludeComponent(
-											'bitrix:catalog.item',
-											'',
-											array(
-												'RESULT' => array(
-													'ITEM' => $item,
-													'AREA_ID' => $areaIds[$item['ID']],
-													'TYPE' => $rowData['TYPE'],
-													'BIG_LABEL' => 'N',
-													'BIG_DISCOUNT_PERCENT' => 'N',
-													'BIG_BUTTONS' => 'N',
-													'SCALABLE' => 'N'
-												),
-												'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-											),
-											$component,
-											array('HIDE_ICONS' => 'Y')
-										);
-										?>
-									</div>
-									<?
-								}
-								?>
-							</div>
-						</div>
-						<?
-						break;
-
-					case 7:
-						$rowItemsCount = count($rowItems);
-						?>
-						<div class="col-sm-6 product-item-big-card">
-							<div class="row">
-								<div class="col-md-12">
-									<?
-									$item = array_shift($rowItems);
-									$APPLICATION->IncludeComponent(
-										'bitrix:catalog.item',
-										'',
-										array(
-											'RESULT' => array(
-												'ITEM' => $item,
-												'AREA_ID' => $areaIds[$item['ID']],
-												'TYPE' => $rowData['TYPE'],
-												'BIG_LABEL' => 'N',
-												'BIG_DISCOUNT_PERCENT' => 'N',
-												'BIG_BUTTONS' => 'Y',
-												'SCALABLE' => 'Y'
-											),
-											'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-										),
-										$component,
-										array('HIDE_ICONS' => 'Y')
-									);
-									unset($item);
-									?>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-6 product-item-small-card">
-							<div class="row">
-								<?
-								for ($i = 0; $i < $rowItemsCount - 1; $i++)
-								{
-									?>
-									<div class="col-xs-6 col-md-4">
-										<?
-										$APPLICATION->IncludeComponent(
-											'bitrix:catalog.item',
-											'',
-											array(
-												'RESULT' => array(
-													'ITEM' => $rowItems[$i],
-													'AREA_ID' => $areaIds[$rowItems[$i]['ID']],
-													'TYPE' => $rowData['TYPE'],
-													'BIG_LABEL' => 'N',
-													'BIG_DISCOUNT_PERCENT' => 'N',
-													'BIG_BUTTONS' => 'N',
-													'SCALABLE' => 'N'
-												),
-												'PARAMS' => $generalParams + $itemParameters[$rowItems[$i]['ID']],
-											),
-											$component,
-											array('HIDE_ICONS' => 'Y')
-										);
-										?>
-									</div>
-									<?
-								}
-								?>
-							</div>
-						</div>
-						<?
-						break;
-
-					case 8:
-						$rowItemsCount = count($rowItems);
-						?>
-						<div class="col-sm-6 product-item-small-card">
-							<div class="row">
-								<?
-								for ($i = 0; $i < $rowItemsCount - 1; $i++)
-								{
-									?>
-									<div class="col-xs-6 col-md-4">
-										<?
-										$APPLICATION->IncludeComponent(
-											'bitrix:catalog.item',
-											'',
-											array(
-												'RESULT' => array(
-													'ITEM' => $rowItems[$i],
-													'AREA_ID' => $areaIds[$rowItems[$i]['ID']],
-													'TYPE' => $rowData['TYPE'],
-													'BIG_LABEL' => 'N',
-													'BIG_DISCOUNT_PERCENT' => 'N',
-													'BIG_BUTTONS' => 'N',
-													'SCALABLE' => 'N'
-												),
-												'PARAMS' => $generalParams + $itemParameters[$rowItems[$i]['ID']],
-											),
-											$component,
-											array('HIDE_ICONS' => 'Y')
-										);
-										?>
-									</div>
-									<?
-								}
-								?>
-							</div>
-						</div>
-						<div class="col-sm-6 product-item-big-card">
-							<div class="row">
-								<div class="col-md-12">
-									<?
-									$item = end($rowItems);
-									$APPLICATION->IncludeComponent(
-										'bitrix:catalog.item',
-										'',
-										array(
-											'RESULT' => array(
-												'ITEM' => $item,
-												'AREA_ID' => $areaIds[$item['ID']],
-												'TYPE' => $rowData['TYPE'],
-												'BIG_LABEL' => 'N',
-												'BIG_DISCOUNT_PERCENT' => 'N',
-												'BIG_BUTTONS' => 'Y',
-												'SCALABLE' => 'Y'
-											),
-											'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-										),
-										$component,
-										array('HIDE_ICONS' => 'Y')
-									);
-									unset($item);
-									?>
-								</div>
-							</div>
-						</div>
-						<?
-						break;
-
-					case 9:
-						?>
-						<div class="col-xs-12">
-							<div class="row">
-								<?
-								foreach ($rowItems as $item)
-								{
-									?>
-									<div class="col-xs-12 product-item-line-card">
-										<?
-										$APPLICATION->IncludeComponent(
-											'bitrix:catalog.item',
-											'',
-											array(
-												'RESULT' => array(
-													'ITEM' => $item,
-													'AREA_ID' => $areaIds[$item['ID']],
-													'TYPE' => $rowData['TYPE'],
-													'BIG_LABEL' => 'N',
-													'BIG_DISCOUNT_PERCENT' => 'N',
-													'BIG_BUTTONS' => 'N'
-												),
-												'PARAMS' => $generalParams + $itemParameters[$item['ID']],
-											),
-											$component,
-											array('HIDE_ICONS' => 'Y')
-										);
-										?>
-									</div>
-									<?
-								}
-								?>
-
-							</div>
-						</div>
-						<?
-						break;
-				}
-				?>
-			</div>
-			<?
-		}
-		unset($rowItems);
-
-		unset($itemParameters);
-		unset($areaIds);
-
-		unset($generalParams);
-		?>
-		<!-- items-container -->
-		<?
-	}
-	else
-	{
-		// load css for bigData/deferred load
-		$APPLICATION->IncludeComponent(
-			'bitrix:catalog.item',
-			'',
-			array(),
-			$component,
-			array('HIDE_ICONS' => 'Y')
-		);
-	}
-	?>
+<div class="catalog-section">
+    <?$APPLICATION->IncludeComponent("bitrix:catalog.section.list", "tree", Array(
+            "IBLOCK_TYPE"	=>	$arParams["IBLOCK_TYPE"],
+            "IBLOCK_ID"	=>	$arParams["IBLOCK_ID"],
+            "SECTION_ID"	=>	"0",
+            "COUNT_ELEMENTS"	=>	"Y",
+            "TOP_DEPTH"	=>	"2",
+            "SECTION_URL"	=>	$arParams["SECTION_URL"],
+            "CACHE_TYPE"	=>	"N",
+            "CACHE_TIME"	=>	$arParams["CACHE_TIME"],
+            "DISPLAY_PANEL"	=>	"N",
+            "ADD_SECTIONS_CHAIN"	=>	$arParams["ADD_SECTIONS_CHAIN"],
+            "SECTION_USER_FIELDS"	=>	$arParams["SECTION_USER_FIELDS"],
+    ),
+            $component
+    );?>
 </div>
-<?
-if ($showLazyLoad)
-{
-	?>
-	<div class="row bx-<?=$arParams['TEMPLATE_THEME']?>">
-		<div class="btn btn-default btn-lg center-block" style="margin: 15px;"
-			data-use="show-more-<?=$navParams['NavNum']?>">
-			<?=$arParams['MESS_BTN_LAZY_LOAD']?>
-		</div>
-	</div>
-	<?
-}
+<div class="catalog-section">
+    <?if($arParams["DISPLAY_TOP_PAGER"]):?>
+        <?=$arResult["NAV_STRING"]?><br />
+    <?endif;?>
+    <?
+    $lineCount = (int)($arParams['LINE_ELEMENT_COUNT'] ?? 3);
+    if ($lineCount < 1) {
+        $lineCount = 3;
+    }
+    if ($lineCount > 4) {
+        $lineCount = 4;
+    }
+    $gridColsClass = [
+        1 => 'grid-cols-1',
+        2 => 'grid-cols-1 sm:grid-cols-2',
+        3 => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+        4 => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+    ][$lineCount] ?? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+    ?>
+    <div class="catalog-section__grid grid gap-4 md:gap-6 <?= $gridColsClass ?>">
+        <?foreach($arResult['ITEMS'] as $arElement):?>
+            <?
+            $this->AddEditAction($arElement['ID'], $arElement['EDIT_LINK'], CIBlock::GetArrayByID($arParams['IBLOCK_ID'], 'ELEMENT_EDIT'));
+            $this->AddDeleteAction($arElement['ID'], $arElement['DELETE_LINK'], CIBlock::GetArrayByID($arParams['IBLOCK_ID'], 'ELEMENT_DELETE'), array('CONFIRM' => GetMessage('CT_BCS_ELEMENT_DELETE_CONFIRM')));
 
-if ($showBottomPager)
-{
-	?>
-	<div data-pagination-num="<?=$navParams['NavNum']?>">
-		<!-- pagination-container -->
-		<?=$arResult['NAV_STRING']?>
-		<!-- pagination-container -->
-	</div>
-	<?
-}
+            $img = null;
+            if (is_array($arElement['PREVIEW_PICTURE'])) {
+                $img = $arElement['PREVIEW_PICTURE'];
+            } elseif (is_array($arElement['DETAIL_PICTURE'])) {
+                $img = $arElement['DETAIL_PICTURE'];
+            }
 
-$signer = new \Bitrix\Main\Security\Sign\Signer;
-$signedTemplate = $signer->sign($templateName, 'catalog.section');
-$signedParams = $signer->sign(base64_encode(serialize($arResult['ORIGINAL_PARAMETERS'])), 'catalog.section');
-?>
-<script>
-	BX.message({
-		BTN_MESSAGE_BASKET_REDIRECT: '<?=GetMessageJS('CT_BCS_CATALOG_BTN_MESSAGE_BASKET_REDIRECT')?>',
-		BASKET_URL: '<?=$arParams['BASKET_URL']?>',
-		ADD_TO_BASKET_OK: '<?=GetMessageJS('ADD_TO_BASKET_OK')?>',
-		TITLE_ERROR: '<?=GetMessageJS('CT_BCS_CATALOG_TITLE_ERROR')?>',
-		TITLE_BASKET_PROPS: '<?=GetMessageJS('CT_BCS_CATALOG_TITLE_BASKET_PROPS')?>',
-		TITLE_SUCCESSFUL: '<?=GetMessageJS('ADD_TO_BASKET_OK')?>',
-		BASKET_UNKNOWN_ERROR: '<?=GetMessageJS('CT_BCS_CATALOG_BASKET_UNKNOWN_ERROR')?>',
-		BTN_MESSAGE_SEND_PROPS: '<?=GetMessageJS('CT_BCS_CATALOG_BTN_MESSAGE_SEND_PROPS')?>',
-		BTN_MESSAGE_CLOSE: '<?=GetMessageJS('CT_BCS_CATALOG_BTN_MESSAGE_CLOSE')?>',
-		BTN_MESSAGE_CLOSE_POPUP: '<?=GetMessageJS('CT_BCS_CATALOG_BTN_MESSAGE_CLOSE_POPUP')?>',
-		COMPARE_MESSAGE_OK: '<?=GetMessageJS('CT_BCS_CATALOG_MESS_COMPARE_OK')?>',
-		COMPARE_UNKNOWN_ERROR: '<?=GetMessageJS('CT_BCS_CATALOG_MESS_COMPARE_UNKNOWN_ERROR')?>',
-		COMPARE_TITLE: '<?=GetMessageJS('CT_BCS_CATALOG_MESS_COMPARE_TITLE')?>',
-		PRICE_TOTAL_PREFIX: '<?=GetMessageJS('CT_BCS_CATALOG_PRICE_TOTAL_PREFIX')?>',
-		RELATIVE_QUANTITY_MANY: '<?=CUtil::JSEscape($arParams['MESS_RELATIVE_QUANTITY_MANY'])?>',
-		RELATIVE_QUANTITY_FEW: '<?=CUtil::JSEscape($arParams['MESS_RELATIVE_QUANTITY_FEW'])?>',
-		BTN_MESSAGE_COMPARE_REDIRECT: '<?=GetMessageJS('CT_BCS_CATALOG_BTN_MESSAGE_COMPARE_REDIRECT')?>',
-		BTN_MESSAGE_LAZY_LOAD: '<?=CUtil::JSEscape($arParams['MESS_BTN_LAZY_LOAD'])?>',
-		BTN_MESSAGE_LAZY_LOAD_WAITER: '<?=GetMessageJS('CT_BCS_CATALOG_BTN_MESSAGE_LAZY_LOAD_WAITER')?>',
-		SITE_ID: '<?=CUtil::JSEscape($component->getSiteId())?>'
-	});
-	var <?=$obName?> = new JCCatalogSectionComponent({
-		siteId: '<?=CUtil::JSEscape($component->getSiteId())?>',
-		componentPath: '<?=CUtil::JSEscape($componentPath)?>',
-		navParams: <?=CUtil::PhpToJSObject($navParams)?>,
-		deferredLoad: false,
-		initiallyShowHeader: '<?=!empty($arResult['ITEM_ROWS'])?>',
-		bigData: <?=CUtil::PhpToJSObject($arResult['BIG_DATA'])?>,
-		lazyLoad: !!'<?=$showLazyLoad?>',
-		loadOnScroll: !!'<?=($arParams['LOAD_ON_SCROLL'] === 'Y')?>',
-		template: '<?=CUtil::JSEscape($signedTemplate)?>',
-		ajaxId: '<?=CUtil::JSEscape($arParams['AJAX_ID'] ?? '')?>',
-		parameters: '<?=CUtil::JSEscape($signedParams)?>',
-		container: '<?=$containerName?>'
-	});
-</script>
-<!-- component-end -->
+            $discPercent = 0;
+            foreach ($arElement['PRICES'] as $arPrice) {
+                if ($arPrice['CAN_ACCESS'] && (float)$arPrice['VALUE'] > 0 && (float)$arPrice['DISCOUNT_VALUE'] < (float)$arPrice['VALUE']) {
+                    $discPercent = (int)round(100 * (1 - (float)$arPrice['DISCOUNT_VALUE'] / (float)$arPrice['VALUE']));
+                    break;
+                }
+            }
+
+            $pubDate = '';
+            if (!empty($arElement['ACTIVE_FROM'])) {
+                $pubDate = FormatDate($GLOBALS['DB']->DateFormatToPhp(CSite::GetDateFormat('FULL')), MakeTimeStamp($arElement['ACTIVE_FROM']));
+            } elseif (!empty($arElement['DATE_CREATE'])) {
+                $pubDate = FormatDate($GLOBALS['DB']->DateFormatToPhp(CSite::GetDateFormat('FULL')), MakeTimeStamp($arElement['DATE_CREATE']));
+            }
+
+            $previewPlain = trim(strip_tags((string)($arElement['PREVIEW_TEXT'] ?? '')));
+            $canAccessPriceCount = 0;
+            foreach ($arElement['PRICES'] as $arP) {
+                if (!empty($arP['CAN_ACCESS'])) {
+                    $canAccessPriceCount++;
+                }
+            }
+            ?>
+            <article
+                class="catalog-card group flex h-full min-w-0 flex-col"
+                id="<?= $this->GetEditAreaId($arElement['ID']) ?>"
+            >
+                <a href="<?= $arElement['DETAIL_PAGE_URL'] ?>" class="relative mb-3 block aspect-square w-full flex-shrink-0 overflow-hidden bg-slate-50">
+                    <?if($discPercent > 0):?>
+                        <span class="absolute top-0 left-0 z-10 bg-red-50 px-2 py-1 text-xs font-bold text-red-600">-<?= $discPercent ?>%</span>
+                    <?endif?>
+                    <?if($img):?>
+                        <img
+                            class="h-full w-full object-contain p-2"
+                            src="<?= $img['SRC'] ?>"
+                            width="<?= (int)($img['WIDTH'] ?? 0) ?>"
+                            height="<?= (int)($img['HEIGHT'] ?? 0) ?>"
+                            alt="<?= htmlspecialchars($img['ALT'] ?: $arElement['NAME'], ENT_COMPAT, false) ?>"
+                            title="<?= htmlspecialchars($img['TITLE'] ?: $arElement['NAME'], ENT_COMPAT, false) ?>"
+                            loading="lazy"
+                        />
+                    <?endif?>
+                </a>
+
+                <h3 class="mb-1 text-base font-bold leading-snug text-slate-900">
+                    <a class="text-inherit hover:text-blue-600" href="<?= $arElement['DETAIL_PAGE_URL'] ?>"><?= $arElement['NAME'] ?></a>
+                </h3>
+
+                <?if($pubDate):?>
+                    <p class="mb-2 text-xs text-slate-500"><?= GetMessage('PUB_DATE') ?> <?= htmlspecialchars($pubDate, ENT_COMPAT, false) ?></p>
+                <?endif?>
+
+                <?if(!empty($arElement['DISPLAY_PROPERTIES'])):?>
+                    <ul class="mb-2 list-none space-y-1 p-0 text-sm font-semibold text-slate-800">
+                        <?foreach($arElement['DISPLAY_PROPERTIES'] as $arProperty):?>
+                            <li>
+                                <span class="text-slate-800"><?= htmlspecialchars($arProperty['NAME'] ?? '', ENT_COMPAT, false) ?>:</span>
+                                <?php
+                                if (is_array($arProperty['DISPLAY_VALUE'])) {
+                                    echo ' ' . implode(' / ', $arProperty['DISPLAY_VALUE']);
+                                } else {
+                                    echo ' ' . $arProperty['DISPLAY_VALUE'];
+                                }
+                                ?>
+                            </li>
+                        <?endforeach?>
+                    </ul>
+                <?endif?>
+
+                <?if($previewPlain !== ''):?>
+                    <p class="mb-4 line-clamp-3 text-sm text-slate-500"><?= htmlspecialchars($previewPlain, ENT_COMPAT, false) ?></p>
+                <?endif?>
+
+                <div class="mt-auto space-y-3">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                        <div class="min-w-0">
+                            <?foreach($arElement['PRICES'] as $code => $arPrice):?>
+                                <?if($arPrice['CAN_ACCESS']):?>
+                                    <div class="text-sm text-slate-600">
+                                        <?if($canAccessPriceCount > 1):?>
+                                            <span class="block text-xs font-medium text-slate-500"><?= htmlspecialchars($arResult['PRICES'][$code]['TITLE'] ?? '', ENT_COMPAT, false) ?></span>
+                                        <?endif?>
+                                        <?if($arPrice['DISCOUNT_VALUE'] < $arPrice['VALUE']):?>
+                                            <span class="text-slate-400 line-through"><?= $arPrice['PRINT_VALUE'] ?></span>
+                                            <span class="catalog-price ml-1 text-lg font-bold text-red-600"><?= $arPrice['PRINT_DISCOUNT_VALUE'] ?></span>
+                                        <?else:?>
+                                            <span class="catalog-price text-lg font-bold text-slate-900"><?= $arPrice['PRINT_VALUE'] ?></span>
+                                        <?endif;?>
+                                    </div>
+                                <?endif;?>
+                            <?endforeach;?>
+                        </div>
+
+                        <div class="flex shrink-0 flex-wrap items-center justify-start gap-2 sm:justify-end">
+                            <?if($arElement['CAN_BUY'] && !($arParams['USE_PRODUCT_QUANTITY'] || count($arElement['PRODUCT_PROPERTIES']))):?>
+                                <noindex>
+                                    <a
+                                        class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-50"
+                                        href="<?=$arElement['BUY_URL']?>"
+                                        rel="nofollow"
+                                    ><?= GetMessage('CATALOG_BUY') ?> <span aria-hidden="true" class="text-base leading-none">&rarr;</span></a>
+                                    <a
+                                        class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-50"
+                                        href="<?=$arElement['ADD_URL']?>"
+                                        rel="nofollow"
+                                    ><?= GetMessage('CATALOG_ADD') ?></a>
+                                </noindex>
+                            <?endif?>
+                        </div>
+                    </div>
+
+                    <?if(is_array($arElement['PRICE_MATRIX']) && $arElement['PRICE_MATRIX']):?>
+                        <div class="overflow-x-auto text-xs text-slate-600">
+                            <table class="min-w-full border-collapse text-left" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <?if(count($arElement['PRICE_MATRIX']['ROWS']) >= 1 && ($arElement['PRICE_MATRIX']['ROWS'][0]['QUANTITY_FROM'] > 0 || $arElement['PRICE_MATRIX']['ROWS'][0]['QUANTITY_TO'] > 0)):?>
+                                        <th class="whitespace-nowrap border border-slate-200 px-1 py-0.5 font-medium"><?= GetMessage('CATALOG_QUANTITY') ?></th>
+                                    <?endif?>
+                                    <?foreach($arElement['PRICE_MATRIX']['COLS'] as $typeID => $arType):?>
+                                        <th class="whitespace-nowrap border border-slate-200 px-1 py-0.5 font-medium"><?= $arType['NAME_LANG'] ?></th>
+                                    <?endforeach?>
+                                </tr>
+                                </thead>
+                                <?foreach ($arElement['PRICE_MATRIX']['ROWS'] as $ind => $arQuantity):?>
+                                    <tr>
+                                        <?if(count($arElement['PRICE_MATRIX']['ROWS']) > 1 || (count($arElement['PRICE_MATRIX']['ROWS']) == 1 && ($arElement['PRICE_MATRIX']['ROWS'][0]['QUANTITY_FROM'] > 0 || $arElement['PRICE_MATRIX']['ROWS'][0]['QUANTITY_TO'] > 0))):?>
+                                            <th class="whitespace-nowrap border border-slate-200 px-1 py-0.5 font-normal"><?php
+                                            if (intval($arQuantity['QUANTITY_FROM']) > 0 && intval($arQuantity['QUANTITY_TO']) > 0) {
+                                                echo str_replace('#FROM#', $arQuantity['QUANTITY_FROM'], str_replace('#TO#', $arQuantity['QUANTITY_TO'], GetMessage('CATALOG_QUANTITY_FROM_TO')));
+                                            } elseif (intval($arQuantity['QUANTITY_FROM']) > 0) {
+                                                echo str_replace('#FROM#', $arQuantity['QUANTITY_FROM'], GetMessage('CATALOG_QUANTITY_FROM'));
+                                            } elseif (intval($arQuantity['QUANTITY_TO']) > 0) {
+                                                echo str_replace('#TO#', $arQuantity['QUANTITY_TO'], GetMessage('CATALOG_QUANTITY_TO'));
+                                            }
+                                            ?></th>
+                                        <?endif?>
+                                        <?foreach($arElement['PRICE_MATRIX']['COLS'] as $typeID => $arType):?>
+                                            <td class="whitespace-nowrap border border-slate-200 px-1 py-0.5"><?php
+                                            if($arElement['PRICE_MATRIX']['MATRIX'][$typeID][$ind]['DISCOUNT_PRICE'] < $arElement['PRICE_MATRIX']['MATRIX'][$typeID][$ind]['PRICE']):?>
+                                                <s class="text-slate-400"><?=FormatCurrency($arElement['PRICE_MATRIX']['MATRIX'][$typeID][$ind]['PRICE'], $arElement['PRICE_MATRIX']['MATRIX'][$typeID][$ind]['CURRENCY'])?></s>
+                                                <span class="catalog-price"><?=FormatCurrency($arElement['PRICE_MATRIX']['MATRIX'][$typeID][$ind]['DISCOUNT_PRICE'], $arElement['PRICE_MATRIX']['MATRIX'][$typeID][$ind]['CURRENCY'])?></span>
+                                            <?else:?>
+                                                <span class="catalog-price"><?=FormatCurrency($arElement['PRICE_MATRIX']['MATRIX'][$typeID][$ind]['PRICE'], $arElement['PRICE_MATRIX']['MATRIX'][$typeID][$ind]['CURRENCY'])?></span>
+                                            <?endif?>&nbsp;
+                                            </td>
+                                        <?endforeach?>
+                                    </tr>
+                                <?endforeach?>
+                            </table>
+                        </div>
+                    <?endif?>
+
+                    <?if($arParams['DISPLAY_COMPARE']):?>
+                        <noindex>
+                            <a class="text-sm text-slate-500 underline hover:text-slate-800" href="<?echo $arElement['COMPARE_URL']?>" rel="nofollow"><?echo GetMessage('CATALOG_COMPARE')?></a>
+                        </noindex>
+                    <?endif?>
+
+                    <?if($arElement['CAN_BUY'] && ($arParams['USE_PRODUCT_QUANTITY'] || count($arElement['PRODUCT_PROPERTIES']))):?>
+                        <form class="space-y-2" action="<?=POST_FORM_ACTION_URI?>" method="post" enctype="multipart/form-data">
+                            <?if($arParams['USE_PRODUCT_QUANTITY']):?>
+                                <div class="flex flex-wrap items-center gap-2 text-sm">
+                                    <label for="q_<?= (int)$arElement['ID'] ?>"><?= GetMessage('CT_BCS_QUANTITY') ?>:</label>
+                                    <input
+                                        class="w-20 rounded border border-slate-300 px-2 py-1"
+                                        id="q_<?= (int)$arElement['ID'] ?>"
+                                        type="text"
+                                        name="<?=$arParams['PRODUCT_QUANTITY_VARIABLE']?>"
+                                        value="1"
+                                        size="5"
+                                    >
+                                </div>
+                            <?endif;?>
+                            <?foreach($arElement['PRODUCT_PROPERTIES'] as $pid => $product_property):?>
+                                <div class="text-sm">
+                                    <span class="block font-medium text-slate-700"><?= $arElement['PROPERTIES'][$pid]['NAME'] ?>:</span>
+                                    <?if(
+                                        $arElement['PROPERTIES'][$pid]['PROPERTY_TYPE'] == 'L'
+                                        && $arElement['PROPERTIES'][$pid]['LIST_TYPE'] == 'C'
+                                    ):?>
+                                        <div class="mt-1 flex flex-wrap gap-2">
+                                            <?foreach($product_property['VALUES'] as $k => $v):?>
+                                                <label class="inline-flex items-center gap-1"><input type="radio" name="<?=$arParams['PRODUCT_PROPS_VARIABLE']?>[<?=$pid?>]" value="<?=$k?>"<?=($k == $product_property['SELECTED'] ? ' checked' : '')?>><?= $v ?></label>
+                                            <?endforeach;?>
+                                        </div>
+                                    <?else:?>
+                                        <select class="mt-1 w-full max-w-xs rounded border border-slate-300 px-2 py-1" name="<?=$arParams['PRODUCT_PROPS_VARIABLE']?>[<?=$pid?>]">
+                                            <?foreach($product_property['VALUES'] as $k => $v):?>
+                                                <option value="<?=$k?>"<?=($k == $product_property['SELECTED'] ? ' selected' : '')?>><?= $v ?></option>
+                                            <?endforeach;?>
+                                        </select>
+                                    <?endif;?>
+                                </div>
+                            <?endforeach;?>
+                            <input type="hidden" name="<?=$arParams['ACTION_VARIABLE']?>" value="BUY">
+                            <input type="hidden" name="<?=$arParams['PRODUCT_ID_VARIABLE']?>" value="<?=$arElement['ID']?>">
+                            <div class="flex flex-wrap gap-2">
+                                <input class="cursor-pointer rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50" type="submit" name="<?=$arParams['ACTION_VARIABLE'].'BUY'?>" value="<?= GetMessage('CATALOG_BUY') ?>">
+                                <input class="cursor-pointer rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50" type="submit" name="<?=$arParams['ACTION_VARIABLE'].'ADD2BASKET'?>" value="<?= GetMessage('CATALOG_ADD') ?>">
+                            </div>
+                        </form>
+                    <?elseif((count($arResult['PRICES']) > 0) || is_array($arElement['PRICE_MATRIX'])):?>
+                        <?if(!$arElement['CAN_BUY']):?>
+                            <p class="text-sm text-slate-600"><?= GetMessage('CATALOG_NOT_AVAILABLE') ?></p>
+                            <?$APPLICATION->IncludeComponent('bitrix:sale.notice.product', '.default', array(
+                                'NOTIFY_ID' => $arElement['ID'],
+                                'NOTIFY_URL' => htmlspecialcharsback($arElement['SUBSCRIBE_URL']),
+                                'NOTIFY_USE_CAPTHA' => 'N',
+                            ),
+                                $component
+                            );?>
+                        <?endif?>
+                    <?endif?>
+                </div>
+            </article>
+        <?endforeach;?>
+    </div>
+    <?if($arParams["DISPLAY_BOTTOM_PAGER"]):?>
+        <br /><?=$arResult["NAV_STRING"]?>
+    <?endif;?>
+</div>

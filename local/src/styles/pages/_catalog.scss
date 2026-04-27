@@ -1,0 +1,22 @@
+@use '../mixins/breakpoints' as *;
+
+
+.catalog-page {
+  &__layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+
+    @include respond(lg) {
+      grid-template-columns: 280px auto;
+      gap: 1.5rem;
+    }
+  }
+
+  .product-card {
+    &__content {
+      padding: 16px;
+    }
+  }
+
+}
