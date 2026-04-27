@@ -253,6 +253,7 @@ else
 						"BROWSER_TITLE" => $arParams["LIST_BROWSER_TITLE"],
 						"SET_LAST_MODIFIED" => $arParams["SET_LAST_MODIFIED"],
 						"INCLUDE_SUBSECTIONS" => $arParams["INCLUDE_SUBSECTIONS"],
+						"SHOW_ALL_WO_SECTION" => ((int)($arResult["VARIABLES"]["SECTION_ID"] ?? 0) === 0 ? "Y" : "N"),
 						"BASKET_URL" => $arParams["BASKET_URL"],
 						"ACTION_VARIABLE" => $arParams["ACTION_VARIABLE"],
 						"PRODUCT_ID_VARIABLE" => $arParams["PRODUCT_ID_VARIABLE"],
