@@ -156,7 +156,11 @@
     line-height: 1.45;
     color: #5c5c5c;
     margin: 0 0 12px;
-    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
   }
 
   &__price {

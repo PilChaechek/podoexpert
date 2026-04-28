@@ -62,7 +62,6 @@ $classColBox = $isHorizontal ? "fx-filter-col fx-filter-col--third" : "fx-filter
 						?>
 						<div class="<?=$classColBox?> fx-filter-parameters-box fx-filter-active">
 							<span class="fx-filter-container-modef"></span>
-							<div class="fx-filter-parameters-box-title" onclick="smartFilter.hideFilterProps(this)"><span><?=$arItem["NAME"]?> <span data-role="prop_angle" class="fx-filter-angle<?if (isset($arItem["DISPLAY_EXPANDED"]) && $arItem["DISPLAY_EXPANDED"] == "Y"):?> fx-filter-angle--up<?else:?> fx-filter-angle--down<?endif?>"></span></span></div>
 							<div class="fx-filter-block" data-role="fx_filter_block">
 								<div class="fx-filter-row fx-filter-parameters-box-container">
 									<div class="fx-filter-col fx-filter-col--half fx-filter-parameters-box-container-block">
@@ -137,27 +136,22 @@ $classColBox = $isHorizontal ? "fx-filter-col fx-filter-col--third" : "fx-filter
 					)
 						continue;
 					?>
-					<div class="<?=$classColBox?> fx-filter-parameters-box <?if ($arItem["DISPLAY_EXPANDED"]== "Y"):?>fx-filter-active<?endif?>">
+					<div class="<?=$classColBox?> fx-filter-parameters-box fx-filter-active">
 						<span class="fx-filter-container-modef"></span>
-						<div class="fx-filter-parameters-box-title" onclick="smartFilter.hideFilterProps(this)">
-							<span class="fx-filter-parameters-box-hint"><?=$arItem["NAME"]?>
-								<?if ($arItem["FILTER_HINT"] <> ""):?>
-									<span id="item_title_hint_<?echo $arItem["ID"]?>" class="fx-filter-hint-trigger" role="button" tabindex="0">?</span>
-									<script>
-										new top.BX.CHint({
-											parent: top.BX("item_title_hint_<?echo $arItem["ID"]?>"),
-											show_timeout: 10,
-											hide_timeout: 200,
-											dx: 2,
-											preventHide: true,
-											min_width: 250,
-											hint: '<?= CUtil::JSEscape($arItem["FILTER_HINT"])?>'
-										});
-									</script>
-								<?endif?>
-								<span data-role="prop_angle" class="fx-filter-angle<?if ($arItem["DISPLAY_EXPANDED"]== "Y"):?> fx-filter-angle--up<?else:?> fx-filter-angle--down<?endif?>"></span>
-							</span>
-						</div>
+						<?if ($arItem["FILTER_HINT"] <> ""):?>
+							<span id="item_title_hint_<?echo $arItem["ID"]?>" class="fx-filter-hint-trigger" role="button" tabindex="0">?</span>
+							<script>
+								new top.BX.CHint({
+									parent: top.BX("item_title_hint_<?echo $arItem["ID"]?>"),
+									show_timeout: 10,
+									hide_timeout: 200,
+									dx: 2,
+									preventHide: true,
+									min_width: 250,
+									hint: '<?= CUtil::JSEscape($arItem["FILTER_HINT"])?>'
+								});
+							</script>
+						<?endif?>
 
 						<div class="fx-filter-block" data-role="fx_filter_block">
 							<div class="fx-filter-row fx-filter-parameters-box-container">
@@ -585,7 +579,7 @@ $classColBox = $isHorizontal ? "fx-filter-col fx-filter-col--third" : "fx-filter
 			<div class="fx-filter-row">
 				<div class="fx-filter-col fx-filter-col--full fx-filter-button-box">
 					<div class="fx-filter-block">
-						<div class="fx-filter-parameters-box-container">
+						<div class="flex gap-2 smartfilter__footer">
 							<input
 								class="btn btn--main"
 								type="submit"

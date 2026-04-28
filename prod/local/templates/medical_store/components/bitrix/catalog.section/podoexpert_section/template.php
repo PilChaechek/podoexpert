@@ -160,8 +160,8 @@ $basketUrlForJs = (string)($arParams['BASKET_URL'] ?? '/cart/');
                                         <?endif?>
                                         <p class="product-card__price">
                                             <?if($arPrice['DISCOUNT_VALUE'] < $arPrice['VALUE']):?>
-                                                <span class="product-card__price-old"><?= $arPrice['PRINT_VALUE'] ?></span>
                                                 <span class="product-card__price-current catalog-price"><?= $arPrice['PRINT_DISCOUNT_VALUE'] ?></span>
+                                                <span class="product-card__price-old text-sm"><?= $arPrice['PRINT_VALUE'] ?></span>
                                             <?else:?>
                                                 <span class="product-card__price-current catalog-price"><?= $arPrice['PRINT_VALUE'] ?></span>
                                             <?endif;?>
@@ -182,7 +182,7 @@ $basketUrlForJs = (string)($arParams['BASKET_URL'] ?? '/cart/');
                                 : ($arElement['ADD_URL'] ?? '');
                             ?>
                             <noindex>
-                                <div class="product-card__actions mt-3 w-full min-w-0">
+                                <div class="product-card__actions">
                                     <div class="product-card__basket-fields hidden" aria-hidden="true">
                                         <?php if (($arParams['USE_PRODUCT_QUANTITY'] ?? '') === 'Y'): ?>
                                             <input type="hidden" name="<?= htmlspecialcharsbx((string) $arParams['PRODUCT_QUANTITY_VARIABLE']) ?>" value="1">
@@ -191,7 +191,7 @@ $basketUrlForJs = (string)($arParams['BASKET_URL'] ?? '/cart/');
                                             <input type="hidden" name="<?= htmlspecialcharsbx((string) $arParams['PRODUCT_PROPS_VARIABLE']) ?>[<?= htmlspecialcharsbx((string) $pid) ?>]" value="<?= htmlspecialcharsbx((string) ($product_property['SELECTED'] ?? '')) ?>">
                                         <?php endforeach ?>
                                     </div>
-                                    <button type="button" class="product-cart__submit product-card__buy-ajax btn btn-outline"
+                                    <button type="button" class="product-cart__submit product-card__buy-ajax product-card__button btn btn-outline"
                                         data-add-url="<?= htmlspecialcharsbx((string) $addUrlAjax) ?>"
                                         data-image="<?= htmlspecialcharsbx((string) $cardImgSrc) ?>"
                                         data-product-name="<?= htmlspecialcharsbx((string) $arElement['NAME']) ?>"

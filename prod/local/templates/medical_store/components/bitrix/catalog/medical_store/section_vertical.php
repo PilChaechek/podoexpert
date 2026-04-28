@@ -21,7 +21,7 @@ else
 }
 
 if ($isFilter || $isSidebar): ?>
-	<aside class="catalog-page__sidebar bg-gray-100 p-5 lg:p-6 lg:self-start <?=(isset($arParams['FILTER_HIDE_ON_MOBILE']) && $arParams['FILTER_HIDE_ON_MOBILE'] === 'Y' ? ' hidden-xs' : '')?>">
+	<aside class="catalog-page__sidebar bg-gray-100 p-4 lg:p-4 lg:self-start <?=(isset($arParams['FILTER_HIDE_ON_MOBILE']) && $arParams['FILTER_HIDE_ON_MOBILE'] === 'Y' ? ' hidden-xs' : '')?>">
 		<? if ($isFilter): ?>
 
         
