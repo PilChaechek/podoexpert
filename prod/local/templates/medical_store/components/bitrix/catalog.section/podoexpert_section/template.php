@@ -12,23 +12,7 @@
 /** @var CBitrixComponent $component */
 $this->setFrameMode(true);
 ?>
-<div class="catalog-section">
-    <?$APPLICATION->IncludeComponent("bitrix:catalog.section.list", "tree", Array(
-            "IBLOCK_TYPE"	=>	$arParams["IBLOCK_TYPE"],
-            "IBLOCK_ID"	=>	$arParams["IBLOCK_ID"],
-            "SECTION_ID"	=>	"0",
-            "COUNT_ELEMENTS"	=>	"Y",
-            "TOP_DEPTH"	=>	"2",
-            "SECTION_URL"	=>	$arParams["SECTION_URL"],
-            "CACHE_TYPE"	=>	"N",
-            "CACHE_TIME"	=>	$arParams["CACHE_TIME"],
-            "DISPLAY_PANEL"	=>	"N",
-            "ADD_SECTIONS_CHAIN"	=>	$arParams["ADD_SECTIONS_CHAIN"],
-            "SECTION_USER_FIELDS"	=>	$arParams["SECTION_USER_FIELDS"],
-    ),
-            $component
-    );?>
-</div>
+
 <div class="catalog-section">
     <?if($arParams["DISPLAY_TOP_PAGER"]):?>
         <?=$arResult["NAV_STRING"]?><br />
@@ -48,7 +32,7 @@ $this->setFrameMode(true);
         4 => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
     ][$lineCount] ?? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
     ?>
-    <div class="catalog-section__grid grid gap-4 md:gap-6 <?= $gridColsClass ?>">
+    <div class="catalog-section__grid grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3 xl:gap-2 <?= $gridColsClass ?>">
         <?foreach($arResult['ITEMS'] as $arElement):?>
             <?
             $this->AddEditAction($arElement['ID'], $arElement['EDIT_LINK'], CIBlock::GetArrayByID($arParams['IBLOCK_ID'], 'ELEMENT_EDIT'));
@@ -84,40 +68,43 @@ $this->setFrameMode(true);
                 }
             }
             ?>
-            <article
-                class="catalog-card group flex h-full min-w-0 flex-col"
+            <div
+                class="product-card relative h-full flex flex-col"
                 id="<?= $this->GetEditAreaId($arElement['ID']) ?>"
             >
-                <a href="<?= $arElement['DETAIL_PAGE_URL'] ?>" class="relative mb-3 block aspect-square w-full flex-shrink-0 overflow-hidden bg-slate-50">
-                    <?if($discPercent > 0):?>
-                        <span class="absolute top-0 left-0 z-10 bg-red-50 px-2 py-1 text-xs font-bold text-red-600">-<?= $discPercent ?>%</span>
-                    <?endif?>
-                    <?if($img):?>
-                        <img
-                            class="h-full w-full object-contain p-2"
-                            src="<?= $img['SRC'] ?>"
-                            width="<?= (int)($img['WIDTH'] ?? 0) ?>"
-                            height="<?= (int)($img['HEIGHT'] ?? 0) ?>"
-                            alt="<?= htmlspecialchars($img['ALT'] ?: $arElement['NAME'], ENT_COMPAT, false) ?>"
-                            title="<?= htmlspecialchars($img['TITLE'] ?: $arElement['NAME'], ENT_COMPAT, false) ?>"
-                            loading="lazy"
-                        />
-                    <?endif?>
-                </a>
+                <?if($discPercent > 0):?>
+                    <p class="product-card__badge">-<?= $discPercent ?>%</p>
+                <?endif?>
+                <div class="product-card__media relative">
+                    <a href="<?= $arElement['DETAIL_PAGE_URL'] ?>" class="link block">
+                        <?if($img):?>
+                            <img
+                                class="product-card__image"
+                                src="<?= $img['SRC'] ?>"
+                                width="<?= (int)($img['WIDTH'] ?? 0) ?>"
+                                height="<?= (int)($img['HEIGHT'] ?? 0) ?>"
+                                alt="<?= htmlspecialchars($img['ALT'] ?: $arElement['NAME'], ENT_COMPAT, false) ?>"
+                                title="<?= htmlspecialchars($img['TITLE'] ?: $arElement['NAME'], ENT_COMPAT, false) ?>"
+                                loading="lazy"
+                            />
+                        <?endif?>
+                    </a>
+                </div>
 
-                <h3 class="mb-1 text-base font-bold leading-snug text-slate-900">
-                    <a class="text-inherit hover:text-blue-600" href="<?= $arElement['DETAIL_PAGE_URL'] ?>"><?= $arElement['NAME'] ?></a>
-                </h3>
+                <div class="product-card__content">
+                    <h3 class="product-card__title">
+                        <a class="product-card__title-link" href="<?= $arElement['DETAIL_PAGE_URL'] ?>"><?= $arElement['NAME'] ?></a>
+                    </h3>
 
                 <?if($pubDate):?>
-                    <p class="mb-2 text-xs text-slate-500"><?= GetMessage('PUB_DATE') ?> <?= htmlspecialchars($pubDate, ENT_COMPAT, false) ?></p>
+                    <p class="product-card__meta"><?= GetMessage('PUB_DATE') ?> <?= htmlspecialchars($pubDate, ENT_COMPAT, false) ?></p>
                 <?endif?>
 
                 <?if(!empty($arElement['DISPLAY_PROPERTIES'])):?>
-                    <ul class="mb-2 list-none space-y-1 p-0 text-sm font-semibold text-slate-800">
+                    <ul class="product-card__props">
                         <?foreach($arElement['DISPLAY_PROPERTIES'] as $arProperty):?>
                             <li>
-                                <span class="text-slate-800"><?= htmlspecialchars($arProperty['NAME'] ?? '', ENT_COMPAT, false) ?>:</span>
+                                <span class="product-card__prop-name"><?= htmlspecialchars($arProperty['NAME'] ?? '', ENT_COMPAT, false) ?>:</span>
                                 <?php
                                 if (is_array($arProperty['DISPLAY_VALUE'])) {
                                     echo ' ' . implode(' / ', $arProperty['DISPLAY_VALUE']);
@@ -131,45 +118,46 @@ $this->setFrameMode(true);
                 <?endif?>
 
                 <?if($previewPlain !== ''):?>
-                    <p class="mb-4 line-clamp-3 text-sm text-slate-500"><?= htmlspecialchars($previewPlain, ENT_COMPAT, false) ?></p>
+                    <p class="product-card__description"><?= htmlspecialchars($previewPlain, ENT_COMPAT, false) ?></p>
                 <?endif?>
 
-                <div class="mt-auto space-y-3">
-                    <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                        <div class="min-w-0">
+                    <div class="product-card__footer">
+                        <div class="product-card__prices">
                             <?foreach($arElement['PRICES'] as $code => $arPrice):?>
                                 <?if($arPrice['CAN_ACCESS']):?>
-                                    <div class="text-sm text-slate-600">
+                                    <div class="product-card__price-row">
                                         <?if($canAccessPriceCount > 1):?>
-                                            <span class="block text-xs font-medium text-slate-500"><?= htmlspecialchars($arResult['PRICES'][$code]['TITLE'] ?? '', ENT_COMPAT, false) ?></span>
+                                            <span class="product-card__price-label"><?= htmlspecialchars($arResult['PRICES'][$code]['TITLE'] ?? '', ENT_COMPAT, false) ?></span>
                                         <?endif?>
-                                        <?if($arPrice['DISCOUNT_VALUE'] < $arPrice['VALUE']):?>
-                                            <span class="text-slate-400 line-through"><?= $arPrice['PRINT_VALUE'] ?></span>
-                                            <span class="catalog-price ml-1 text-lg font-bold text-red-600"><?= $arPrice['PRINT_DISCOUNT_VALUE'] ?></span>
-                                        <?else:?>
-                                            <span class="catalog-price text-lg font-bold text-slate-900"><?= $arPrice['PRINT_VALUE'] ?></span>
-                                        <?endif;?>
+                                        <p class="product-card__price">
+                                            <?if($arPrice['DISCOUNT_VALUE'] < $arPrice['VALUE']):?>
+                                                <span class="product-card__price-old"><?= $arPrice['PRINT_VALUE'] ?></span>
+                                                <span class="product-card__price-current catalog-price"><?= $arPrice['PRINT_DISCOUNT_VALUE'] ?></span>
+                                            <?else:?>
+                                                <span class="product-card__price-current catalog-price"><?= $arPrice['PRINT_VALUE'] ?></span>
+                                            <?endif;?>
+                                        </p>
                                     </div>
                                 <?endif;?>
                             <?endforeach;?>
                         </div>
 
-                        <div class="flex shrink-0 flex-wrap items-center justify-start gap-2 sm:justify-end">
-                            <?if($arElement['CAN_BUY'] && !($arParams['USE_PRODUCT_QUANTITY'] || count($arElement['PRODUCT_PROPERTIES']))):?>
-                                <noindex>
+                        <?if($arElement['CAN_BUY'] && !($arParams['USE_PRODUCT_QUANTITY'] || count($arElement['PRODUCT_PROPERTIES']))):?>
+                            <noindex>
+                                <div class="product-card__actions">
                                     <a
-                                        class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-50"
+                                        class="product-card__button btn btn-outline"
                                         href="<?=$arElement['BUY_URL']?>"
                                         rel="nofollow"
-                                    ><?= GetMessage('CATALOG_BUY') ?> <span aria-hidden="true" class="text-base leading-none">&rarr;</span></a>
+                                    ><?= GetMessage('CATALOG_BUY') ?> <span aria-hidden="true">&rarr;</span></a>
                                     <a
-                                        class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-50"
+                                        class="product-card__button product-card__button--secondary btn"
                                         href="<?=$arElement['ADD_URL']?>"
                                         rel="nofollow"
                                     ><?= GetMessage('CATALOG_ADD') ?></a>
-                                </noindex>
-                            <?endif?>
-                        </div>
+                                </div>
+                            </noindex>
+                        <?endif?>
                     </div>
 
                     <?if(is_array($arElement['PRICE_MATRIX']) && $arElement['PRICE_MATRIX']):?>
@@ -276,7 +264,7 @@ $this->setFrameMode(true);
                         <?endif?>
                     <?endif?>
                 </div>
-            </article>
+            </div>
         <?endforeach;?>
     </div>
     <?if($arParams["DISPLAY_BOTTOM_PAGER"]):?>

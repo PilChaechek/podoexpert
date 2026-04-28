@@ -175,7 +175,7 @@ const products: CatalogProduct[] = [
           >
             {
               products.map((product) => (
-                <article class="product-card relative h-full flex flex-col">
+                <div class="product-card relative h-full flex flex-col">
                   {product.badge ? (
                     <p class="product-card__badge bg-gray-800 z-[1]">{product.badge}</p>
                   ) : null}
@@ -215,7 +215,7 @@ const products: CatalogProduct[] = [
                       </a>
                     </div>
                   </div>
-                </article>
+                </div>
               ))
             }
           </div>

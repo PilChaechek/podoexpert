@@ -69,18 +69,10 @@ if ($isFilter)
 		$arCurSection = array();
 }
 ?>
+<section class="section section--p0 catalog-page">
 <div class="container">
-    <div class="row">
-        <?
-        if ($isVerticalFilter)
-        {
-            include($_SERVER["DOCUMENT_ROOT"] . "/" . $this->GetFolder() . "/section_vertical.php");
-        }
-        else
-        {
-            include($_SERVER["DOCUMENT_ROOT"]."/".$this->GetFolder()."/section_horizontal.php");
-        }
-        ?>
+    <div class="catalog-page__layout">
+        <? include($_SERVER["DOCUMENT_ROOT"] . "/" . $this->GetFolder() . "/section_vertical.php");?>
     </div>
-
 </div>
+</section>
