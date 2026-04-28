@@ -11,6 +11,9 @@
 /** @var string $componentPath */
 /** @var CBitrixComponent $component */
 $this->setFrameMode(true);
+$this->IncludeLangFile();
+
+$basketUrlForJs = (string)($arParams['BASKET_URL'] ?? '/cart/');
 ?>
 
 <div class="catalog-section">
@@ -168,19 +171,34 @@ $this->setFrameMode(true);
                             <?endforeach;?>
                         </div>
 
-                        <?if($arElement['CAN_BUY'] && !($arParams['USE_PRODUCT_QUANTITY'] || count($arElement['PRODUCT_PROPERTIES']))):?>
+                        <?if ($arElement['CAN_BUY']):?>
+                            <?php
+                            $buyBtnMess = trim((string) ($arParams['~MESS_BTN_BUY'] ?? '')) !== ''
+                                ? $arParams['~MESS_BTN_BUY']
+                                : (trim((string) ($arParams['~MESS_BTN_ADD_TO_BASKET'] ?? '')) !== '' ? $arParams['~MESS_BTN_ADD_TO_BASKET'] : GetMessage('CATALOG_BUY'));
+                            $cardImgSrc = (is_array($img) && !empty($img['SRC'])) ? $img['SRC'] : '';
+                            $addUrlAjax = isset($arElement['~ADD_URL']) && $arElement['~ADD_URL'] !== ''
+                                ? $arElement['~ADD_URL']
+                                : ($arElement['ADD_URL'] ?? '');
+                            ?>
                             <noindex>
-                                <div class="product-card__actions">
-                                    <a
-                                        class="product-card__button btn btn-outline"
-                                        href="<?=$arElement['BUY_URL']?>"
-                                        rel="nofollow"
-                                    ><?= GetMessage('CATALOG_BUY') ?> <span aria-hidden="true">&rarr;</span></a>
-                                    <a
-                                        class="product-card__button product-card__button--secondary btn"
-                                        href="<?=$arElement['ADD_URL']?>"
-                                        rel="nofollow"
-                                    ><?= GetMessage('CATALOG_ADD') ?></a>
+                                <div class="product-card__actions mt-3 w-full min-w-0">
+                                    <div class="product-card__basket-fields hidden" aria-hidden="true">
+                                        <?php if (($arParams['USE_PRODUCT_QUANTITY'] ?? '') === 'Y'): ?>
+                                            <input type="hidden" name="<?= htmlspecialcharsbx((string) $arParams['PRODUCT_QUANTITY_VARIABLE']) ?>" value="1">
+                                        <?php endif ?>
+                                        <?php foreach ($arElement['PRODUCT_PROPERTIES'] as $pid => $product_property): ?>
+                                            <input type="hidden" name="<?= htmlspecialcharsbx((string) $arParams['PRODUCT_PROPS_VARIABLE']) ?>[<?= htmlspecialcharsbx((string) $pid) ?>]" value="<?= htmlspecialcharsbx((string) ($product_property['SELECTED'] ?? '')) ?>">
+                                        <?php endforeach ?>
+                                    </div>
+                                    <button type="button" class="product-cart__submit product-card__buy-ajax btn btn-outline"
+                                        data-add-url="<?= htmlspecialcharsbx((string) $addUrlAjax) ?>"
+                                        data-image="<?= htmlspecialcharsbx((string) $cardImgSrc) ?>"
+                                        data-product-name="<?= htmlspecialcharsbx((string) $arElement['NAME']) ?>"
+                                    >
+                                        <?= htmlspecialcharsbx((string) $buyBtnMess) ?>
+                                        <svg class="h-4 w-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12L20.495 11.505L20.9899 12L20.495 12.495L20 12ZM5 12.7C4.6134 12.7 4.3 12.3866 4.3 12C4.3 11.6134 4.6134 11.3 5 11.3V12.7ZM14.495 5.50503L20.495 11.505L19.505 12.495L13.505 6.49497L14.495 5.50503ZM20.495 12.495L14.495 18.495L13.505 17.505L19.505 11.505L20.495 12.495ZM20 12.7H5V11.3H20V12.7Z" fill="currentColor"/></svg>
+                                    </button>
                                 </div>
                             </noindex>
                         <?endif?>
@@ -234,51 +252,7 @@ $this->setFrameMode(true);
                         </noindex>
                     <?endif?>
 
-                    <?if($arElement['CAN_BUY'] && ($arParams['USE_PRODUCT_QUANTITY'] || count($arElement['PRODUCT_PROPERTIES']))):?>
-                        <form class="space-y-2" action="<?=POST_FORM_ACTION_URI?>" method="post" enctype="multipart/form-data">
-                            <?if($arParams['USE_PRODUCT_QUANTITY']):?>
-                                <div class="flex flex-wrap items-center gap-2 text-sm">
-                                    <label for="q_<?= (int)$arElement['ID'] ?>"><?= GetMessage('CT_BCS_QUANTITY') ?>:</label>
-                                    <input
-                                        class="w-20 rounded border border-slate-300 px-2 py-1"
-                                        id="q_<?= (int)$arElement['ID'] ?>"
-                                        type="text"
-                                        name="<?=$arParams['PRODUCT_QUANTITY_VARIABLE']?>"
-                                        value="1"
-                                        size="5"
-                                    >
-                                </div>
-                            <?endif;?>
-                            <?foreach($arElement['PRODUCT_PROPERTIES'] as $pid => $product_property):?>
-                                <div class="text-sm">
-                                    <span class="block font-medium text-slate-700"><?= $arElement['PROPERTIES'][$pid]['NAME'] ?>:</span>
-                                    <?if(
-                                        $arElement['PROPERTIES'][$pid]['PROPERTY_TYPE'] == 'L'
-                                        && $arElement['PROPERTIES'][$pid]['LIST_TYPE'] == 'C'
-                                    ):?>
-                                        <div class="mt-1 flex flex-wrap gap-2">
-                                            <?foreach($product_property['VALUES'] as $k => $v):?>
-                                                <label class="inline-flex items-center gap-1"><input type="radio" name="<?=$arParams['PRODUCT_PROPS_VARIABLE']?>[<?=$pid?>]" value="<?=$k?>"<?=($k == $product_property['SELECTED'] ? ' checked' : '')?>><?= $v ?></label>
-                                            <?endforeach;?>
-                                        </div>
-                                    <?else:?>
-                                        <select class="mt-1 w-full max-w-xs rounded border border-slate-300 px-2 py-1" name="<?=$arParams['PRODUCT_PROPS_VARIABLE']?>[<?=$pid?>]">
-                                            <?foreach($product_property['VALUES'] as $k => $v):?>
-                                                <option value="<?=$k?>"<?=($k == $product_property['SELECTED'] ? ' selected' : '')?>><?= $v ?></option>
-                                            <?endforeach;?>
-                                        </select>
-                                    <?endif;?>
-                                </div>
-                            <?endforeach;?>
-                            <input type="hidden" name="<?=$arParams['ACTION_VARIABLE']?>" value="BUY">
-                            <input type="hidden" name="<?=$arParams['PRODUCT_ID_VARIABLE']?>" value="<?=$arElement['ID']?>">
-                            <div class="flex flex-wrap gap-2">
-                                <input class="cursor-pointer rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50" type="submit" name="<?=$arParams['ACTION_VARIABLE'].'BUY'?>" value="<?= GetMessage('CATALOG_BUY') ?>">
-                                <input class="cursor-pointer rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50" type="submit" name="<?=$arParams['ACTION_VARIABLE'].'ADD2BASKET'?>" value="<?= GetMessage('CATALOG_ADD') ?>">
-                            </div>
-                        </form>
-                    <?elseif((count($arResult['PRICES']) > 0) || is_array($arElement['PRICE_MATRIX'])):?>
-                        <?if(!$arElement['CAN_BUY']):?>
+                    <?if(!$arElement['CAN_BUY'] && ((count($arResult['PRICES']) > 0) || is_array($arElement['PRICE_MATRIX']))):?>
                             <p class="text-sm text-slate-600"><?= GetMessage('CATALOG_NOT_AVAILABLE') ?></p>
                             <?$APPLICATION->IncludeComponent('bitrix:sale.notice.product', '.default', array(
                                 'NOTIFY_ID' => $arElement['ID'],
@@ -287,7 +261,6 @@ $this->setFrameMode(true);
                             ),
                                 $component
                             );?>
-                        <?endif?>
                     <?endif?>
                 </div>
             </div>
@@ -297,3 +270,75 @@ $this->setFrameMode(true);
         <br /><?=$arResult["NAV_STRING"]?>
     <?endif;?>
 </div>
+<script>
+(function(){
+	if (typeof BX === 'undefined') return;
+	BX.ready(function(){
+		BX.message({
+			BASKET_UNKNOWN_ERROR: <?= \CUtil::PhpToJSObject(GetMessage('PODEXPERT_SECTION_BASKET_ERR'), false, true) ?>,
+			TITLE_SUCCESSFUL: <?= \CUtil::PhpToJSObject(GetMessage('PODEXPERT_SECTION_BASKET_OK'), false, true) ?>,
+			BTN_MESSAGE_DETAIL_BASKET_REDIRECT: <?= \CUtil::PhpToJSObject(GetMessage('PODEXPERT_SECTION_BASKET_LINK'), false, true) ?>,
+			BASKET_URL: <?= \CUtil::PhpToJSObject($basketUrlForJs, false, true) ?>
+		});
+		if (window.podexpertCatalogSectionBasketInit) return;
+		window.podexpertCatalogSectionBasketInit = true;
+		BX.bind(document.body, 'click', function(e){
+			var t = e.target;
+			var btn = t.closest ? t.closest('.product-card__buy-ajax') : null;
+			if (!btn && t.parentNode) btn = BX.findParent(t, { className: 'product-card__buy-ajax' });
+			if (!btn) return;
+			e.preventDefault();
+			var url = btn.getAttribute('data-add-url');
+			if (!url) return;
+			var card = btn.closest ? btn.closest('.product-card') : BX.findParent(btn, { className: 'product-card' });
+			var fields = card ? card.querySelector('.product-card__basket-fields') : null;
+			var data = { ajax_basket: 'Y' };
+			if (typeof BX !== 'undefined' && BX.bitrix_sessid) {
+				data.sessid = BX.bitrix_sessid();
+			}
+			if (fields) {
+				var inputs = fields.querySelectorAll('input[name]');
+				for (var i = 0; i < inputs.length; i++) {
+					data[inputs[i].name] = inputs[i].value;
+				}
+			}
+			btn.disabled = true;
+			BX.ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: url,
+				data: data,
+				onsuccess: function(result){
+					btn.disabled = false;
+					if (!BX.type.isPlainObject(result)) return;
+					if (result.STATUS !== 'OK') {
+						if (window.podexpertToastifySimple) {
+							window.podexpertToastifySimple(
+								result.MESSAGE ? result.MESSAGE : BX.message('BASKET_UNKNOWN_ERROR'),
+								'error'
+							);
+						}
+						return;
+					}
+					BX.onCustomEvent('OnBasketChange');
+					if (window.podexpertToastifyCart) {
+						window.podexpertToastifyCart({
+							imageSrc: btn.getAttribute('data-image') || '',
+							title: BX.message('TITLE_SUCCESSFUL'),
+							productName: btn.getAttribute('data-product-name') || '',
+							basketUrl: BX.message('BASKET_URL'),
+							cartLinkText: BX.message('BTN_MESSAGE_DETAIL_BASKET_REDIRECT')
+						});
+					}
+				},
+				onfailure: function(){
+					btn.disabled = false;
+					if (window.podexpertToastifySimple) {
+						window.podexpertToastifySimple(BX.message('BASKET_UNKNOWN_ERROR'), 'error');
+					}
+				}
+			});
+		});
+	});
+})();
+</script>

@@ -3,7 +3,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/header.php';
 
 /** @global CMain $APPLICATION */
-$APPLICATION->SetTitle('Каталог');
+// Заголовок страницы задаёт bitrix:catalog (SET_TITLE), иначе остаётся «Каталог» из index и перекрывает имя раздела
 
 $cfg = $GLOBALS['PODEXPERT_CATALOG'] ?? [];
 $iblockId = (int) ($cfg['CATALOG_IBLOCK_ID'] ?? 0);
