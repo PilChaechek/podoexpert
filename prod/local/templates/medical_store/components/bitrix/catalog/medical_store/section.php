@@ -25,8 +25,14 @@ $isFilter = ($arParams['USE_FILTER'] == 'Y');
 $arCurSection = array();
 $sectionId = (int)($arResult["VARIABLES"]["SECTION_ID"] ?? 0);
 $sectionCode = (string)($arResult["VARIABLES"]["SECTION_CODE"] ?? '');
+$sectionCodePath = (string)($arResult["VARIABLES"]["SECTION_CODE_PATH"] ?? '');
+$smartFilterPath = trim((string)($arResult["VARIABLES"]["SMART_FILTER_PATH"] ?? ''));
 
-if ($isFilter || $sectionId > 0 || $sectionCode !== '')
+if ($smartFilterPath !== '' && $sectionId <= 0 && $sectionCode === '' && $sectionCodePath === '')
+{
+	$arCurSection = ['ID' => 0];
+}
+elseif ($isFilter || $sectionId > 0 || $sectionCode !== '')
 {
 	$arFilter = array(
 		"IBLOCK_ID" => $arParams["IBLOCK_ID"],
