@@ -18,6 +18,7 @@ $arParams['USE_FILTER'] = (isset($arParams['USE_FILTER']) && $arParams['USE_FILT
 
 $isVerticalFilter = ($arParams['USE_FILTER'] === 'Y' && $arParams['FILTER_VIEW_MODE'] === 'VERTICAL');
 $isSidebar = ($arParams['SIDEBAR_SECTION_SHOW'] === 'Y' && !empty($arParams['SIDEBAR_PATH'] ?? ''));
+// Нужен для section_vertical.php (сайдбар с деревом и фильтром)
 $isFilter = ($arParams['USE_FILTER'] === 'Y');
 
 if (!isset($arResult['VARIABLES']['SECTION_ID'])) {
@@ -32,21 +33,24 @@ if (!isset($arResult['VARIABLES']['SMART_FILTER_PATH'])) {
 	$arResult['VARIABLES']['SMART_FILTER_PATH'] = '';
 }
 
-if ($isFilter) {
-	// Корень каталога: весь ИБ, как в умном фильтре (SECTION_ID = 0)
-	$arCurSection = ['ID' => 0];
-} else {
-	$arCurSection = [];
-}
+// Корень каталога: SECTION_ID = 0 — умный фильтр по всему ИБ и единые крошки/H1
+$arCurSection = ['ID' => 0];
 ?>
+<?php
+$includeHeader = $_SERVER['DOCUMENT_ROOT'] . '/' . $this->GetFolder() . '/catalog_section_header.php';
+if ($isVerticalFilter) {
+	include $includeHeader;
+	include $_SERVER['DOCUMENT_ROOT'] . '/' . $this->GetFolder() . '/catalog_layout_vertical.php';
+} else {
+	include $includeHeader;
+	?>
 <div class="container">
 	<div class="row">
 		<?php
-		if ($isVerticalFilter) {
-			include $_SERVER['DOCUMENT_ROOT'] . '/' . $this->GetFolder() . '/section_vertical.php';
-		} else {
-			include $_SERVER['DOCUMENT_ROOT'] . '/' . $this->GetFolder() . '/section_horizontal.php';
-		}
+		include $_SERVER['DOCUMENT_ROOT'] . '/' . $this->GetFolder() . '/section_horizontal.php';
 		?>
 	</div>
 </div>
+	<?php
+}
+?>

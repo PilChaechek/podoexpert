@@ -72,90 +72,9 @@ if ($isFilter || $sectionId > 0 || $sectionCode !== '')
 		$arCurSection = array();
 }
 ?>
-<div class="container">
-	<div class="mb-2">
-		<?php
-		/**
-		 * Крошки из $APPLICATION здесь только «Главная» → «Каталог»: цепочку раздела
-		 * добавляет bitrix:catalog.section ниже по коду — позже шаблона section.php.
-		 * Поэтому путь собираем из CIBlockSection::GetNavChain и тот же шаблон visual.
-		 */
-		global $APPLICATION;
-		$breadcrumbItems = [];
-		if (!empty($arCurSection['ID']) && Loader::includeModule('iblock'))
-		{
-			$catalogHref = $arResult['FOLDER'];
-			$breadcrumbItems[] = ['TITLE' => 'Главная', 'LINK' => SITE_DIR];
-			$breadcrumbItems[] = ['TITLE' => 'Каталог', 'LINK' => $catalogHref];
-			$dbPath = CIBlockSection::GetNavChain(
-				(int)$arParams['IBLOCK_ID'],
-				(int)$arCurSection['ID'],
-				[],
-				['ID', 'NAME', 'CODE', 'SECTION_PAGE_URL']
-			);
-			$codesAccum = [];
-			while ($navRow = $dbPath->Fetch())
-			{
-				if ((string)($navRow['CODE'] ?? '') !== '')
-				{
-					$codesAccum[] = (string)$navRow['CODE'];
-				}
-				$isCurrentSection = ((int)($navRow['ID'] ?? 0) === (int)$arCurSection['ID']);
-				$href = '';
-				if (!$isCurrentSection)
-				{
-					$href = trim((string)($navRow['SECTION_PAGE_URL'] ?? ''));
-					// В ИБ часто хранится шаблон с #SITE_DIR#/#SECTION_CODE# — без подстановки в GetNavChain
-					if ($href !== '' && strpos($href, '#') !== false)
-					{
-						$href = '';
-					}
-					if ($href === '' && $codesAccum !== [])
-					{
-						$href = $catalogHref . implode('/', $codesAccum) . '/';
-					}
-				}
-				$breadcrumbItems[] = ['TITLE' => (string)($navRow['NAME'] ?? ''), 'LINK' => $href];
-			}
-		}
-
-		if ($breadcrumbItems !== [])
-		{
-			$savedResult = $arResult;
-			$arResult = $breadcrumbItems;
-			$breadcrumbTpl = $_SERVER['DOCUMENT_ROOT'] . '/local/templates/medical_store/components/bitrix/breadcrumb/medical_store/template.php';
-			if (is_file($breadcrumbTpl))
-			{
-				echo include $breadcrumbTpl;
-			}
-			$arResult = $savedResult;
-		}
-		else
-		{
-			$APPLICATION->IncludeComponent(
-				'bitrix:breadcrumb',
-				'medical_store',
-				[
-					'START_FROM' => '0',
-					'SITE_ID' => SITE_ID,
-				],
-				false
-			);
-		}
-		?>
-	</div>
-	<?php
-	$h1 = trim((string)($arCurSection['NAME'] ?? ''));
-	if ($h1 === '') {
-		$h1 = (string)$APPLICATION->GetTitle(false);
-	}
-	?>
-	<h1><?= htmlspecialcharsbx($h1) ?></h1>
-</div>
-<section class="section section--p0 catalog-page">
-	<div class="container">
-		<div class="catalog-page__layout">
-			<? include($_SERVER["DOCUMENT_ROOT"] . "/" . $this->GetFolder() . "/section_vertical.php");?>
-		</div>
-	</div>
-</section>
+<?php
+include $_SERVER['DOCUMENT_ROOT'] . '/' . $this->GetFolder() . '/catalog_section_header.php';
+?>
+<?php
+include $_SERVER['DOCUMENT_ROOT'] . '/' . $this->GetFolder() . '/catalog_layout_vertical.php';
+?>

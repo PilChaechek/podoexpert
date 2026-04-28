@@ -8,8 +8,13 @@
     gap: 2rem;
 
     @include respond(lg) {
-      grid-template-columns: 280px auto;
+      // На широком экране без сайдбара одна колонка на всю ширину (иначе первый трек 280px сжимает контент)
+      grid-template-columns: minmax(0, 1fr);
       gap: 1.5rem;
+
+      &:has(.catalog-page__sidebar) {
+        grid-template-columns: 280px minmax(0, 1fr);
+      }
     }
   }
 
