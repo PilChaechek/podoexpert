@@ -63,7 +63,7 @@ $APPLICATION->IncludeComponent(
 			2 => "COUNTRY",
 		],
 		"LIST_PROPERTY_CODE" => [
-			0 => "-",
+			0 => "GALLERY",
 		],
 		"DETAIL_OFFERS_PROPERTY_CODE" => [
 			0 => "GALLERY",

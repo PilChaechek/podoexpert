@@ -39,10 +39,40 @@ $this->setFrameMode(true);
             $this->AddDeleteAction($arElement['ID'], $arElement['DELETE_LINK'], CIBlock::GetArrayByID($arParams['IBLOCK_ID'], 'ELEMENT_DELETE'), array('CONFIRM' => GetMessage('CT_BCS_ELEMENT_DELETE_CONFIRM')));
 
             $img = null;
-            if (is_array($arElement['PREVIEW_PICTURE'])) {
-                $img = $arElement['PREVIEW_PICTURE'];
-            } elseif (is_array($arElement['DETAIL_PICTURE'])) {
-                $img = $arElement['DETAIL_PICTURE'];
+            $galleryProp = $arElement['PROPERTIES']['GALLERY'] ?? null;
+            $galleryFirstId = 0;
+            if (is_array($galleryProp) && !empty($galleryProp['VALUE'])) {
+                $gVal = $galleryProp['VALUE'];
+                if (is_array($gVal)) {
+                    foreach ($gVal as $fid) {
+                        $fid = (int) $fid;
+                        if ($fid > 0) {
+                            $galleryFirstId = $fid;
+                            break;
+                        }
+                    }
+                } else {
+                    $galleryFirstId = (int) $gVal;
+                }
+            }
+            if ($galleryFirstId > 0) {
+                $img = CFile::GetFileArray($galleryFirstId);
+                if (!is_array($img) || empty($img['SRC'])) {
+                    $img = null;
+                }
+            }
+            if ($img === null && !empty($arElement['MORE_PHOTO']) && is_array($arElement['MORE_PHOTO'])) {
+                $firstMore = reset($arElement['MORE_PHOTO']);
+                if (is_array($firstMore) && !empty($firstMore['SRC'])) {
+                    $img = $firstMore;
+                }
+            }
+            if ($img === null) {
+                if (is_array($arElement['PREVIEW_PICTURE'])) {
+                    $img = $arElement['PREVIEW_PICTURE'];
+                } elseif (is_array($arElement['DETAIL_PICTURE'])) {
+                    $img = $arElement['DETAIL_PICTURE'];
+                }
             }
 
             $discPercent = 0;
@@ -60,7 +90,7 @@ $this->setFrameMode(true);
                 $pubDate = FormatDate($GLOBALS['DB']->DateFormatToPhp(CSite::GetDateFormat('FULL')), MakeTimeStamp($arElement['DATE_CREATE']));
             }
 
-            $previewPlain = trim(strip_tags((string)($arElement['PREVIEW_TEXT'] ?? '')));
+            $previewPlain = trim(html_entity_decode(strip_tags((string)($arElement['PREVIEW_TEXT'] ?? '')), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
             $canAccessPriceCount = 0;
             foreach ($arElement['PRICES'] as $arP) {
                 if (!empty($arP['CAN_ACCESS'])) {
@@ -95,12 +125,8 @@ $this->setFrameMode(true);
                     <h3 class="product-card__title">
                         <a class="product-card__title-link" href="<?= $arElement['DETAIL_PAGE_URL'] ?>"><?= $arElement['NAME'] ?></a>
                     </h3>
-
-                <?if($pubDate):?>
-                    <p class="product-card__meta"><?= GetMessage('PUB_DATE') ?> <?= htmlspecialchars($pubDate, ENT_COMPAT, false) ?></p>
-                <?endif?>
-
-                <?if(!empty($arElement['DISPLAY_PROPERTIES'])):?>
+                    
+                    <?if(!empty($arElement['DISPLAY_PROPERTIES'])):?>
                     <ul class="product-card__props">
                         <?foreach($arElement['DISPLAY_PROPERTIES'] as $arProperty):?>
                             <li>
