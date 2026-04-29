@@ -547,9 +547,10 @@ $classColBox = $isHorizontal ? "fx-filter-col fx-filter-col--third" : "fx-filter
 										<?foreach($arItem["VALUES"] as $val => $ar):?>
 											<div class="fx-filter-checkline">
 												<label data-role="label_<?=$ar["CONTROL_ID"]?>" class="fx-filter-param-label <? echo $ar["DISABLED"] ? 'disabled': '' ?>" for="<? echo $ar["CONTROL_ID"] ?>">
-													<span class="fx-filter-input-checkbox">
+													<span class="fx-filter__checkbox">
 														<input
 															type="checkbox"
+                                                            class="checkbox"
 															value="<? echo $ar["HTML_VALUE"] ?>"
 															name="<? echo $ar["CONTROL_NAME"] ?>"
 															id="<? echo $ar["CONTROL_ID"] ?>"
