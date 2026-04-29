@@ -36,8 +36,13 @@
     }
   }
   &__social {
-    .social-links__items {
-      justify-content: center;
+    .social-links__icon {
+      width: 36px;
+      height: 36px;
+    }
+    .social-links__icon svg {
+      width: 20px;
+      height: 20px;
     }
   }
 }

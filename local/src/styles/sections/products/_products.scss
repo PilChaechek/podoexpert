@@ -81,7 +81,7 @@
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
     display: none;
-    @include respond(xs){
+    @include respond(md){
       display: inline-flex;
     }
 
