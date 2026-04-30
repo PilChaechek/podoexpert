@@ -122,86 +122,71 @@ $cartCountBadge = function_exists('podexpert_basket_count_badge_text')
                 <div class="page-header__search">
 
 
+
                     <?$APPLICATION->IncludeComponent(
-	"bitrix:catalog.search", 
-	".default", 
+	"bitrix:search.title",
+	"medical_store",
 	[
-		"AJAX_MODE" => "Y",
-		"IBLOCK_TYPE" => "catalog",
-		"IBLOCK_ID" => "11",
-		"ELEMENT_SORT_FIELD" => "sort",
-		"ELEMENT_SORT_ORDER" => "asc",
-		"ELEMENT_SORT_FIELD2" => "id",
-		"ELEMENT_SORT_ORDER2" => "desc",
-		"SECTION_URL" => "",
-		"DETAIL_URL" => "",
-		"BASKET_URL" => "/personal/basket.php",
-		"ACTION_VARIABLE" => "action",
-		"PRODUCT_ID_VARIABLE" => "id",
-		"PRODUCT_QUANTITY_VARIABLE" => "quantity",
-		"PRODUCT_PROPS_VARIABLE" => "prop",
-		"SECTION_ID_VARIABLE" => "SECTION_ID",
-		"DISPLAY_COMPARE" => "Y",
-		"PAGE_ELEMENT_COUNT" => "30",
-		"LINE_ELEMENT_COUNT" => "3",
-		"PROPERTY_CODE" => [
-			0 => "",
-			1 => "",
-		],
-		"OFFERS_FIELD_CODE" => "",
-		"OFFERS_PROPERTY_CODE" => "",
-		"OFFERS_SORT_FIELD" => "sort",
-		"OFFERS_SORT_ORDER" => "asc",
-		"OFFERS_SORT_FIELD2" => "id",
-		"OFFERS_SORT_ORDER2" => "desc",
-		"OFFERS_LIMIT" => "5",
+		"SHOW_INPUT" => "Y",
+		"INPUT_ID" => "title-search-input",
+		"CONTAINER_ID" => "title-search",
 		"PRICE_CODE" => [
-			0 => "base",
+			0 => "BASE",
+			1 => "RETAIL",
 		],
-		"USE_PRICE_COUNT" => "Y",
-		"SHOW_PRICE_COUNT" => "1",
 		"PRICE_VAT_INCLUDE" => "Y",
-		"USE_PRODUCT_QUANTITY" => "Y",
-		"CACHE_TYPE" => "A",
-		"CACHE_TIME" => "36000000",
-		"RESTART" => "Y",
-		"NO_WORD_LOGIC" => "Y",
-		"USE_LANGUAGE_GUESS" => "Y",
-		"CHECK_DATES" => "Y",
-		"DISPLAY_TOP_PAGER" => "Y",
-		"DISPLAY_BOTTOM_PAGER" => "Y",
-		"PAGER_TITLE" => "Товары",
-		"PAGER_SHOW_ALWAYS" => "Y",
-		"PAGER_TEMPLATE" => "",
-		"PAGER_DESC_NUMBERING" => "Y",
-		"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
-		"PAGER_SHOW_ALL" => "Y",
-		"HIDE_NOT_AVAILABLE" => "N",
+		"PREVIEW_TRUNCATE_LEN" => "150",
+		"SHOW_PREVIEW" => "Y",
+		"PREVIEW_WIDTH" => "75",
+		"PREVIEW_HEIGHT" => "75",
 		"CONVERT_CURRENCY" => "Y",
 		"CURRENCY_ID" => "RUB",
-		"OFFERS_CART_PROPERTIES" => "",
-		"AJAX_OPTION_JUMP" => "Y",
-		"AJAX_OPTION_STYLE" => "Y",
-		"AJAX_OPTION_HISTORY" => "Y",
-		"COMPONENT_TEMPLATE" => ".default",
-		"HIDE_NOT_AVAILABLE_OFFERS" => "N",
-		"AJAX_OPTION_ADDITIONAL" => "",
-		"PRODUCT_PROPERTIES" => [
+		"PAGE" => "#SITE_DIR#search/index.php",
+		"NUM_CATEGORIES" => "1",
+		"TOP_COUNT" => "10",
+		"ORDER" => "date",
+		"USE_LANGUAGE_GUESS" => "Y",
+		"CHECK_DATES" => "Y",
+		"SHOW_OTHERS" => "N",
+		"CATEGORY_0_TITLE" => "Товары",
+		"CATEGORY_0" => [
+			0 => "iblock_catalog",
 		],
-		"USE_TITLE_RANK" => "N",
-		"USE_SEARCH_RESULT_ORDER" => "N"
+		"CATEGORY_0_iblock_news" => [
+			0 => "all",
+		],
+		"CATEGORY_1_TITLE" => "Форумы",
+		"CATEGORY_1" => [
+			0 => "iblock_catalog",
+		],
+		"CATEGORY_1_forum" => [
+			0 => "all",
+		],
+		"CATEGORY_2_TITLE" => "Каталоги",
+		"CATEGORY_2" => [
+			0 => "iblock_catalog",
+		],
+		"CATEGORY_2_iblock_books" => "all",
+		"CATEGORY_OTHERS_TITLE" => "Прочее",
+		"COMPONENT_TEMPLATE" => ".default",
+		"CATEGORY_0_iblock_catalog" => [
+			0 => "11",
+		],
+		"CATEGORY_1_iblock_catalog" => [
+			0 => "all",
+		],
+		"CATEGORY_2_iblock_catalog" => [
+			0 => "all",
+		]
 	],
 	false
 );?>
 
 
-                    <form class="page-header__search-form flex w-full items-center relative" action="/search/" method="get" role="search">
-                        <label class="hidden" for="header-search-q">Поиск по сайту</label>
-                        <input id="header-search-q" class="input" type="search" name="q" placeholder="Поиск..." autocomplete="off">
-                        <button class="page-header__btn-search btn-reset" type="submit" aria-label="Найти">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="m21 21l-4.343-4.343m0 0A8 8 0 1 0 5.343 5.343a8 8 0 0 0 11.314 11.314" stroke-width="1"/></svg>
-                        </button>
-                    </form>
+
+
+
+
                 </div>
 
                 <div class="page-header__contacts">
